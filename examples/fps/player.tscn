@@ -1,0 +1,41 @@
+[gd_scene load_steps=10 format=3 uid="uid://ffdcj2bbypdl"]
+
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacterBody3D.gd" id="1_4h8r1"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
+[ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="4_kdoii"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
+[ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
+[ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/crosshair.png" id="7_unppw"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
+
+[node name="FirstPersonCharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_4h8r1")
+head_position = Vector3(0, 0.542, 0)
+
+[node name="FirstPersonKeyboardInput" type="Node" parent="."]
+script = ExtResource("2_yyfta")
+
+[node name="FirstPersonMouseInput" type="Node" parent="."]
+script = ExtResource("3_p64oa")
+
+[node name="GravityPhysics" type="Node" parent="."]
+script = ExtResource("4_kdoii")
+
+[node name="CrossHair" type="Node2D" parent="."]
+script = ExtResource("6_id5pd")
+crosshair_sprite = ExtResource("7_unppw")
+
+[node name="FirstPersonViewport" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_2jvx4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_5gmd7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_wgoe5")
