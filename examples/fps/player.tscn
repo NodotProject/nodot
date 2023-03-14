@@ -1,12 +1,33 @@
-[gd_scene load_steps=10 format=3 uid="uid://ffdcj2bbypdl"]
+[gd_scene load_steps=17 format=3 uid="uid://6xtuiwqplvrx"]
 
-[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacterBody3D.gd" id="1_4h8r1"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
 [ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="4_kdoii"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
 [ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/crosshair.png" id="7_unppw"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonItem.gd" id="8_15eoi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhbpf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dt7j4"]
+material = SubResource("StandardMaterial3D_hhbpf")
+size = Vector3(0.168, 0.164, 0.475)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pxns3"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jtcyp"]
+material = SubResource("StandardMaterial3D_pxns3")
+size = Vector3(0.168, 0.168, 0.45)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_88hdp"]
+albedo_color = Color(0, 0.752941, 0.752941, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uwovs"]
+material = SubResource("StandardMaterial3D_88hdp")
+size = Vector3(0.168, 0.168, 0.45)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
@@ -22,10 +43,8 @@ script = ExtResource("2_yyfta")
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
 
-[node name="GravityPhysics" type="Node" parent="."]
-script = ExtResource("4_kdoii")
-
 [node name="CrossHair" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0.435294)
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
 
@@ -33,9 +52,26 @@ crosshair_sprite = ExtResource("7_unppw")
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("5_2jvx4")
+item_position = Vector3(0.755, -0.652, -1.212)
+
+[node name="FirstPersonItem" type="Node3D" parent="FirstPersonViewport"]
+script = ExtResource("8_15eoi")
+active = true
+mesh = SubResource("BoxMesh_dt7j4")
+
+[node name="FirstPersonItem2" type="Node3D" parent="FirstPersonViewport"]
+script = ExtResource("8_15eoi")
+mesh = SubResource("BoxMesh_jtcyp")
+
+[node name="FirstPersonItem3" type="Node3D" parent="FirstPersonViewport"]
+script = ExtResource("8_15eoi")
+mesh = SubResource("BoxMesh_uwovs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_wgoe5")
+
+[node name="GravityPhysics" type="Node" parent="."]
+script = ExtResource("4_kdoii")

@@ -1,8 +1,12 @@
-class_name FirstPersonCharacterBody3D extends CharacterBody3D
+class_name FirstPersonCharacter extends CharacterBody3D
 
-@export var input_enabled := true
-@export var fov := 75.0
-@export var head_position := Vector3.ZERO
+## A CharacterBody3D for first person games
+##
+## This CharacterBody3D creates a head and camera node.
+
+@export var input_enabled := true ## Allow player input
+@export var fov := 75.0 ## The camera field of view
+@export var head_position := Vector3.ZERO ## The head position
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
@@ -37,12 +41,14 @@ func _input(event):
       enable_input()
       input_enabled = true
 
+## Disable player input
 func disable_input():
   if has_node("FirstPersonKeyboardInput"):
     get_node("FirstPersonKeyboardInput").disable()
   if has_node("FirstPersonMouseInput"):
     get_node("FirstPersonMouseInput").disable()
 
+## Enable player input
 func enable_input():
   if has_node("FirstPersonKeyboardInput"):
     get_node("FirstPersonKeyboardInput").enable()

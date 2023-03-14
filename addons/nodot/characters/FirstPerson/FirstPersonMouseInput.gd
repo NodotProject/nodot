@@ -1,4 +1,4 @@
-@icon("../../../icons/mouse.svg")
+@icon("../../icons/mouse.svg")
 class_name FirstPersonMouseInput extends Nodot
 
 ## A preconfigured set of inputs for first person mouse control
@@ -6,19 +6,31 @@ class_name FirstPersonMouseInput extends Nodot
 @export var enabled := true ## Is input enabled
 @export var mouse_sensitivity := 0.1 ## Sensitivity of mouse movement
 
-@onready var parent: FirstPersonCharacterBody3D = get_parent()
+@onready var parent: FirstPersonCharacter = get_parent()
 @onready var head: Node3D = parent.get_node("Head")
+@onready var fps_viewport: FirstPersonViewport
 
 var mouse_rotation = Vector2.ZERO
 
 func _ready():
   enable()
+  
+  # If there is a viewport, set it
+  for child in parent.get_children():
+    if child.get_class() == "SubViewportContainer":
+      fps_viewport = child
 
 func _input(event):
   if enabled:
     if event is InputEventMouseMotion:
       mouse_rotation.y = event.relative.x * mouse_sensitivity
       mouse_rotation.x = event.relative.y * mouse_sensitivity
+      
+    if fps_viewport:
+      if event.is_action_pressed("item_next"):
+        fps_viewport.next_item()
+      elif event.is_action_pressed("item_previous"):
+        fps_viewport.previous_item()
 
 func _physics_process(delta):
   if enabled:

@@ -1,7 +1,9 @@
 @icon("../icons/crosshair.svg")
 class_name CrossHair extends Nodot2D
 
-@export var crosshair_sprite: Texture2D
+## Places a crosshair in the center of the screen
+
+@export var crosshair_sprite: Texture2D ## The crosshair texture
 
 func _ready():
   if is_instance_valid(WindowManager):

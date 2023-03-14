@@ -1,4 +1,4 @@
-@icon("../../../icons/keyboard.svg")
+@icon("../../icons/keyboard.svg")
 class_name FirstPersonKeyboardInput extends Nodot
 
 ## A preconfigured set of inputs for first person keyboard control
@@ -8,7 +8,7 @@ class_name FirstPersonKeyboardInput extends Nodot
 @export var sprint_speed_multiplier := 3.0 ## How fast the character can move while sprinting
 @export var jump_velocity = 4.5 ## How high the character can jump
 
-@onready var parent: FirstPersonCharacterBody3D = get_parent()
+@onready var parent: FirstPersonCharacter = get_parent()
 
 func _physics_process(delta):    
   if enabled:
