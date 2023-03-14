@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://6xtuiwqplvrx"]
+[gd_scene load_steps=22 format=3 uid="uid://qebun8g2frs"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -8,6 +8,11 @@
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
 [ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/crosshair.png" id="7_unppw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonItem.gd" id="8_15eoi"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonItemMesh.gd" id="8_u6fx1"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonIronSight.gd" id="9_mhfuw"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/HitScan3D.gd" id="10_apqjf"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhbpf"]
 
@@ -22,11 +27,11 @@ albedo_color = Color(1, 0, 0, 1)
 material = SubResource("StandardMaterial3D_pxns3")
 size = Vector3(0.168, 0.168, 0.45)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_88hdp"]
-albedo_color = Color(0, 0.752941, 0.752941, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6580r"]
+albedo_color = Color(0, 0.729412, 0.729412, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_uwovs"]
-material = SubResource("StandardMaterial3D_88hdp")
+[sub_resource type="BoxMesh" id="BoxMesh_omw47"]
+material = SubResource("StandardMaterial3D_6580r")
 size = Vector3(0.168, 0.168, 0.45)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
@@ -65,7 +70,26 @@ mesh = SubResource("BoxMesh_jtcyp")
 
 [node name="FirstPersonItem3" type="Node3D" parent="FirstPersonViewport"]
 script = ExtResource("8_15eoi")
-mesh = SubResource("BoxMesh_uwovs")
+
+[node name="FirstPersonItemMesh" type="MeshInstance3D" parent="FirstPersonViewport/FirstPersonItem3"]
+mesh = SubResource("BoxMesh_omw47")
+script = ExtResource("8_u6fx1")
+
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.130889, 0.298534)
+script = ExtResource("9_mhfuw")
+
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3" node_paths=PackedStringArray("raycast", "bullet_hole", "magazine")]
+script = ExtResource("10_apqjf")
+raycast = NodePath("../../../RayCast3D")
+bullet_hole = NodePath("../BulletHole")
+magazine = NodePath("../Magazine")
+
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3"]
+script = ExtResource("11_lo0jv")
+
+[node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem3"]
+script = ExtResource("12_hk1bj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")
@@ -75,3 +99,6 @@ mesh = SubResource("CapsuleMesh_wgoe5")
 
 [node name="GravityPhysics" type="Node" parent="."]
 script = ExtResource("4_kdoii")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -50)

@@ -46,6 +46,12 @@ func _physics_process(delta):
     head.rotation.z = 0
     head.rotation.y = 0
     mouse_rotation = Vector2.ZERO
+    
+    if fps_viewport:
+      if Input.is_action_pressed("action"):
+        fps_viewport.action()
+      elif Input.is_action_pressed("zoom"):
+        fps_viewport.zoom()
 
 ## Disable input and release mouse
 func disable():

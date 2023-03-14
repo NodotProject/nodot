@@ -83,3 +83,11 @@ func change_item(new_index: int):
     
     await viewport_camera.get_child(active_item_index).activate()
     item_changing = false
+
+func action():
+  var active_item = get_active_item()
+  if active_item and active_item.has_method("action"): active_item.action()
+  
+func zoom():
+  var active_item = get_active_item()
+  if active_item and active_item.has_method("zoom"): active_item.zoom()
