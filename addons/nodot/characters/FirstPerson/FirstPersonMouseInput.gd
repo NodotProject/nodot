@@ -1,3 +1,4 @@
+@tool
 @icon("../../icons/mouse.svg")
 class_name FirstPersonMouseInput extends Nodot
 
@@ -10,8 +11,15 @@ class_name FirstPersonMouseInput extends Nodot
 @onready var head: Node3D = parent.get_node("Head")
 @onready var fps_viewport: FirstPersonViewport
 
+var is_editor = Engine.is_editor_hint()
 var mouse_rotation = Vector2.ZERO
 
+func _get_configuration_warnings() -> PackedStringArray:
+  var warnings: PackedStringArray = []
+  if !(get_parent() is FirstPersonCharacter):
+    warnings.append("Parent should be a FirstPersonCharacter")
+  return warnings
+  
 func _ready():
   enable()
   
@@ -33,7 +41,7 @@ func _input(event):
         fps_viewport.previous_item()
 
 func _physics_process(delta):
-  if enabled:
+  if enabled and !is_editor:
     var look_angle = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
     
     # Handle look left and right
@@ -60,5 +68,6 @@ func disable():
 
 ## Enable input and capture mouse
 func enable():
-  Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+  if !Engine.is_editor_hint():
+    Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
   enabled = true

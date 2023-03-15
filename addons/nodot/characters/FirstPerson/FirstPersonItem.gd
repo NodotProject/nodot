@@ -1,3 +1,4 @@
+@tool
 @icon("../../icons/first_person_item.svg")
 class_name FirstPersonItem extends Nodot3D
 
@@ -7,6 +8,12 @@ class_name FirstPersonItem extends Nodot3D
 @export var active = false
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
+
+func _get_configuration_warnings() -> PackedStringArray:
+  var warnings: PackedStringArray = []
+  if !(get_parent() is FirstPersonViewport):
+    warnings.append("Parent should be a FirstPersonViewport")
+  return warnings
 
 func _ready():
   if mesh:

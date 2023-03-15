@@ -1,3 +1,4 @@
+@tool
 @icon("../../icons/keyboard.svg")
 class_name FirstPersonKeyboardInput extends Nodot
 
@@ -10,8 +11,16 @@ class_name FirstPersonKeyboardInput extends Nodot
 
 @onready var parent: FirstPersonCharacter = get_parent()
 
+var is_editor = Engine.is_editor_hint()
+
+func _get_configuration_warnings() -> PackedStringArray:
+  var warnings: PackedStringArray = []
+  if !(get_parent() is FirstPersonCharacter):
+    warnings.append("Parent should be a FirstPersonCharacter")
+  return warnings
+
 func _physics_process(delta):    
-  if enabled:
+  if enabled and !is_editor:
     var final_speed = speed
     
     if parent.is_on_floor():

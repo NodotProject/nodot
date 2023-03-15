@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://yf3jwue0vvs0"]
 
-[ext_resource type="PackedScene" uid="uid://6xtuiwqplvrx" path="res://examples/fps/player.tscn" id="1_ry0a0"]
+[ext_resource type="PackedScene" uid="uid://qebun8g2frs" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_0aav7"]
 
