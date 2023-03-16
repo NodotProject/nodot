@@ -8,9 +8,9 @@ class_name FirstPersonMouseInput extends Nodot
 @export var mouse_sensitivity := 0.1 ## Sensitivity of mouse movement
 
 @onready var parent: FirstPersonCharacter = get_parent()
-@onready var head: Node3D = parent.get_node("Head")
 @onready var fps_viewport: FirstPersonViewport
 
+var head: Node3D
 var is_editor = Engine.is_editor_hint()
 var mouse_rotation = Vector2.ZERO
 
@@ -27,6 +27,9 @@ func _ready():
   for child in parent.get_children():
     if child.get_class() == "SubViewportContainer":
       fps_viewport = child
+  
+  if parent.has_node("Head"):
+    head = parent.get_node("Head")
 
 func _input(event):
   if enabled:
@@ -58,8 +61,10 @@ func _physics_process(delta):
     if fps_viewport:
       if Input.is_action_pressed("action"):
         fps_viewport.action()
-      elif Input.is_action_pressed("zoom"):
+      elif Input.is_action_just_pressed("zoom"):
         fps_viewport.zoom()
+      elif Input.is_action_just_released("zoom"):
+        fps_viewport.zoomout()
 
 ## Disable input and release mouse
 func disable():

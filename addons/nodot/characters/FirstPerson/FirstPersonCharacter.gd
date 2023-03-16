@@ -8,8 +8,8 @@ class_name FirstPersonCharacter extends CharacterBody3D
 @export var fov := 75.0 ## The camera field of view
 @export var head_position := Vector3.ZERO ## The head position
 
-@onready var head: Node3D = $Head
-@onready var camera: Camera3D = $Head/Camera3D
+@onready var head: Node3D
+@onready var camera: Camera3D
 
 func _enter_tree():
   var head = Node3D.new()
@@ -22,6 +22,10 @@ func _enter_tree():
 func _ready():
   camera.fov = fov
   
+  if has_node("Head"):
+    head = get_node("Head")
+    camera = get_node("Head/Camera3D")
+    
   if has_node("HeadPosition"):
     var head_position_node = get_node("HeadPosition")
     head.position = head_position_node.position

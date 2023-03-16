@@ -9,6 +9,10 @@ class_name FirstPersonItem extends Nodot3D
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
 
+var ironsight_node: FirstPersonIronSight
+var magazine_node: Magazine
+var hitscan_node: HitScan3D
+
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
   if !(get_parent() is FirstPersonViewport):
@@ -16,6 +20,16 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _ready():
+  for child in get_children():
+    if child is FirstPersonIronSight:
+      ironsight_node = child
+    if child is Magazine:
+      magazine_node = child
+    if child is HitScan3D:
+      hitscan_node = child
+  
+  connect_magazine()
+  
   if mesh:
     var camera_cull_mask_layer: int = get_parent().camera_cull_mask_layer
     var mesh_instance = MeshInstance3D.new()
@@ -35,8 +49,20 @@ func deactivate():
   active = false
   visible = false
 
+## Triggered when the item is fired (i.e on left click to fire weapon)
 func action():
-  print("fire")
-  
+  if magazine_node:
+    magazine_node.action()
+
+## Triggered when the zoom/ironsight button is pressed
 func zoom():
-  print("zoom")
+  if ironsight_node: ironsight_node.zoom()
+
+## Triggered when the zoom/ironsight button is released
+func zoomout():
+  if ironsight_node: ironsight_node.zoomout()
+
+## Connect the magazine events to the hitscan node
+func connect_magazine():
+  if magazine_node and hitscan_node:
+    magazine_node.connect("dispatched", hitscan_node.action)

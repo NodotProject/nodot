@@ -7,16 +7,22 @@ class_name FirstPersonViewport extends SubViewportContainer
 @export_flags_3d_render var camera_cull_mask_layer = 2 ## Which cull mask layers to give the camera
 @export var fov := 75 ## The viewport cameras field of view
 @export var item_position := Vector3.ZERO ## (optional) The default item position
+@export var viewport_camera: Camera3D ## (optional) The first person viewport camera
 
-@onready var character_camera: Camera3D = get_parent().get_node("Head/Camera3D")
-@onready var viewport: SubViewport = $SubViewport
-@onready var viewport_camera: Camera3D = $SubViewport/Camera3D
+var character_camera: Camera3D
+var viewport: SubViewport
 
 signal item_change(old_index: int, new_index: int)
 
 var item_changing := false
 var active_item_index := 0
 
+func _get_configuration_warnings() -> PackedStringArray:
+  var warnings: PackedStringArray = []
+  if !(get_parent() is FirstPersonCharacter):
+    warnings.append("Parent should be a FirstPersonCharacter")
+  return warnings
+  
 func _enter_tree():
   var subviewport = SubViewport.new()
   subviewport.name = "SubViewport"
@@ -28,8 +34,13 @@ func _enter_tree():
   camera3d.fov = fov
   subviewport.add_child(camera3d)
   add_child(subviewport)
+  viewport = subviewport
+  viewport_camera = camera3d
   
 func _ready():
+  if has_node("Head"):
+    character_camera = get_parent().get_node("Head/Camera3D")
+    
   # Move existing children to be a child of the camera
   for child in get_children():
     if child.get_class() != "SubViewport":
@@ -91,3 +102,7 @@ func action():
 func zoom():
   var active_item = get_active_item()
   if active_item and active_item.has_method("zoom"): active_item.zoom()
+
+func zoomout():
+  var active_item = get_active_item()
+  if active_item and active_item.has_method("zoomout"): active_item.zoomout()

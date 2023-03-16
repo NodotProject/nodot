@@ -69,6 +69,7 @@ visible = false
 script = ExtResource("8_15eoi")
 
 [node name="FirstPersonItemMesh" type="MeshInstance3D" parent="FirstPersonViewport/FirstPersonItem3"]
+layers = 2
 mesh = SubResource("BoxMesh_omw47")
 script = ExtResource("8_u6fx1")
 
@@ -76,17 +77,19 @@ script = ExtResource("8_u6fx1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.130889, 0.298534)
 script = ExtResource("9_mhfuw")
 
-[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3" node_paths=PackedStringArray("raycast", "bullet_hole", "magazine")]
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3" node_paths=PackedStringArray("raycast")]
 script = ExtResource("10_apqjf")
+enabled = null
 raycast = NodePath("../../../RayCast3D")
-bullet_hole = NodePath("../BulletHole")
-magazine = NodePath("../Magazine")
-
-[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3"]
-script = ExtResource("11_lo0jv")
+accuracy = 1.0
+damage = null
+damage_distance_reduction = null
 
 [node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem3"]
 script = ExtResource("12_hk1bj")
+
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3"]
+script = ExtResource("11_lo0jv")
 
 [node name="CrossHair" type="Node2D" parent="FirstPersonViewport/FirstPersonItem3"]
 modulate = Color(1, 1, 1, 0.435294)
