@@ -48,16 +48,16 @@ func action():
   # Otherwise fire
   elif time_since_last_fired >= fire_rate:
     rounds_left -= dispatch_count
-    time_since_last_fired = 0
     emit_signal("dispatched")
     if supply_count < dispatch_count:
       emit_signal("supply_depleted")
+    time_since_last_fired = 0
 
 ## Initiates a reload of the magazine
 func reload():
   if time_since_last_reload >= reload_time:
     var rounds_required = capacity - rounds_left
-    if rounds_required > 0 and supply_count > rounds_required:
+    if rounds_required > 0 and supply_count >= rounds_required:
       supply_count -= rounds_required
       rounds_left = capacity
       time_since_last_reload = 0

@@ -8,15 +8,15 @@ class_name FirstPersonCharacter extends CharacterBody3D
 @export var fov := 75.0 ## The camera field of view
 @export var head_position := Vector3.ZERO ## The head position
 
-@onready var head: Node3D
-@onready var camera: Camera3D
+var head: Node3D
+var camera: Camera3D
 
 func _enter_tree():
-  var head = Node3D.new()
+  head = Node3D.new()
   head.name = "Head"
-  var camera3d = Camera3D.new()
-  camera3d.name = "Camera3D"
-  head.add_child(camera3d)
+  camera = Camera3D.new()
+  camera.name = "Camera3D"
+  head.add_child(camera)
   add_child(head)
   
 func _ready():

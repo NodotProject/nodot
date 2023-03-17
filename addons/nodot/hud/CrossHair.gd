@@ -19,3 +19,8 @@ func _enter_tree():
 func _on_window_resized(new_size: Vector2):
   $Sprite2D.position = new_size / 2
   
+func deactivate():
+  visible = false
+
+func activate():
+  visible = true

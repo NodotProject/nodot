@@ -28,6 +28,8 @@ func _ready():
       magazine_node = child
     if child is HitScan3D:
       hitscan_node = child
+    if child is BulletHole:
+      bullethole_node = child
   
   connect_magazine()
   
@@ -44,11 +46,17 @@ func _ready():
 func activate():
   active = true
   visible = true
+  for child in get_children():
+    if child.has_method("activate"):
+      child.activate()
 
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
 func deactivate():
   active = false
   visible = false
+  for child in get_children():
+    if child.has_method("deactivate"):
+      child.deactivate()
 
 ## Triggered when the item is fired (i.e on left click to fire weapon)
 func action():
@@ -62,6 +70,11 @@ func zoom():
 ## Triggered when the zoom/ironsight button is released
 func zoomout():
   if ironsight_node: ironsight_node.zoomout()
+  
+## Triggered when the player requests that the item be reloaded
+func reload():
+  if magazine_node:
+    magazine_node.reload()
 
 ## Connect the magazine events to the hitscan node
 func connect_magazine():

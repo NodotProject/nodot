@@ -40,13 +40,15 @@ func get_hit_target():
     if collider:
       var distance = get_distance(collider)
       var hit_target = HitTarget.new(distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider)
-      if damage > 0.0 and hit_target.has_method("damage"):
+      if damage > 0.0 and collider.has_method("damage"):
         var final_damage = damage
         # Calculate damage reduction
         if damage_distance_reduction > 0.0:
           var damage_reduction = (final_damage / 100) * damage_distance_reduction
           final_damage = final_damage - (distance * damage_reduction)
-        hit_target.damage(final_damage)
+        # Apply damage to the hit target
+        collider.damage(final_damage)
+        
       emit_signal("target_hit", hit_target)
       return hit_target
   

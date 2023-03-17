@@ -25,7 +25,7 @@ func _ready():
   
   # If there is a viewport, set it
   for child in parent.get_children():
-    if child.get_class() == "SubViewportContainer":
+    if child is FirstPersonViewport:
       fps_viewport = child
   
   if parent.has_node("Head"):

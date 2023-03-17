@@ -12,19 +12,20 @@ class_name BulletHole extends Nodot3D
 ## Creates a bullethole decale, applies the texture and rotation/position calculations and removes the bullethole after the lifespan
 func action(hit_target: HitTarget):
   var material: StandardMaterial3D = textures[0]
-  var target_material_name = hit_target.target_node.physical_material
-  if target_material_name and textures.has(target_material_name):
-    material = textures[target_material_name]
+  if "physical_material" in hit_target.target_node:
+    var target_material_name = hit_target.target_node.physical_material
+    if target_material_name and textures.has(target_material_name):
+      material = textures[target_material_name]
+      
   if !material: return
   
   var decal_node = Decal.new()
   decal_node.texture_albedo = material.albedo_texture
   decal_node.texture_emission = material.emission_texture
   decal_node.texture_normal = material.normal_texture
-  var texture_size = material.albedo_texture.get_size()
-  decal_node.size = Vector3(texture_size.x, texture_size.y, 0.2)
+  decal_node.size = Vector3(0.2, 0.2, 0.2)
   
-  add_child(decal_node)
+  hit_target.target_node.add_child(decal_node)
   
   decal_node.global_transform.origin = hit_target.collision_point
   if hit_target.collision_normal != Vector3.UP:
@@ -35,7 +36,6 @@ func action(hit_target: HitTarget):
     decal_node.rotate(hit_target.collision_normal, randf_range(0, 2*PI))
     
   if lifespan > 0.0:
-    await get_tree().create_timer(lifespan)
+    await get_tree().create_timer(lifespan).timeout
     decal_node.queue_free()
-  
   

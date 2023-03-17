@@ -59,3 +59,9 @@ func unscope():
   # TODO: hide scope image
   viewport_camera.fov = fov
   pass
+
+## Restores all states to default
+func deactivate():
+  if initial_position:
+    parent.position = initial_position
+  zoomout()

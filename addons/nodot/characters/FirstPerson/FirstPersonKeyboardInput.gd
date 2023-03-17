@@ -10,6 +10,7 @@ class_name FirstPersonKeyboardInput extends Nodot
 @export var jump_velocity = 4.5 ## How high the character can jump
 
 @onready var parent: FirstPersonCharacter = get_parent()
+@onready var fps_viewport: FirstPersonViewport
 
 var is_editor = Engine.is_editor_hint()
 
@@ -18,6 +19,16 @@ func _get_configuration_warnings() -> PackedStringArray:
   if !(get_parent() is FirstPersonCharacter):
     warnings.append("Parent should be a FirstPersonCharacter")
   return warnings
+
+func _ready():
+  # If there is a viewport, set it
+  for child in parent.get_children():
+    if child is FirstPersonViewport:
+      fps_viewport = child
+      
+func _input(event: InputEvent):
+  if event.is_action_pressed("reload"):
+    fps_viewport.reload()
 
 func _physics_process(delta):    
   if enabled and !is_editor:

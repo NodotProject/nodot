@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://qebun8g2frs"]
+[gd_scene load_steps=25 format=3 uid="uid://qebun8g2frs"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonIronSight.gd" id="9_mhfuw"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/HitScan3D.gd" id="10_apqjf"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
+[ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/bullet_hole.png" id="11_ts2sg"]
+[ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/bullet_hole_d.png" id="12_exhul"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhbpf"]
@@ -34,6 +36,11 @@ albedo_color = Color(0, 0.729412, 0.729412, 1)
 material = SubResource("StandardMaterial3D_6580r")
 size = Vector3(0.168, 0.168, 0.45)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gp7qf"]
+albedo_texture = ExtResource("11_ts2sg")
+normal_enabled = true
+normal_texture = ExtResource("12_exhul")
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
@@ -53,6 +60,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("5_2jvx4")
 item_position = Vector3(0.755, -0.652, -1.212)
+
+[node name="RayCast3D" type="RayCast3D" parent="FirstPersonViewport"]
+target_position = Vector3(0, 0, -50)
 
 [node name="FirstPersonItem" type="Node3D" parent="FirstPersonViewport"]
 script = ExtResource("8_15eoi")
@@ -79,19 +89,22 @@ script = ExtResource("9_mhfuw")
 
 [node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3" node_paths=PackedStringArray("raycast")]
 script = ExtResource("10_apqjf")
-enabled = null
-raycast = NodePath("../../../RayCast3D")
-accuracy = 1.0
-damage = null
+enabled = true
+raycast = NodePath("../../RayCast3D")
+accuracy = 10.0
+damage = 1.0
 damage_distance_reduction = null
 
 [node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem3"]
 script = ExtResource("12_hk1bj")
+rounds_left = 10
 
 [node name="BulletHole" type="Node3D" parent="FirstPersonViewport/FirstPersonItem3"]
 script = ExtResource("11_lo0jv")
+textures = Array[StandardMaterial3D]([SubResource("StandardMaterial3D_gp7qf")])
 
 [node name="CrossHair" type="Node2D" parent="FirstPersonViewport/FirstPersonItem3"]
+visible = false
 modulate = Color(1, 1, 1, 0.435294)
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
@@ -104,6 +117,3 @@ mesh = SubResource("CapsuleMesh_wgoe5")
 
 [node name="GravityPhysics" type="Node" parent="."]
 script = ExtResource("4_kdoii")
-
-[node name="RayCast3D" type="RayCast3D" parent="."]
-target_position = Vector3(0, 0, -50)

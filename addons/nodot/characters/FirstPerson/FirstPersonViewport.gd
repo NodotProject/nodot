@@ -12,7 +12,7 @@ class_name FirstPersonViewport extends SubViewportContainer
 var character_camera: Camera3D
 var viewport: SubViewport
 
-signal item_change(old_index: int, new_index: int)
+signal item_change(item: FirstPersonItem)
 
 var item_changing := false
 var active_item_index := 0
@@ -36,20 +36,19 @@ func _enter_tree():
   add_child(subviewport)
   viewport = subviewport
   viewport_camera = camera3d
+  character_camera = get_parent().camera
   
-func _ready():
-  if has_node("Head"):
-    character_camera = get_parent().get_node("Head/Camera3D")
-    
+func _ready():    
   # Move existing children to be a child of the camera
   for child in get_children():
     if child.get_class() != "SubViewport":
       var saved_transform = child.transform
       child.reparent(viewport_camera, true)
-      if item_position == Vector3.ZERO:
-        child.transform = saved_transform
-      else:
-        child.position = item_position
+      if child is FirstPersonItem:
+        if item_position == Vector3.ZERO:
+          child.transform = saved_transform
+        else:
+          child.position = item_position
   
   if is_instance_valid(WindowManager):
     WindowManager.connect("window_resized", _on_window_resized)
@@ -73,14 +72,23 @@ func previous_item():
 ## Get the active item
 func get_active_item():
   for item in viewport_camera.get_children():
-    if item.active:
+    if item is FirstPersonItem and item.active:
       return item
+      
+## Get all FirstPersonItems
+func get_all_items():
+  var items: Array[FirstPersonItem] = []
+  for item in viewport_camera.get_children():
+    if item is FirstPersonItem:
+      items.append(item)
+  return items
 
 ## Change which item is active.
 func change_item(new_index: int):
   if item_changing == false:
     item_changing = true
-    var item_count = viewport_camera.get_child_count()
+    var items = get_all_items()
+    var item_count = items.size()
     if new_index >= item_count - 1:
       active_item_index = item_count - 1
     elif new_index <= 0:
@@ -92,8 +100,9 @@ func change_item(new_index: int):
     if active_item:
       await active_item.deactivate()
     
-    await viewport_camera.get_child(active_item_index).activate()
+    await items[active_item_index].activate()
     item_changing = false
+    emit_signal("item_change", items[active_item_index])
 
 func action():
   var active_item = get_active_item()
@@ -106,3 +115,7 @@ func zoom():
 func zoomout():
   var active_item = get_active_item()
   if active_item and active_item.has_method("zoomout"): active_item.zoomout()
+
+func reload():
+  var active_item = get_active_item()
+  if active_item and active_item.has_method("reload"): active_item.reload()
