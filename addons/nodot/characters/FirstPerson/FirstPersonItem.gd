@@ -12,6 +12,7 @@ class_name FirstPersonItem extends Nodot3D
 var ironsight_node: FirstPersonIronSight
 var magazine_node: Magazine
 var hitscan_node: HitScan3D
+var bullethole_node: BulletHole
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -66,3 +67,5 @@ func zoomout():
 func connect_magazine():
   if magazine_node and hitscan_node:
     magazine_node.connect("dispatched", hitscan_node.action)
+  if hitscan_node and bullethole_node:
+    hitscan_node.connect("target_hit", bullethole_node.action)
