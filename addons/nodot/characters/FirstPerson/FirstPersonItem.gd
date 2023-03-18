@@ -8,17 +8,19 @@ class_name FirstPersonItem extends Nodot3D
 @export var active = false
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
-@export var ironsight_node: FirstPersonIronSight
 @export var magazine_node: Magazine
 @export var hitscan_node: HitScan3D
 @export var bullethole_node: BulletHole
-@export var sfxplayer_node: SFXPlayer3D
+@export var action_sfxplayer_node: SFXPlayer3D
+@export var reload_sfxplayer_node: SFXPlayer3D
 
 ## Triggered when the item is activated
 signal activated
 ## Triggered when the item is deactivated
 signal deactivated
 
+## Not exported as FirstPersonIronSight must be a child node of the FirstPersonItem
+var ironsight_node: FirstPersonIronSight
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -36,8 +38,6 @@ func _ready():
       hitscan_node = child
     if child is BulletHole:
       bullethole_node = child
-    if child is SFXPlayer3D:
-      sfxplayer_node = child
   
   connect_magazine()
   
@@ -94,7 +94,9 @@ func connect_magazine():
   if magazine_node:
     if hitscan_node:
       magazine_node.connect("dispatched", hitscan_node.action)
-    if sfxplayer_node:
-      magazine_node.connect("dispatched", sfxplayer_node.action)
+    if action_sfxplayer_node:
+      magazine_node.connect("dispatched", action_sfxplayer_node.action)
+    if reload_sfxplayer_node:
+      magazine_node.connect("reloading", reload_sfxplayer_node.action)
   if hitscan_node and bullethole_node:
     hitscan_node.connect("target_hit", bullethole_node.action)

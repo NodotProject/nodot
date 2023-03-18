@@ -13,10 +13,16 @@ class_name HitScan3D extends Nodot3D
 @export var damage = 0.0
 ## Damage reduction per meter of distance as a percentage (0.0 to disable)
 @export var damage_distance_reduction = 0.0
+## Total distance (meters) to search for hit targets
+@export var distance := 500
 
 signal target_hit(hit_target: HitTarget)
 
 var rng = RandomNumberGenerator.new()
+
+func _enter_tree():
+  if raycast.enabled:
+    raycast.target_position = Vector3(0, 0, -distance)
 
 ## Execute the hitscan
 func action():
@@ -30,7 +36,7 @@ func aim_raycast():
   if raycast.enabled:
     var new_x = rng.randf_range(-accuracy, accuracy)
     var new_y = rng.randf_range(-accuracy, accuracy)
-    raycast.target_position = Vector3(new_x, new_y, -500)
+    raycast.target_position = Vector3(new_x, new_y, -distance)
     raycast.force_raycast_update()
 
 ## Get the objects that the raycast is colliding with
