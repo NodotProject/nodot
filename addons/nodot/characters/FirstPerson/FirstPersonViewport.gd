@@ -6,7 +6,6 @@ class_name FirstPersonViewport extends SubViewportContainer
 
 @export_flags_3d_render var camera_cull_mask_layer = 2 ## Which cull mask layers to give the camera
 @export var fov := 75 ## The viewport cameras field of view
-@export var item_position := Vector3.ZERO ## (optional) The default item position
 @export var viewport_camera: Camera3D ## (optional) The first person viewport camera
 
 var character_camera: Camera3D
@@ -44,11 +43,6 @@ func _ready():
     if child.get_class() != "SubViewport":
       var saved_transform = child.transform
       child.reparent(viewport_camera, true)
-      if child is FirstPersonItem:
-        if item_position == Vector3.ZERO:
-          child.transform = saved_transform
-        else:
-          child.position = item_position
   
   if is_instance_valid(WindowManager):
     WindowManager.connect("window_resized", _on_window_resized)

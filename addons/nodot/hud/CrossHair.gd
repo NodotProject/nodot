@@ -1,3 +1,4 @@
+@tool
 @icon("../icons/crosshair.svg")
 class_name CrossHair extends Nodot2D
 
@@ -5,8 +6,10 @@ class_name CrossHair extends Nodot2D
 
 @export var crosshair_sprite: Texture2D ## The crosshair texture
 
+var is_editor = Engine.is_editor_hint()
+
 func _ready():
-  if is_instance_valid(WindowManager):
+  if !is_editor and is_instance_valid(WindowManager):
     WindowManager.connect("window_resized", _on_window_resized)
     WindowManager.bump()
     

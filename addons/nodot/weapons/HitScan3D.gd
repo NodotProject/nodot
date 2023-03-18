@@ -21,7 +21,7 @@ signal target_hit(hit_target: HitTarget)
 var rng = RandomNumberGenerator.new()
 
 func _enter_tree():
-  if raycast.enabled:
+  if raycast and raycast.enabled:
     raycast.target_position = Vector3(0, 0, -distance)
 
 ## Execute the hitscan

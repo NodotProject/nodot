@@ -1,3 +1,4 @@
+@tool
 class_name BulletHole extends Nodot3D
 
 ## Spawns a bullethole
