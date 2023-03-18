@@ -9,7 +9,7 @@ class_name Magazine extends Nodot
 ## Round supply maximum
 @export var supply_count_limit := 100
 ## Total rounds released per action
-@export var dispatch_count := 1
+@export var discharge_count := 1
 ## Time between round releases
 @export var fire_rate := 0.5
 ## Time to reload the magazine
@@ -25,8 +25,8 @@ signal magazine_depleted
 signal supply_depleted
 ## Emitted when the magazine begins reloading
 signal reloading
-## Emitted when a round is dispatched
-signal dispatched
+## Emitted when a round is discharged
+signal discharged
 
 var time_since_last_fired = 0
 var time_since_last_reload = 0
@@ -42,14 +42,14 @@ func action():
   if time_since_last_reload < reload_time: return
   
   # If there are enough rounds left in the chamber
-  if rounds_left - dispatch_count < 0:
+  if rounds_left - discharge_count < 0:
     if auto_reload: reload()
     emit_signal("magazine_depleted")
   # Otherwise fire
   elif time_since_last_fired >= fire_rate:
-    rounds_left -= dispatch_count
-    emit_signal("dispatched")
-    if supply_count < dispatch_count:
+    rounds_left -= discharge_count
+    emit_signal("discharged")
+    if supply_count < discharge_count:
       emit_signal("supply_depleted")
     time_since_last_fired = 0
 
@@ -62,3 +62,12 @@ func reload():
       rounds_left = capacity
       time_since_last_reload = 0
       emit_signal("reloading")      
+
+## Adds rounds to the supply and returns rejected rounds if the supply_count_limit has been reached
+func resupply(amount: int) -> int:
+  var new_supply = supply_count + amount
+  if new_supply > supply_count_limit:
+    supply_count = supply_count_limit
+    return new_supply - supply_count_limit
+  supply_count += amount
+  return 0

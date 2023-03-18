@@ -13,6 +13,7 @@ class_name FirstPersonItem extends Nodot3D
 @export var bullethole_node: BulletHole
 @export var action_sfxplayer_node: SFXPlayer3D
 @export var reload_sfxplayer_node: SFXPlayer3D
+@export var dryfire_sfxplayer_node: SFXPlayer3D
 
 ## Triggered when the item is activated
 signal activated
@@ -21,6 +22,7 @@ signal deactivated
 
 ## Not exported as FirstPersonIronSight must be a child node of the FirstPersonItem
 var ironsight_node: FirstPersonIronSight
+var crosshair_node: CrossHair
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -38,6 +40,8 @@ func _ready():
       hitscan_node = child
     if child is BulletHole:
       bullethole_node = child
+    if child is CrossHair:
+      crosshair_node = child
   
   connect_magazine()
   
@@ -93,10 +97,12 @@ func reload():
 func connect_magazine():
   if magazine_node:
     if hitscan_node:
-      magazine_node.connect("dispatched", hitscan_node.action)
+      magazine_node.connect("discharged", hitscan_node.action)
     if action_sfxplayer_node:
-      magazine_node.connect("dispatched", action_sfxplayer_node.action)
+      magazine_node.connect("discharged", action_sfxplayer_node.action)
     if reload_sfxplayer_node:
       magazine_node.connect("reloading", reload_sfxplayer_node.action)
+    if dryfire_sfxplayer_node:
+      magazine_node.connect("magazine_depleted", dryfire_sfxplayer_node.action)
   if hitscan_node and bullethole_node:
     hitscan_node.connect("target_hit", bullethole_node.action)

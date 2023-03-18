@@ -40,12 +40,14 @@ func _physics_process(delta):
 func zoom():
   if initial_position == null: initial_position = parent.position
   ironsight_target = Vector3.ZERO - position
+  if parent.crosshair_node: parent.crosshair_node.visible = false
   if enable_scope and parent.position.is_equal_approx(ironsight_target):
     scope()
 
 ## Initiates ironsight zoom out
 func zoomout():
   ironsight_target = null
+  if parent.crosshair_node: parent.crosshair_node.visible = true
   if enable_scope: unscope()
 
 ## Show the scope image and set the field of view
