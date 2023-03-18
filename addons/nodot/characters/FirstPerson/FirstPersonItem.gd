@@ -8,11 +8,17 @@ class_name FirstPersonItem extends Nodot3D
 @export var active = false
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
+@export var ironsight_node: FirstPersonIronSight
+@export var magazine_node: Magazine
+@export var hitscan_node: HitScan3D
+@export var bullethole_node: BulletHole
+@export var sfxplayer_node: SFXPlayer3D
 
-var ironsight_node: FirstPersonIronSight
-var magazine_node: Magazine
-var hitscan_node: HitScan3D
-var bullethole_node: BulletHole
+## Triggered when the item is activated
+signal activated
+## Triggered when the item is deactivated
+signal deactivated
+
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -30,6 +36,8 @@ func _ready():
       hitscan_node = child
     if child is BulletHole:
       bullethole_node = child
+    if child is SFXPlayer3D:
+      sfxplayer_node = child
   
   connect_magazine()
   
@@ -40,7 +48,10 @@ func _ready():
     mesh_instance.mesh = mesh
     add_child(mesh_instance)
   
-  visible = active
+  if active:
+    activate()
+  else:
+    deactivate()
 
 ## Async function to activate the weapon. i.e animate it onto the screen. 
 func activate():
@@ -49,6 +60,7 @@ func activate():
   for child in get_children():
     if child.has_method("activate"):
       child.activate()
+  emit_signal("activated")
 
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
 func deactivate():
@@ -57,6 +69,7 @@ func deactivate():
   for child in get_children():
     if child.has_method("deactivate"):
       child.deactivate()
+  emit_signal("deactivated")
 
 ## Triggered when the item is fired (i.e on left click to fire weapon)
 func action():
@@ -78,7 +91,10 @@ func reload():
 
 ## Connect the magazine events to the hitscan node
 func connect_magazine():
-  if magazine_node and hitscan_node:
-    magazine_node.connect("dispatched", hitscan_node.action)
+  if magazine_node:
+    if hitscan_node:
+      magazine_node.connect("dispatched", hitscan_node.action)
+    if sfxplayer_node:
+      magazine_node.connect("dispatched", sfxplayer_node.action)
   if hitscan_node and bullethole_node:
     hitscan_node.connect("target_hit", bullethole_node.action)

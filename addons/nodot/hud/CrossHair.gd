@@ -11,6 +11,7 @@ func _ready():
     WindowManager.bump()
     
 func _enter_tree():
+  visible = false
   var sprite2d = Sprite2D.new()
   sprite2d.name = "Sprite2D"
   sprite2d.set_texture(crosshair_sprite)

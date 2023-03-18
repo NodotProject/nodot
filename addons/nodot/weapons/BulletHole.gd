@@ -8,6 +8,8 @@ class_name BulletHole extends Nodot3D
 @export var random_rotation := true
 ## Seconds before the bullet hole is removed. (0.0 to keep forever)
 @export var lifespan := 20.0
+## For playing a sound when created
+@export var sfx_player: SFXPlayer3D
 
 ## Creates a bullethole decale, applies the texture and rotation/position calculations and removes the bullethole after the lifespan
 func action(hit_target: HitTarget):

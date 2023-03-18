@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://qebun8g2frs"]
+[gd_scene load_steps=27 format=3 uid="uid://qebun8g2frs"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -15,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/bullet_hole.png" id="11_ts2sg"]
 [ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/bullet_hole_d.png" id="12_exhul"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="15_kxtrg"]
+[ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/fire.mp3" id="16_cuws3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhbpf"]
 
@@ -69,10 +71,15 @@ script = ExtResource("8_15eoi")
 active = true
 mesh = SubResource("BoxMesh_dt7j4")
 
-[node name="FirstPersonItem2" type="Node3D" parent="FirstPersonViewport"]
+[node name="FirstPersonItem2" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("ironsight_node", "magazine_node", "hitscan_node", "bullethole_node", "sfxplayer_node")]
 visible = false
 script = ExtResource("8_15eoi")
 mesh = SubResource("BoxMesh_jtcyp")
+ironsight_node = NodePath("../FirstPersonItem3/FirstPersonIronSight")
+magazine_node = NodePath("../FirstPersonItem3/Magazine")
+hitscan_node = NodePath("../FirstPersonItem3/HitScan3D")
+bullethole_node = NodePath("../FirstPersonItem3/BulletHole")
+sfxplayer_node = NodePath("../FirstPersonItem3/SFXPlayer3D")
 
 [node name="FirstPersonItem3" type="Node3D" parent="FirstPersonViewport"]
 visible = false
@@ -104,10 +111,13 @@ script = ExtResource("11_lo0jv")
 textures = Array[StandardMaterial3D]([SubResource("StandardMaterial3D_gp7qf")])
 
 [node name="CrossHair" type="Node2D" parent="FirstPersonViewport/FirstPersonItem3"]
-visible = false
 modulate = Color(1, 1, 1, 0.435294)
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
+
+[node name="SFXPlayer3D" type="AudioStreamPlayer3D" parent="FirstPersonViewport/FirstPersonItem3"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("16_cuws3")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")
