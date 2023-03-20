@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=24 format=3 uid="uid://bqa7k4m0f1es6"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -56,10 +56,9 @@ action_sfxplayer_node = NodePath("ActionSFXPlayer")
 reload_sfxplayer_node = NodePath("ReloadSFXPlayer")
 dryfire_sfxplayer_node = NodePath("DryfireSFXPlayer")
 
-[node name="Pistol" parent="FirstPersonViewport/FirstPersonItem" node_paths=PackedStringArray("magazine_node") instance=ExtResource("6_k56ep")]
+[node name="Pistol" parent="FirstPersonViewport/FirstPersonItem" instance=ExtResource("6_k56ep")]
 transform = Transform3D(-4.28372e-09, 0, 0.098, 0, 0.098, 0, -0.098, 0, -4.28372e-09, 0, 0, 0)
 script = ExtResource("7_8653x")
-magazine_node = NodePath("../Magazine")
 
 [node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/FirstPersonItem"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.297468, 0.583277)
@@ -70,8 +69,8 @@ script = ExtResource("10_apqjf")
 enabled = true
 raycast = NodePath("../../RayCast3D")
 accuracy = 10.0
-damage = 1.0
-healing = null
+damage = 12.0
+damage_distance_reduction = 1.0
 
 [node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem"]
 script = ExtResource("12_hk1bj")

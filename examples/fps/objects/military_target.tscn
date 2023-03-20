@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dqsar57406ve3"]
+[gd_scene load_steps=13 format=3 uid="uid://dqsar57406ve3"]
 
 [ext_resource type="Texture2D" uid="uid://cvxwbmihvgdbl" path="res://examples/fps/models/MilitaryTarget_Base_Color.png" id="2_0dodp"]
 [ext_resource type="Texture2D" uid="uid://w4okdxhxh4jf" path="res://examples/fps/models/MilitaryTarget_Height.png" id="3_mbwgb"]
 [ext_resource type="Texture2D" uid="uid://vvg3d74suoau" path="res://examples/fps/models/MilitaryTarget_Metallic.png" id="4_ttn0i"]
 [ext_resource type="Texture2D" uid="uid://k5xqdiy2tmwu" path="res://examples/fps/models/MilitaryTarget_Normal.png" id="5_5rt2r"]
 [ext_resource type="Texture2D" uid="uid://b34n23as22idj" path="res://examples/fps/models/MilitaryTarget_Roughness.png" id="6_kbp4c"]
+[ext_resource type="Script" path="res://addons/nodot/effects/TextEmitter.gd" id="7_3etbd"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="7_kew50"]
 
 [sub_resource type="GDScript" id="GDScript_xsi14"]
@@ -14,7 +15,10 @@ script/source = "extends StaticBody3D
 @onready var health: Health = $Health
 
 func _on_health_health_changed(old_health, new_health):
-  print(\"%s (%s)\" % [new_health, new_health - old_health])
+  $TextEmitter.action(str(new_health - old_health))
+
+func _on_health_health_depleted():
+  queue_free()
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aecrq"]
@@ -74,4 +78,12 @@ shape = SubResource("ConcavePolygonShape3D_i0qkb")
 [node name="Health" type="Node" parent="."]
 script = ExtResource("7_kew50")
 
+[node name="TextEmitter" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925091, 0)
+script = ExtResource("7_3etbd")
+font_color = Color(1, 0, 0, 1)
+font_size = 14
+despawn_time = 1.0
+
 [connection signal="health_changed" from="Health" to="." method="_on_health_health_changed"]
+[connection signal="health_depleted" from="Health" to="." method="_on_health_health_depleted"]
