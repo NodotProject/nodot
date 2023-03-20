@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://yf3jwue0vvs0"]
+[gd_scene load_steps=9 format=3 uid="uid://yf3jwue0vvs0"]
 
-[ext_resource type="PackedScene" uid="uid://qebun8g2frs" path="res://examples/fps/player.tscn" id="1_ry0a0"]
+[ext_resource type="PackedScene" path="res://examples/fps/player.tscn" id="1_ry0a0"]
+[ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_0aav7"]
 
@@ -54,3 +55,5 @@ mesh = SubResource("BoxMesh_wc1fv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_uhgr4")
+
+[node name="MilitaryTarget" parent="." instance=ExtResource("2_x7gfq")]

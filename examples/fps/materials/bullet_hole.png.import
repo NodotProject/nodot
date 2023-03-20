@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8xvc72u5d6qi"
-path.s3tc="res://.godot/imported/bullet_hole.png-2db0ee4dbb81a48a76b6590068166f22.s3tc.ctex"
+path.s3tc="res://.godot/imported/bullet_hole.png-6f88f9b415030fcd413fe279f1c10e66.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://examples/fps/bullet_hole.png"
-dest_files=["res://.godot/imported/bullet_hole.png-2db0ee4dbb81a48a76b6590068166f22.s3tc.ctex"]
+source_file="res://examples/fps/materials/bullet_hole.png"
+dest_files=["res://.godot/imported/bullet_hole.png-6f88f9b415030fcd413fe279f1c10e66.s3tc.ctex"]
 
 [params]
 

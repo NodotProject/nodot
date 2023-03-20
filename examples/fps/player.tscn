@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://qebun8g2frs"]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -6,20 +6,20 @@
 [ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="4_kdoii"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
-[ext_resource type="PackedScene" uid="uid://v7ppyg7d68lg" path="res://examples/fps/pistol.tscn" id="6_k56ep"]
+[ext_resource type="PackedScene" uid="uid://v7ppyg7d68lg" path="res://examples/fps/weapon_models/pistol.tscn" id="6_k56ep"]
 [ext_resource type="Script" path="res://examples/fps/pistol.gd" id="7_8653x"]
-[ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/crosshair.png" id="7_unppw"]
+[ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/materials/crosshair.png" id="7_unppw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonItem.gd" id="8_15eoi"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonIronSight.gd" id="9_mhfuw"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/HitScan3D.gd" id="10_apqjf"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
-[ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/bullet_hole.png" id="11_ts2sg"]
-[ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/bullet_hole_d.png" id="12_exhul"]
+[ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/materials/bullet_hole.png" id="11_ts2sg"]
+[ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/materials/bullet_hole_d.png" id="12_exhul"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
 [ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="15_kxtrg"]
-[ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/fire.mp3" id="16_cuws3"]
-[ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/dryfire.mp3" id="17_qbvi5"]
-[ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/reload.mp3" id="17_x25oq"]
+[ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/sfx/fire.mp3" id="16_cuws3"]
+[ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/sfx/dryfire.mp3" id="17_qbvi5"]
+[ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/sfx/reload.mp3" id="17_x25oq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gp7qf"]
 albedo_texture = ExtResource("11_ts2sg")
@@ -71,7 +71,7 @@ enabled = true
 raycast = NodePath("../../RayCast3D")
 accuracy = 10.0
 damage = 1.0
-damage_distance_reduction = null
+healing = null
 
 [node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem"]
 script = ExtResource("12_hk1bj")

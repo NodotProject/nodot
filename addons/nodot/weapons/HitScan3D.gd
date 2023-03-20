@@ -15,6 +15,8 @@ class_name HitScan3D extends Nodot3D
 @export var damage_distance_reduction = 0.0
 ## Total distance (meters) to search for hit targets
 @export var distance := 500
+## Reverses the damage to heal instead
+@export var healing := false
 
 signal target_hit(hit_target: HitTarget)
 
@@ -42,18 +44,22 @@ func aim_raycast():
 ## Get the objects that the raycast is colliding with
 func get_hit_target():
   if raycast.enabled and raycast.is_colliding():
-    var collider = raycast.get_collider()
+    var collider: Node3D = raycast.get_collider()
     if collider:
       var distance = get_distance(collider)
       var hit_target = HitTarget.new(distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider)
-      if damage > 0.0 and collider.has_method("damage"):
-        var final_damage = damage
-        # Calculate damage reduction
-        if damage_distance_reduction > 0.0:
-          var damage_reduction = (final_damage / 100) * damage_distance_reduction
-          final_damage = final_damage - (distance * damage_reduction)
-        # Apply damage to the hit target
-        collider.damage(final_damage)
+      if damage > 0.0:
+        var collider_healths = collider.find_children("*", "Health")
+        if collider_healths.size() > 0:
+          var collider_health = collider_healths[0]
+          var final_damage = damage
+          # Calculate damage reduction
+          if damage_distance_reduction > 0.0:
+            var damage_reduction = (final_damage / 100) * damage_distance_reduction
+            final_damage = final_damage - (distance * damage_reduction)
+          # Apply damage to the hit target
+          if !healing: final_damage = -final_damage
+          collider_health.set_health(final_damage)
         
       emit_signal("target_hit", hit_target)
       return hit_target
