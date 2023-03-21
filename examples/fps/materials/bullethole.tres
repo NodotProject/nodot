@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cqqc5qihe1i76"]
+
+[ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/materials/bullet_hole.png" id="1_2m2jd"]
+[ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/materials/bullet_hole_d.png" id="2_qknag"]
+
+[resource]
+albedo_texture = ExtResource("1_2m2jd")
+normal_enabled = true
+normal_texture = ExtResource("2_qknag")

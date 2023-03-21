@@ -7,24 +7,48 @@
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
 [ext_resource type="PackedScene" uid="uid://v7ppyg7d68lg" path="res://examples/fps/weapon_models/pistol.tscn" id="6_k56ep"]
-[ext_resource type="Script" path="res://examples/fps/pistol.gd" id="7_8653x"]
 [ext_resource type="Texture2D" uid="uid://cmgwrfye3qyl6" path="res://examples/fps/materials/crosshair.png" id="7_unppw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonItem.gd" id="8_15eoi"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonIronSight.gd" id="9_mhfuw"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/HitScan3D.gd" id="10_apqjf"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
-[ext_resource type="Texture2D" uid="uid://8xvc72u5d6qi" path="res://examples/fps/materials/bullet_hole.png" id="11_ts2sg"]
-[ext_resource type="Texture2D" uid="uid://cqj52beop76ia" path="res://examples/fps/materials/bullet_hole_d.png" id="12_exhul"]
+[ext_resource type="Material" uid="uid://cqqc5qihe1i76" path="res://examples/fps/materials/bullethole.tres" id="11_op62p"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
 [ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="15_kxtrg"]
 [ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/sfx/fire.mp3" id="16_cuws3"]
 [ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/sfx/dryfire.mp3" id="17_qbvi5"]
 [ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/sfx/reload.mp3" id="17_x25oq"]
+[ext_resource type="PackedScene" uid="uid://khwil2vsmiey" path="res://examples/fps/weapon_models/p90.tscn" id="19_s013s"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gp7qf"]
-albedo_texture = ExtResource("11_ts2sg")
-normal_enabled = true
-normal_texture = ExtResource("12_exhul")
+[sub_resource type="GDScript" id="GDScript_fhr4g"]
+resource_name = "pistol"
+script/source = "extends Node3D
+
+@export var magazine_node: Magazine
+
+func _ready():
+  magazine_node.connect(\"discharged\", action)
+  
+func action():
+  $AnimationPlayer.play(\"fire\")
+"
+
+[sub_resource type="GDScript" id="GDScript_ny5p1"]
+resource_name = "p90"
+script/source = "extends Node3D
+
+@export var magazine_node: Magazine
+
+func _ready():
+  magazine_node.connect(\"discharged\", action)
+  magazine_node.connect(\"reloading\", reload)
+  
+func action():
+  $AnimationPlayer.play(\"fire\")
+
+func reload():
+  $AnimationPlayer.play(\"reload\")
+"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
@@ -48,7 +72,7 @@ script = ExtResource("5_2jvx4")
 [node name="RayCast3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -50)
 
-[node name="FirstPersonItem" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
+[node name="Pistol" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)
 script = ExtResource("8_15eoi")
 active = true
@@ -56,15 +80,16 @@ action_sfxplayer_node = NodePath("ActionSFXPlayer")
 reload_sfxplayer_node = NodePath("ReloadSFXPlayer")
 dryfire_sfxplayer_node = NodePath("DryfireSFXPlayer")
 
-[node name="Pistol" parent="FirstPersonViewport/FirstPersonItem" instance=ExtResource("6_k56ep")]
+[node name="Pistol" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("magazine_node") instance=ExtResource("6_k56ep")]
 transform = Transform3D(-4.28372e-09, 0, 0.098, 0, 0.098, 0, -0.098, 0, -4.28372e-09, 0, 0, 0)
-script = ExtResource("7_8653x")
+script = SubResource("GDScript_fhr4g")
+magazine_node = NodePath("../Magazine")
 
-[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/Pistol"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.297468, 0.583277)
 script = ExtResource("9_mhfuw")
 
-[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/FirstPersonItem" node_paths=PackedStringArray("raycast")]
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("raycast")]
 script = ExtResource("10_apqjf")
 enabled = true
 raycast = NodePath("../../RayCast3D")
@@ -72,31 +97,77 @@ accuracy = 10.0
 damage = 12.0
 damage_distance_reduction = 1.0
 
-[node name="Magazine" type="Node" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="Magazine" type="Node" parent="FirstPersonViewport/Pistol"]
 script = ExtResource("12_hk1bj")
 supply_count = 10
 rounds_left = 10
 
-[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/Pistol"]
 script = ExtResource("11_lo0jv")
-textures = Array[StandardMaterial3D]([SubResource("StandardMaterial3D_gp7qf")])
+textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
 
-[node name="ActionSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="ActionSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.637575, 0, 0)
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("16_cuws3")])
 
-[node name="ReloadSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="ReloadSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.680219, 0, 0)
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("17_x25oq")])
 
-[node name="DryfireSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="DryfireSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("17_qbvi5")])
 
-[node name="CrossHair" type="Node2D" parent="FirstPersonViewport/FirstPersonItem"]
+[node name="CrossHair" type="Node2D" parent="FirstPersonViewport/Pistol"]
 modulate = Color(1, 1, 1, 0.435294)
+script = ExtResource("6_id5pd")
+crosshair_sprite = ExtResource("7_unppw")
+
+[node name="P90" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node", "action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.770482, -0.595652, -1.25501)
+visible = false
+script = ExtResource("8_15eoi")
+magazine_node = NodePath("Magazine")
+hitscan_node = NodePath("HitScan3D")
+bullethole_node = NodePath("BulletHole")
+action_sfxplayer_node = NodePath("../Pistol/ActionSFXPlayer")
+reload_sfxplayer_node = NodePath("../Pistol/ReloadSFXPlayer")
+dryfire_sfxplayer_node = NodePath("../Pistol/DryfireSFXPlayer")
+
+[node name="P90" parent="FirstPersonViewport/P90" node_paths=PackedStringArray("magazine_node") instance=ExtResource("19_s013s")]
+transform = Transform3D(0.148, 0, 0, 0, 0.148, 0, 0, 0, 0.148, 0, 0, 0)
+script = SubResource("GDScript_ny5p1")
+magazine_node = NodePath("../Magazine")
+
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/P90"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0118084, 0.24724, 0.620925)
+script = ExtResource("9_mhfuw")
+
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/P90" node_paths=PackedStringArray("raycast")]
+script = ExtResource("10_apqjf")
+enabled = true
+raycast = NodePath("../../RayCast3D")
+accuracy = 25.0
+damage = 15.0
+damage_distance_reduction = 2.0
+
+[node name="Magazine" type="Node" parent="FirstPersonViewport/P90"]
+script = ExtResource("12_hk1bj")
+capacity = 30
+supply_count = 90
+supply_count_limit = 120
+fire_rate = 0.07
+reload_time = 2.0
+rounds_left = 30
+
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/P90"]
+script = ExtResource("11_lo0jv")
+textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
+
+[node name="CrossHair" type="Node2D" parent="FirstPersonViewport/P90"]
+visible = false
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
 

@@ -40,5 +40,6 @@ func action(hit_target: HitTarget):
     
   if lifespan > 0.0:
     await get_tree().create_timer(lifespan).timeout
-    decal_node.queue_free()
+    if is_instance_valid(decal_node):
+      decal_node.queue_free()
   

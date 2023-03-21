@@ -16,9 +16,6 @@ script/source = "extends StaticBody3D
 
 func _on_health_health_changed(old_health, new_health):
   $TextEmitter.action(str(new_health - old_health))
-
-func _on_health_health_depleted():
-  queue_free()
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aecrq"]
@@ -86,4 +83,3 @@ font_size = 14
 despawn_time = 1.0
 
 [connection signal="health_changed" from="Health" to="." method="_on_health_health_changed"]
-[connection signal="health_depleted" from="Health" to="." method="_on_health_health_depleted"]
