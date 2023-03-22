@@ -260,7 +260,6 @@ doppler_tracking = 2
 [node name="Explosion3D" type="Node3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D"]
 script = ExtResource("25_fupwb")
 effect_time = 2.0
-shock_range = 5.0
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D/Explosion3D"]
 amount = 6

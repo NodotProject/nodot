@@ -48,6 +48,7 @@ func get_hit_target():
     if collider:
       var distance = get_distance(collider)
       var hit_target = HitTarget.new(distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider)
+      # TODO: Apply force
       if damage > 0.0:
         var collider_healths = collider.find_children("*", "Health")
         if collider_healths.size() > 0:

@@ -3,9 +3,9 @@ class_name Explosion3D extends Nodot3D
 ## How long to play the effect
 @export var effect_time := 1.0
 ## Range to apply force
-@export var shock_range := 10.0
+@export var force_range := 10.0
 ## Maximum force to apply
-@export var max_shock_force := 3.0
+@export var max_force := 3.0
 ## Range to apply damage
 @export var damage_range := 5.0
 ## Maximum damage to receive (closer to the center = higher damage)
@@ -16,7 +16,7 @@ class_name Explosion3D extends Nodot3D
 @export var healing := false
 
 var damage_area: Area3D
-var shock_area: Area3D
+var force_area: Area3D
 
 func _enter_tree():
   damage_area = Area3D.new()
@@ -28,21 +28,25 @@ func _enter_tree():
   damage_shape.radius = damage_range / 2
   add_child(damage_area)
   
-  shock_area = Area3D.new()
-  var shock_collider = CollisionShape3D.new()
-  shock_area.add_child(shock_collider)
+  force_area = Area3D.new()
+  var force_collider = CollisionShape3D.new()
+  force_area.add_child(force_collider)
   
-  var shock_shape = SphereShape3D.new()
-  shock_collider.shape = shock_shape
-  shock_shape.radius = shock_range / 2
-  add_child(shock_area)
+  var force_shape = SphereShape3D.new()
+  force_collider.shape = force_shape
+  force_shape.radius = force_range / 2
+  add_child(force_area)
   
 func _ready():
   await get_tree().create_timer(effect_time).timeout
   queue_free()
 
 func action():
+  # Required because action can be called too early
   await get_tree().physics_frame
+  
+  ## TODO: Use a raycast to detect line of sight.
+  
   if max_damage > 0.0:
     var damage_colliders = damage_area.get_overlapping_bodies()
     for collider in damage_colliders:
@@ -57,12 +61,12 @@ func action():
         if !healing: final_damage = -final_damage
         collider_health.set_health(final_damage)
   
-  if shock_range > 0.0:
-    var shock_colliders = shock_area.get_overlapping_bodies()
-    for collider in shock_colliders:
+  if force_range > 0.0:
+    var force_colliders = force_area.get_overlapping_bodies()
+    for collider in force_colliders:
       if collider is RigidBody3D:
         var distance = global_position.distance_to(collider.global_position)
         var direction = global_position.direction_to(collider.global_position)
-        var distance_percent = 100 / distance * shock_range
-        var final_shock_force = (shock_range / 100) * distance_percent
-        collider.apply_central_impulse(direction * final_shock_force)
+        var distance_percent = 100 / distance * force_range
+        var final_force = (force_range / 100) * distance_percent
+        collider.apply_central_impulse(direction * final_force)
