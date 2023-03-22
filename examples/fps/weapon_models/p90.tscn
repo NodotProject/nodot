@@ -204,6 +204,7 @@ bones/4/rotation = Quaternion(-1.32349e-23, -3.61112e-35, 0, 1)
 bones/4/scale = Vector3(1, 1, 1)
 
 [node name="P90" type="MeshInstance3D" parent="RootNode/P90Armature/Skeleton3D"]
+layers = 2
 mesh = SubResource("ArrayMesh_ekrip")
 skin = SubResource("Skin_kflqc")
 

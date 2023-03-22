@@ -9,7 +9,10 @@ class_name FirstPersonItem extends Nodot3D
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
 @export var magazine_node: Magazine
+## (optional) A hitscan node
 @export var hitscan_node: HitScan3D
+## (optional) A project emitter node
+@export var projectile_emitter_node: ProjectileEmitter3D
 @export var bullethole_node: BulletHole
 @export var action_sfxplayer_node: SFXPlayer3D
 @export var reload_sfxplayer_node: SFXPlayer3D
@@ -38,6 +41,8 @@ func _ready():
       magazine_node = child
     if child is HitScan3D:
       hitscan_node = child
+    if child is ProjectileEmitter3D:
+      projectile_emitter_node = child
     if child is BulletHole:
       bullethole_node = child
     if child is CrossHair:
@@ -98,6 +103,8 @@ func connect_magazine():
   if magazine_node:
     if hitscan_node:
       magazine_node.connect("discharged", hitscan_node.action)
+    if projectile_emitter_node:
+      magazine_node.connect("discharged", projectile_emitter_node.action)
     if action_sfxplayer_node:
       magazine_node.connect("discharged", action_sfxplayer_node.action)
     if reload_sfxplayer_node:

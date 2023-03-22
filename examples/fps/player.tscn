@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bqa7k4m0f1es6"]
+[gd_scene load_steps=39 format=3 uid="uid://bqa7k4m0f1es6"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -19,6 +19,14 @@
 [ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/sfx/dryfire.mp3" id="17_qbvi5"]
 [ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/sfx/reload.mp3" id="17_x25oq"]
 [ext_resource type="PackedScene" uid="uid://khwil2vsmiey" path="res://examples/fps/weapon_models/p90.tscn" id="19_s013s"]
+[ext_resource type="PackedScene" uid="uid://2mid4cel5j2r" path="res://examples/fps/weapon_models/rpg.tscn" id="19_vfcli"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/ProjectileEmitter3D.gd" id="20_jlvx1"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/Projectile3D.gd" id="21_uyk2t"]
+[ext_resource type="PackedScene" uid="uid://6pdowc3cdf6t" path="res://examples/fps/weapon_models/rocket.tscn" id="22_4olq1"]
+[ext_resource type="AudioStream" uid="uid://cg2rdrr0nuoq1" path="res://examples/fps/sfx/thruster.mp3" id="23_eltmd"]
+[ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
+[ext_resource type="Script" path="res://addons/nodot/effects/Explosion3D.gd" id="25_fupwb"]
+[ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -49,6 +57,33 @@ func action():
 func reload():
   $AnimationPlayer.play(\"reload\")
 "
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_sjatb"]
+points = PackedVector3Array(-1.40712, -0.276069, -0.0621106, -1.35594, 0.290274, 0.00906006, -0.952838, -0.151753, 0.290671, 2.26582, -0.0310801, -0.0712833, -1.46135, 0.0452376, -0.280587, -2.76352, 0.0492632, 0.0492632, -0.992715, 0.169999, 0.290671, 2.26582, 0.0492632, 0.0492632, -0.952838, 0.290671, -0.151753, -1.38121, -0.165079, -0.234821, 2.26582, -0.0712833, 0.0492632, -0.992715, 0.290671, 0.169999, -2.76352, -0.0712833, 0.00906006, -1.5029, -0.245411, 0.154489, -2.72315, 0.0492632, -0.0712833, 2.26582, 0.0492632, -0.0712833, -1.50869, -0.100429, 0.264706, -2.72315, -0.0712833, -0.0712833, 2.0241, 0.00906006, 0.0895294, 2.0241, 0.0895294, 0.00906006, -1.5029, 0.154489, -0.245411, 2.0241, -0.0712833, -0.0712833, -1.48107, -0.0276481, -0.285297, -1.46135, -0.280587, 0.0452376, -1.38121, -0.234821, -0.165079, -1.50869, 0.264706, -0.100429, -1.59988, 0.00906006, 0.26814, -1.56838, 0.15367, 0.225919, -2.72315, -0.0712833, 0.0492632, -1.56838, 0.225919, 0.15367, -1.5999, 0.268144, 0.00906006, -1.33719, -0.0945273, -0.267389)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gwhf4"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+gravity = Vector3(0, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_d4xo3"]
+offsets = PackedFloat32Array(0, 0.562753)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tgtjs"]
+frequency = 0.022
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_chcbn"]
+seamless = true
+color_ramp = SubResource("Gradient_d4xo3")
+noise = SubResource("FastNoiseLite_tgtjs")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k3wjv"]
+transparency = 1
+albedo_texture = SubResource("NoiseTexture2D_chcbn")
+
+[sub_resource type="SphereMesh" id="SphereMesh_1xoyl"]
+material = SubResource("StandardMaterial3D_k3wjv")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
@@ -170,6 +205,71 @@ textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
 visible = false
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
+
+[node name="RPG" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "projectile_emitter_node", "action_sfxplayer_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.611194, -0.309441, -0.638182)
+script = ExtResource("8_15eoi")
+magazine_node = NodePath("Magazine")
+projectile_emitter_node = NodePath("ProjectileEmitter3D")
+action_sfxplayer_node = NodePath("FiredSFX")
+
+[node name="rpg" parent="FirstPersonViewport/RPG" instance=ExtResource("19_vfcli")]
+transform = Transform3D(-1.39876e-08, 0, -0.32, 0, 0.32, 0, 0.32, 0, -1.39876e-08, 0, 0, 0)
+
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/RPG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.133028, 0.569705)
+script = ExtResource("9_mhfuw")
+
+[node name="Magazine" type="Node" parent="FirstPersonViewport/RPG"]
+script = ExtResource("12_hk1bj")
+capacity = 3
+supply_count = 3
+supply_count_limit = 9
+fire_rate = 3.0
+reload_time = 5.0
+rounds_left = 3
+
+[node name="FiredSFX" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("24_g828x")])
+
+[node name="ProjectileEmitter3D" type="Node3D" parent="FirstPersonViewport/RPG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.19833)
+script = ExtResource("20_jlvx1")
+accuracy = 1.0
+
+[node name="Projectile3D" type="RigidBody3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D"]
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("21_uyk2t")
+lifespan = 5.0
+destroy_on_impact = true
+
+[node name="rocket" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D" instance=ExtResource("22_4olq1")]
+transform = Transform3D(-1.39876e-08, 0, -0.32, 0, 0.32, 0, 0.32, 0, -1.39876e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D"]
+transform = Transform3D(-1.39876e-08, 0, -0.32, 0, 0.32, 0, 0.32, 0, -1.39876e-08, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_sjatb")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D"]
+stream = ExtResource("23_eltmd")
+autoplay = true
+doppler_tracking = 2
+
+[node name="Explosion3D" type="Node3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D"]
+script = ExtResource("25_fupwb")
+effect_time = 2.0
+shock_range = 5.0
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D/Explosion3D"]
+amount = 6
+process_material = SubResource("ParticleProcessMaterial_gwhf4")
+draw_pass_1 = SubResource("SphereMesh_1xoyl")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D/Explosion3D"]
+stream = ExtResource("26_63hhn")
+autoplay = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")

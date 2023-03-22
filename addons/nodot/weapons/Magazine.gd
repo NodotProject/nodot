@@ -28,8 +28,8 @@ signal reloading
 ## Emitted when a round is discharged
 signal discharged
 
-var time_since_last_fired = 0
-var time_since_last_reload = 0
+var time_since_last_fired = fire_rate
+var time_since_last_reload = reload_time
 
 func _physics_process(delta):
   # Safely limit how big these numbers can get

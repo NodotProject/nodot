@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 WindowManager="*res://addons/nodot/autoload/WindowManager.gd"
 
+[display]
+
+window/size/initial_screen=1
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/nodot/plugin.cfg")
