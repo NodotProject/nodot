@@ -1,7 +1,10 @@
 ![logo](logo.png)
 
 # Nodot3D
+
 **A 3D video game helper library for Godot 4**
+
+[![](https://dcbadge.vercel.app/api/server/PaWBWqU8zQ)](https://discord.gg/PaWBWqU8zQ)
 
 ## What is Nodot3D?
 
@@ -49,7 +52,7 @@ Nodot is a 3D video game oriented collection of nodes, autoload scripts and scen
 - ThirdPersonKeyboardInput - A node to handle third person keyboard input
 - ThirdPersonJoypadInput - A node to handle third person joypac input
 - ThirdPersonMouseInput - A node to handle third person mouse input
-  
+
 ### Vehicles
 
 - Vehicle - A node to create a vehicle
