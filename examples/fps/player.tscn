@@ -208,6 +208,7 @@ crosshair_sprite = ExtResource("7_unppw")
 
 [node name="RPG" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "projectile_emitter_node", "action_sfxplayer_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.611194, -0.309441, -0.638182)
+visible = false
 script = ExtResource("8_15eoi")
 magazine_node = NodePath("Magazine")
 projectile_emitter_node = NodePath("ProjectileEmitter3D")

@@ -38,8 +38,9 @@ func _enter_tree():
   add_child(force_area)
   
 func _ready():
-  await get_tree().create_timer(effect_time).timeout
-  queue_free()
+  if effect_time > 0:
+    await get_tree().create_timer(effect_time).timeout
+    queue_free()
 
 func action():
   # Required because action can be called too early

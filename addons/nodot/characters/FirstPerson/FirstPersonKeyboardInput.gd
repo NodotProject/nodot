@@ -12,6 +12,7 @@ class_name FirstPersonKeyboardInput extends Nodot
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
 
+var is_jumping = false
 var is_editor = Engine.is_editor_hint()
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -30,19 +31,29 @@ func _input(event: InputEvent):
   if event.is_action_pressed("reload"):
     fps_viewport.reload()
 
+var accelerated_jump = false
 func _physics_process(delta):    
   if enabled and !is_editor:
     var final_speed = speed
-    
+           
     if parent.is_on_floor():
+      var jump_pressed = Input.is_action_just_pressed("jump")
+      var sprint_pressed = Input.is_action_pressed("sprint")
+      
       # Handle Jump.
-      if Input.is_action_just_pressed("jump"):
-        parent.velocity.y = jump_velocity
-        
+      if jump_pressed: parent.velocity.y = jump_velocity
+      
       # Handle Sprint.
-      if Input.is_action_pressed("sprint"):
-        final_speed *= sprint_speed_multiplier        
-
+      if sprint_pressed: final_speed *= sprint_speed_multiplier
+      
+      # Handle a sprint jump
+      if sprint_pressed and jump_pressed: accelerated_jump = true
+      
+      if !sprint_pressed: accelerated_jump = false
+      
+    elif accelerated_jump:
+      final_speed *= sprint_speed_multiplier
+          
     # Get the input direction and handle the movement/deceleration.
     # As good practice, you should replace UI actions with custom gameplay actions.
     var input_dir = Input.get_vector("left", "right", "up", "down")
