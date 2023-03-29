@@ -1,12 +1,13 @@
+## A CharacterBody3D for first person games
 class_name FirstPersonCharacter extends CharacterBody3D
 
-## A CharacterBody3D for first person games
-##
-## This CharacterBody3D creates a head and camera node.
-
-@export var input_enabled : bool = true ## Allow player input
-@export var fov : float = 75.0 ## The camera field of view
-@export var head_position : Vector3 = Vector3.ZERO ## The head position
+@export var escape_action : String = "escape"
+## Allow player input
+@export var input_enabled := true
+## The camera field of view
+@export var fov := 75.0
+## The head position
+@export var head_position := Vector3.ZERO
 
 var head: Node3D
 var camera: Camera3D

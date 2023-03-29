@@ -4,8 +4,15 @@ class_name FirstPersonMouseInput extends Nodot
 
 ## A preconfigured set of inputs for first person mouse control
 
-@export var enabled : bool = true ## Is input enabled
-@export var mouse_sensitivity : float = 0.1 ## Sensitivity of mouse movement
+@export var item_next_action : String = "item_next"
+@export var item_previous_action : String = "item_previous"
+@export var action_action : String = "action"
+@export var zoom_action : String = "zoom"
+
+## Is input enabled
+@export var enabled := true
+## Sensitivity of mouse movement
+@export var mouse_sensitivity := 0.1
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
@@ -38,9 +45,9 @@ func _input(event: InputEvent) -> void:
       mouse_rotation.x = event.relative.y * mouse_sensitivity
 
     if fps_viewport:
-      if event.is_action_pressed("item_next"):
+      if event.is_action_pressed(item_next_action):
         fps_viewport.next_item()
-      elif event.is_action_pressed("item_previous"):
+      elif event.is_action_pressed(item_previous_action):
         fps_viewport.previous_item()
 
 func _physics_process(delta: float) -> void:
@@ -59,11 +66,11 @@ func _physics_process(delta: float) -> void:
     mouse_rotation = Vector2.ZERO
 
     if fps_viewport:
-      if Input.is_action_pressed("action"):
+      if Input.is_action_pressed(action_action):
         fps_viewport.action()
-      elif Input.is_action_just_pressed("zoom"):
+      elif Input.is_action_just_pressed(zoom_action):
         fps_viewport.zoom()
-      elif Input.is_action_just_released("zoom"):
+      elif Input.is_action_just_released(zoom_action):
         fps_viewport.zoomout()
 
 ## Disable input and release mouse

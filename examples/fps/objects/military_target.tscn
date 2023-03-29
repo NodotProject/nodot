@@ -15,7 +15,7 @@ script/source = "extends StaticBody3D
 @onready var health: Health = $Health
 
 func _on_health_health_changed(old_health, new_health):
-  $TextEmitter.action(str(new_health - old_health))
+  $TextEmitter.action(str(round(new_health - old_health)))
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aecrq"]

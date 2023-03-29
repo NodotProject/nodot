@@ -4,10 +4,22 @@ class_name FirstPersonKeyboardInput extends Nodot
 
 ## A preconfigured set of inputs for first person keyboard control
 
-@export var enabled: bool = true ## Is input enabled
-@export var speed : float = 5.0 ## How fast the character can move
-@export var sprint_speed_multiplier : float = 3.0 ## How fast the character can move while sprinting
-@export var jump_velocity: float = 4.5 ## How high the character can jump
+@export var left_action : String = "left"
+@export var right_action : String = "right"
+@export var up_action : String = "up"
+@export var down_action : String = "down"
+@export var reload_action : String = "reload"
+@export var jump_action : String = "jump"
+@export var sprint_action : String = "sprint"
+
+## Is input enabled
+@export var enabled = true
+## How fast the character can move
+@export var speed := 5.0
+## How fast the character can move while sprinting
+@export var sprint_speed_multiplier := 3.0
+## How high the character can jump
+@export var jump_velocity = 4.5
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
@@ -60,8 +72,8 @@ func _physics_process(delta: float) -> void:
 
     # Get the input direction and handle the movement/deceleration.
     # As good practice, you should replace UI actions with custom gameplay actions.
-    var input_dir: Vector2 = Input.get_vector("left", "right", "up", "down")
-    var direction: Vector3 = (parent.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+    var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
+    var direction = (parent.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     if direction:
       parent.velocity.x = direction.x * final_speed
       parent.velocity.z = direction.z * final_speed
