@@ -5,7 +5,7 @@ class_name FirstPersonItem extends Nodot3D
 ## An item used in first person games. i.e sword, gun, hands.
 
 ## If the weapon is visible or not
-@export var active = false
+@export var active: bool = false
 ## (optional) The mesh of the weapon
 @export var mesh: Mesh
 @export var magazine_node: Magazine
@@ -33,7 +33,7 @@ func _get_configuration_warnings() -> PackedStringArray:
     warnings.append("Parent should be a FirstPersonViewport")
   return warnings
 
-func _ready():
+func _ready() -> void:
   for child in get_children():
     if child is FirstPersonIronSight:
       ironsight_node = child
@@ -47,23 +47,23 @@ func _ready():
       bullethole_node = child
     if child is CrossHair:
       crosshair_node = child
-  
+
   connect_magazine()
-  
+
   if mesh:
     var camera_cull_mask_layer: int = get_parent().camera_cull_mask_layer
-    var mesh_instance = MeshInstance3D.new()
+    var mesh_instance: MeshInstance3D = MeshInstance3D.new()
     mesh_instance.layers = camera_cull_mask_layer
     mesh_instance.mesh = mesh
     add_child(mesh_instance)
-  
+
   if active:
     activate()
   else:
     deactivate()
 
-## Async function to activate the weapon. i.e animate it onto the screen. 
-func activate():
+## Async function to activate the weapon. i.e animate it onto the screen.
+func activate() -> void:
   active = true
   visible = true
   for child in get_children():
@@ -72,7 +72,7 @@ func activate():
   emit_signal("activated")
 
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
-func deactivate():
+func deactivate() -> void:
   active = false
   visible = false
   for child in get_children():
@@ -81,25 +81,27 @@ func deactivate():
   emit_signal("deactivated")
 
 ## Triggered when the item is fired (i.e on left click to fire weapon)
-func action():
+func action() -> void:
   if magazine_node:
     magazine_node.action()
 
 ## Triggered when the zoom/ironsight button is pressed
-func zoom():
-  if ironsight_node: ironsight_node.zoom()
+func zoom() -> void:
+  if ironsight_node:
+    ironsight_node.zoom()
 
 ## Triggered when the zoom/ironsight button is released
-func zoomout():
-  if ironsight_node: ironsight_node.zoomout()
-  
+func zoomout() -> void:
+  if ironsight_node:
+    ironsight_node.zoomout()
+
 ## Triggered when the player requests that the item be reloaded
 func reload():
   if magazine_node:
     magazine_node.reload()
 
 ## Connect the magazine events to the hitscan node
-func connect_magazine():
+func connect_magazine() -> void:
   if magazine_node:
     if hitscan_node:
       magazine_node.connect("discharged", hitscan_node.action)

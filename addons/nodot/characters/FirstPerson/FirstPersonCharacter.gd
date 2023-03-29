@@ -12,7 +12,7 @@ class_name FirstPersonCharacter extends CharacterBody3D
 var head: Node3D
 var camera: Camera3D
 
-func _enter_tree():
+func _enter_tree() -> void:
   head = Node3D.new()
   head.name = "Head"
   camera = Camera3D.new()
@@ -20,7 +20,7 @@ func _enter_tree():
   head.add_child(camera)
   add_child(head)
 
-func _ready():
+func _ready() -> void:
   camera.fov = fov
 
   if has_node("Head"):
@@ -28,17 +28,17 @@ func _ready():
     camera = get_node("Head/Camera3D")
 
   if has_node("HeadPosition"):
-    var head_position_node = get_node("HeadPosition")
+    var head_position_node: Node = get_node("HeadPosition")
     head.position = head_position_node.position
     head_position_node.queue_free()
   else:
     head.position = head_position
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
   move_and_slide()
 
-func _input(event):
-  if event.is_action_pressed(escape_action):
+func _input(event: InputEvent) -> void:
+  if event.is_action_pressed("escape"):
     if input_enabled:
       disable_input()
       input_enabled = false

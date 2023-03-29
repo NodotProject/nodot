@@ -6,7 +6,7 @@ func _get_configuration_warnings() -> PackedStringArray:
   if !(get_parent() is FirstPersonItem):
     warnings.append("Parent should be a FirstPersonItem")
   return warnings
-  
-func _ready():
-  var viewport = get_parent().get_parent()
+
+func _ready() -> void:
+  var viewport: FirstPersonViewport = get_parent().get_parent()
   layers = viewport.camera_cull_mask_layer

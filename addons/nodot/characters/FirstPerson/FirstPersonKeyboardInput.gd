@@ -12,16 +12,21 @@ class_name FirstPersonKeyboardInput extends Nodot
 @export var jump_action : String = "jump"
 @export var sprint_action : String = "sprint"
 
-@export var enabled = true ## Is input enabled
-@export var speed := 5.0 ## How fast the character can move
-@export var sprint_speed_multiplier := 3.0 ## How fast the character can move while sprinting
-@export var jump_velocity = 4.5 ## How high the character can jump
+## Is input enabled
+@export var enabled = true
+## How fast the character can move
+@export var speed := 5.0
+## How fast the character can move while sprinting
+@export var sprint_speed_multiplier := 3.0
+## How high the character can jump
+@export var jump_velocity = 4.5
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
 
-var is_jumping = false
-var is_editor = Engine.is_editor_hint()
+var is_jumping: bool = false
+var is_editor: bool = Engine.is_editor_hint()
+var accelerated_jump: bool = false
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -29,35 +34,38 @@ func _get_configuration_warnings() -> PackedStringArray:
     warnings.append("Parent should be a FirstPersonCharacter")
   return warnings
 
-func _ready():
+func _ready() -> void:
   # If there is a viewport, set it
   for child in parent.get_children():
     if child is FirstPersonViewport:
       fps_viewport = child
 
-func _input(event: InputEvent):
-  if event.is_action_pressed(reload_action):
+func _input(event: InputEvent) -> void:
+  if event.is_action_pressed("reload"):
     fps_viewport.reload()
 
-var accelerated_jump = false
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
   if enabled and !is_editor:
-    var final_speed = speed
+    var final_speed: float = speed
 
     if parent.is_on_floor():
-      var jump_pressed = Input.is_action_just_pressed(jump_action)
-      var sprint_pressed = Input.is_action_pressed(sprint_action)
+      var jump_pressed: bool = Input.is_action_just_pressed("jump")
+      var sprint_pressed: bool = Input.is_action_pressed("sprint")
 
       # Handle Jump.
-      if jump_pressed: parent.velocity.y = jump_velocity
+      if jump_pressed:
+        parent.velocity.y = jump_velocity
 
       # Handle Sprint.
-      if sprint_pressed: final_speed *= sprint_speed_multiplier
+      if sprint_pressed:
+        final_speed *= sprint_speed_multiplier
 
       # Handle a sprint jump
-      if sprint_pressed and jump_pressed: accelerated_jump = true
+      if sprint_pressed and jump_pressed:
+        accelerated_jump = true
 
-      if !sprint_pressed: accelerated_jump = false
+      if !sprint_pressed:
+        accelerated_jump = false
 
     elif accelerated_jump:
       final_speed *= sprint_speed_multiplier
@@ -74,9 +82,9 @@ func _physics_process(delta):
       parent.velocity.z = move_toward(parent.velocity.z, 0, final_speed)
 
 ## Disable input
-func disable():
+func disable() -> void:
   enabled = false
 
 ## Enable input
-func enable():
+func enable() -> void:
   enabled = true
