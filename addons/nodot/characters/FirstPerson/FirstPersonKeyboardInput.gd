@@ -4,6 +4,14 @@ class_name FirstPersonKeyboardInput extends Nodot
 
 ## A preconfigured set of inputs for first person keyboard control
 
+@export var left_action : String = "left"
+@export var right_action : String = "right"
+@export var up_action : String = "up"
+@export var down_action : String = "down"
+@export var reload_action : String = "reload"
+@export var jump_action : String = "jump"
+@export var sprint_action : String = "sprint"
+
 @export var enabled = true ## Is input enabled
 @export var speed := 5.0 ## How fast the character can move
 @export var sprint_speed_multiplier := 3.0 ## How fast the character can move while sprinting
@@ -26,37 +34,37 @@ func _ready():
   for child in parent.get_children():
     if child is FirstPersonViewport:
       fps_viewport = child
-      
+
 func _input(event: InputEvent):
-  if event.is_action_pressed("reload"):
+  if event.is_action_pressed(reload_action):
     fps_viewport.reload()
 
 var accelerated_jump = false
-func _physics_process(delta):    
+func _physics_process(delta):
   if enabled and !is_editor:
     var final_speed = speed
-           
+
     if parent.is_on_floor():
-      var jump_pressed = Input.is_action_just_pressed("jump")
-      var sprint_pressed = Input.is_action_pressed("sprint")
-      
+      var jump_pressed = Input.is_action_just_pressed(jump_action)
+      var sprint_pressed = Input.is_action_pressed(sprint_action)
+
       # Handle Jump.
       if jump_pressed: parent.velocity.y = jump_velocity
-      
+
       # Handle Sprint.
       if sprint_pressed: final_speed *= sprint_speed_multiplier
-      
+
       # Handle a sprint jump
       if sprint_pressed and jump_pressed: accelerated_jump = true
-      
+
       if !sprint_pressed: accelerated_jump = false
-      
+
     elif accelerated_jump:
       final_speed *= sprint_speed_multiplier
-          
+
     # Get the input direction and handle the movement/deceleration.
     # As good practice, you should replace UI actions with custom gameplay actions.
-    var input_dir = Input.get_vector("left", "right", "up", "down")
+    var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
     var direction = (parent.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     if direction:
       parent.velocity.x = direction.x * final_speed
