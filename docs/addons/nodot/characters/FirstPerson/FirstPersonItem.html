@@ -559,7 +559,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#active">active</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 <tr>
@@ -642,7 +642,7 @@
 <p>Triggered when the item is deactivated</p>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="active">active <a class="heading-anchor-permalink" href="#active">#</a></h3>
-<pre><code class="language-gdscript">@export var active = false
+<pre><code class="language-gdscript">@export var active: bool = false
 </code></pre>
 <p>If the weapon is visible or not</p>
 <table>
@@ -656,7 +656,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>active</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -743,23 +743,23 @@
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="activate">activate <a class="heading-anchor-permalink" href="#activate">#</a></h3>
-<pre><code class="language-gdscript">func activate()
+<pre><code class="language-gdscript">func activate() -&gt; void
 </code></pre>
 <p>Async function to activate the weapon. i.e animate it onto the screen.</p>
 <h3 id="deactivate">deactivate <a class="heading-anchor-permalink" href="#deactivate">#</a></h3>
-<pre><code class="language-gdscript">func deactivate()
+<pre><code class="language-gdscript">func deactivate() -&gt; void
 </code></pre>
 <p>Async function to deactivate the weapon. i.e animate it off of the screen.</p>
 <h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action()
+<pre><code class="language-gdscript">func action() -&gt; void
 </code></pre>
 <p>Triggered when the item is fired (i.e on left click to fire weapon)</p>
 <h3 id="zoom">zoom <a class="heading-anchor-permalink" href="#zoom">#</a></h3>
-<pre><code class="language-gdscript">func zoom()
+<pre><code class="language-gdscript">func zoom() -&gt; void
 </code></pre>
 <p>Triggered when the zoom/ironsight button is pressed</p>
 <h3 id="zoomout">zoomout <a class="heading-anchor-permalink" href="#zoomout">#</a></h3>
-<pre><code class="language-gdscript">func zoomout()
+<pre><code class="language-gdscript">func zoomout() -&gt; void
 </code></pre>
 <p>Triggered when the zoom/ironsight button is released</p>
 <h3 id="reload">reload <a class="heading-anchor-permalink" href="#reload">#</a></h3>
@@ -767,7 +767,7 @@
 </code></pre>
 <p>Triggered when the player requests that the item be reloaded</p>
 <h3 id="connect_magazine">connect_magazine <a class="heading-anchor-permalink" href="#connect_magazine">#</a></h3>
-<pre><code class="language-gdscript">func connect_magazine()
+<pre><code class="language-gdscript">func connect_magazine() -&gt; void
 </code></pre>
 <p>Connect the magazine events to the hitscan node</p>
 

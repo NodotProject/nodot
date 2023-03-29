@@ -542,17 +542,17 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#health_lost">health_lost</a></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#health_gained">health_gained</a></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#health_changed">health_changed</a></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>
@@ -569,12 +569,12 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#max_health">max_health</a></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>100</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>100.0</code></td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#current_health">current_health</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left"><code>max_health</code></td>
 </tr>
 </tbody>
@@ -591,7 +591,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#set_health">set_health</a></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>
@@ -602,7 +602,7 @@
 </code></pre>
 <p>current_health has reached zero</p>
 <h3 id="health_lost">health_lost <a class="heading-anchor-permalink" href="#health_lost">#</a></h3>
-<pre><code class="language-gdscript">signal health_lost(old_health: int, new_health: int)
+<pre><code class="language-gdscript">signal health_lost(old_health: float, new_health: float)
 </code></pre>
 <p>current_health has been reduced</p>
 <h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>
@@ -617,18 +617,18 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>old_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 <tr>
 <td style="text-align:left"><code>new_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>
 </table>
 <h3 id="health_gained">health_gained <a class="heading-anchor-permalink" href="#health_gained">#</a></h3>
-<pre><code class="language-gdscript">signal health_gained(old_health: int, new_health: int)
+<pre><code class="language-gdscript">signal health_gained(old_health: float, new_health: float)
 </code></pre>
 <p>current_health has been increased</p>
 <h4 id="parameters-2">Parameters <a class="heading-anchor-permalink" href="#parameters-2">#</a></h4>
@@ -643,18 +643,18 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>old_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 <tr>
 <td style="text-align:left"><code>new_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>
 </table>
 <h3 id="health_changed">health_changed <a class="heading-anchor-permalink" href="#health_changed">#</a></h3>
-<pre><code class="language-gdscript">signal health_changed(old_health: int, new_health: int)
+<pre><code class="language-gdscript">signal health_changed(old_health: float, new_health: float)
 </code></pre>
 <p>current_health has changed</p>
 <h4 id="parameters-3">Parameters <a class="heading-anchor-permalink" href="#parameters-3">#</a></h4>
@@ -669,19 +669,19 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>old_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 <tr>
 <td style="text-align:left"><code>new_health</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="max_health">max_health <a class="heading-anchor-permalink" href="#max_health">#</a></h3>
-<pre><code class="language-gdscript">@export var max_health := 100
+<pre><code class="language-gdscript">@export var max_health : float = 100.0
 </code></pre>
 <p>The maximum health</p>
 <table>
@@ -695,13 +695,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>max_health</code></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>100</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>100.0</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="current_health">current_health <a class="heading-anchor-permalink" href="#current_health">#</a></h3>
-<pre><code class="language-gdscript">@export var current_health := max_health
+<pre><code class="language-gdscript">@export var current_health : float = max_health
 </code></pre>
 <p>The current health</p>
 <table>
@@ -715,14 +715,14 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>current_health</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left"><code>max_health</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="set_health">set_health <a class="heading-anchor-permalink" href="#set_health">#</a></h3>
-<pre><code class="language-gdscript">func set_health(modifier: int)
+<pre><code class="language-gdscript">func set_health(modifier: float) -&gt; void
 </code></pre>
 <p>Offsets current_health by the modifier</p>
 <h4 id="parameters-4">Parameters <a class="heading-anchor-permalink" href="#parameters-4">#</a></h4>
@@ -737,7 +737,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>modifier</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left">-</td>
 </tr>
 </tbody>

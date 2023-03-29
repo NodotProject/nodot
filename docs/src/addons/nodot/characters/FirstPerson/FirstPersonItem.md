@@ -13,7 +13,7 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[active](#active)|`undefined`|`false`|
+|[active](#active)|`bool`|`false`|
 |[mesh](#mesh)|`Mesh`|-|
 |[hitscan_node](#hitscan_node)|`HitScan3D`|-|
 |[projectile_emitter_node](#projectile_emitter_node)|`ProjectileEmitter3D`|-|
@@ -54,14 +54,14 @@ Triggered when the item is deactivated
 ### active
 
 ```gdscript
-@export var active = false
+@export var active: bool = false
 ```
 
 If the weapon is visible or not
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`active`|`undefined`|`false`|
+|`active`|`bool`|`false`|
 
 ### mesh
 
@@ -116,7 +116,7 @@ Not exported as FirstPersonIronSight must be a child node of the FirstPersonItem
 ### activate
 
 ```gdscript
-func activate()
+func activate() -> void
 ```
 
 Async function to activate the weapon. i.e animate it onto the screen.
@@ -124,7 +124,7 @@ Async function to activate the weapon. i.e animate it onto the screen.
 ### deactivate
 
 ```gdscript
-func deactivate()
+func deactivate() -> void
 ```
 
 Async function to deactivate the weapon. i.e animate it off of the screen.
@@ -132,7 +132,7 @@ Async function to deactivate the weapon. i.e animate it off of the screen.
 ### action
 
 ```gdscript
-func action()
+func action() -> void
 ```
 
 Triggered when the item is fired (i.e on left click to fire weapon)
@@ -140,7 +140,7 @@ Triggered when the item is fired (i.e on left click to fire weapon)
 ### zoom
 
 ```gdscript
-func zoom()
+func zoom() -> void
 ```
 
 Triggered when the zoom/ironsight button is pressed
@@ -148,7 +148,7 @@ Triggered when the zoom/ironsight button is pressed
 ### zoomout
 
 ```gdscript
-func zoomout()
+func zoomout() -> void
 ```
 
 Triggered when the zoom/ironsight button is released
@@ -164,7 +164,7 @@ Triggered when the player requests that the item be reloaded
 ### connect_magazine
 
 ```gdscript
-func connect_magazine()
+func connect_magazine() -> void
 ```
 
 Connect the magazine events to the hitscan node

@@ -542,7 +542,7 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#random_rotation">random_rotation</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -596,7 +596,7 @@
 </tbody>
 </table>
 <h3 id="random_rotation">random_rotation <a class="heading-anchor-permalink" href="#random_rotation">#</a></h3>
-<pre><code class="language-gdscript">@export var random_rotation := true
+<pre><code class="language-gdscript">@export var random_rotation : bool = true
 </code></pre>
 <p>Randomly rotate the decal</p>
 <table>
@@ -610,13 +610,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>random_rotation</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="lifespan">lifespan <a class="heading-anchor-permalink" href="#lifespan">#</a></h3>
-<pre><code class="language-gdscript">@export var lifespan := 20.0
+<pre><code class="language-gdscript">@export var lifespan : float = 20.0
 </code></pre>
 <p>Seconds before the bullet hole is removed. (0.0 to keep forever)</p>
 <table>
@@ -657,7 +657,7 @@
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action(hit_target: HitTarget)
+<pre><code class="language-gdscript">func action(hit_target: HitTarget) -&gt; void
 </code></pre>
 <p>Creates a bullethole decale, applies the texture and rotation/position calculations and removes the bullethole after the lifespan</p>
 <h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>

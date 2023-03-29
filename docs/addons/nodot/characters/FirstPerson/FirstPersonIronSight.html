@@ -537,7 +537,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -547,12 +547,12 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#fov">fov</a></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>75</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>75.0</code></td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#enable_scope">enable_scope</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 <tr>
@@ -562,8 +562,8 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#scope_fov">scope_fov</a></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>45</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>45.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -606,7 +606,7 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled := true
+<pre><code class="language-gdscript">@export var enabled : bool = true
 </code></pre>
 <p>Whether ironsight zoom is allowed</p>
 <table>
@@ -620,13 +620,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="zoom_speed">zoom_speed <a class="heading-anchor-permalink" href="#zoom_speed">#</a></h3>
-<pre><code class="language-gdscript">@export var zoom_speed := 10.0
+<pre><code class="language-gdscript">@export var zoom_speed : float = 10.0
 </code></pre>
 <p>The speed to move the camera to the ironsight location</p>
 <table>
@@ -646,7 +646,7 @@
 </tbody>
 </table>
 <h3 id="fov">fov <a class="heading-anchor-permalink" href="#fov">#</a></h3>
-<pre><code class="language-gdscript">@export var fov := 75
+<pre><code class="language-gdscript">@export var fov : float = 75.0
 </code></pre>
 <p>The ironsight field of view</p>
 <table>
@@ -660,13 +660,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>fov</code></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>75</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>75.0</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="enable_scope">enable_scope <a class="heading-anchor-permalink" href="#enable_scope">#</a></h3>
-<pre><code class="language-gdscript">@export var enable_scope := false
+<pre><code class="language-gdscript">@export var enable_scope : bool = false
 </code></pre>
 <p>Whether to enable a scope view after ironsight zoom is complete</p>
 <table>
@@ -680,7 +680,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enable_scope</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <h3 id="scope_fov">scope_fov <a class="heading-anchor-permalink" href="#scope_fov">#</a></h3>
-<pre><code class="language-gdscript">@export var scope_fov := 45
+<pre><code class="language-gdscript">@export var scope_fov : float = 45.0
 </code></pre>
 <p>The scope field of view</p>
 <table>
@@ -720,30 +720,30 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>scope_fov</code></td>
-<td style="text-align:left"><code>int</code></td>
-<td style="text-align:left"><code>45</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>45.0</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="zoom">zoom <a class="heading-anchor-permalink" href="#zoom">#</a></h3>
-<pre><code class="language-gdscript">func zoom()
+<pre><code class="language-gdscript">func zoom() -&gt; void
 </code></pre>
 <p>Initiates the ironsight zoom and shows scope when it approximately reaches its destination</p>
 <h3 id="zoomout">zoomout <a class="heading-anchor-permalink" href="#zoomout">#</a></h3>
-<pre><code class="language-gdscript">func zoomout()
+<pre><code class="language-gdscript">func zoomout() -&gt; void
 </code></pre>
 <p>Initiates ironsight zoom out</p>
 <h3 id="scope">scope <a class="heading-anchor-permalink" href="#scope">#</a></h3>
-<pre><code class="language-gdscript">func scope()
+<pre><code class="language-gdscript">func scope() -&gt; void
 </code></pre>
 <p>Show the scope image and set the field of view</p>
 <h3 id="unscope">unscope <a class="heading-anchor-permalink" href="#unscope">#</a></h3>
-<pre><code class="language-gdscript">func unscope()
+<pre><code class="language-gdscript">func unscope() -&gt; void
 </code></pre>
 <p>Hide the scope image and reset the field of view</p>
 <h3 id="deactivate">deactivate <a class="heading-anchor-permalink" href="#deactivate">#</a></h3>
-<pre><code class="language-gdscript">func deactivate()
+<pre><code class="language-gdscript">func deactivate() -&gt; void
 </code></pre>
 <p>Restores all states to default</p>
 

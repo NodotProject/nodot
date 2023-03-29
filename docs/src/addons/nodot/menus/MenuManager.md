@@ -15,7 +15,7 @@
 ### hide_all
 
 ```gdscript
-func hide_all()
+func hide_all() -> void
 ```
 
 Hide all menus
@@ -23,7 +23,7 @@ Hide all menus
 ### change_to
 
 ```gdscript
-func change_to(menu_name: String)
+func change_to(menu_name: String) -> void
 ```
 
 Change the active menu using the name of the node
@@ -37,7 +37,7 @@ Change the active menu using the name of the node
 ### change_to_index
 
 ```gdscript
-func change_to_index(menu_index: int)
+func change_to_index(menu_index: int) -> void
 ```
 
 Change the active menu using the index

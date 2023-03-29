@@ -6,12 +6,12 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[enabled](#enabled)|`undefined`|`true`|
+|[enabled](#enabled)|`bool`|`true`|
 |[zoom_speed](#zoom_speed)|`float`|`10.0`|
-|[fov](#fov)|`int`|`75`|
-|[enable_scope](#enable_scope)|`undefined`|`false`|
+|[fov](#fov)|`float`|`75.0`|
+|[enable_scope](#enable_scope)|`bool`|`false`|
 |[scope_texture](#scope_texture)|`Texture2D`|-|
-|[scope_fov](#scope_fov)|`int`|`45`|
+|[scope_fov](#scope_fov)|`float`|`45.0`|
 
 ### Functions
 
@@ -28,19 +28,19 @@
 ### enabled
 
 ```gdscript
-@export var enabled := true
+@export var enabled : bool = true
 ```
 
 Whether ironsight zoom is allowed
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`enabled`|`undefined`|`true`|
+|`enabled`|`bool`|`true`|
 
 ### zoom_speed
 
 ```gdscript
-@export var zoom_speed := 10.0
+@export var zoom_speed : float = 10.0
 ```
 
 The speed to move the camera to the ironsight location
@@ -52,26 +52,26 @@ The speed to move the camera to the ironsight location
 ### fov
 
 ```gdscript
-@export var fov := 75
+@export var fov : float = 75.0
 ```
 
 The ironsight field of view
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`fov`|`int`|`75`|
+|`fov`|`float`|`75.0`|
 
 ### enable_scope
 
 ```gdscript
-@export var enable_scope := false
+@export var enable_scope : bool = false
 ```
 
 Whether to enable a scope view after ironsight zoom is complete
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`enable_scope`|`undefined`|`false`|
+|`enable_scope`|`bool`|`false`|
 
 ### scope_texture
 
@@ -88,21 +88,21 @@ The scope texture that will cover the screen
 ### scope_fov
 
 ```gdscript
-@export var scope_fov := 45
+@export var scope_fov : float = 45.0
 ```
 
 The scope field of view
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`scope_fov`|`int`|`45`|
+|`scope_fov`|`float`|`45.0`|
 
 ## Functions
 
 ### zoom
 
 ```gdscript
-func zoom()
+func zoom() -> void
 ```
 
 Initiates the ironsight zoom and shows scope when it approximately reaches its destination
@@ -110,7 +110,7 @@ Initiates the ironsight zoom and shows scope when it approximately reaches its d
 ### zoomout
 
 ```gdscript
-func zoomout()
+func zoomout() -> void
 ```
 
 Initiates ironsight zoom out
@@ -118,7 +118,7 @@ Initiates ironsight zoom out
 ### scope
 
 ```gdscript
-func scope()
+func scope() -> void
 ```
 
 Show the scope image and set the field of view
@@ -126,7 +126,7 @@ Show the scope image and set the field of view
 ### unscope
 
 ```gdscript
-func unscope()
+func unscope() -> void
 ```
 
 Hide the scope image and reset the field of view
@@ -134,7 +134,7 @@ Hide the scope image and reset the field of view
 ### deactivate
 
 ```gdscript
-func deactivate()
+func deactivate() -> void
 ```
 
 Restores all states to default

@@ -564,23 +564,24 @@
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="next_item">next_item <a class="heading-anchor-permalink" href="#next_item">#</a></h3>
-<pre><code class="language-gdscript">func next_item()
+<pre><code class="language-gdscript">func next_item() -&gt; void
 </code></pre>
 <p>Select the next item</p>
 <h3 id="previous_item">previous_item <a class="heading-anchor-permalink" href="#previous_item">#</a></h3>
-<pre><code class="language-gdscript">func previous_item()
+<pre><code class="language-gdscript">func previous_item() -&gt; void
 </code></pre>
 <p>Select the previous item</p>
 <h3 id="get_active_item">get_active_item <a class="heading-anchor-permalink" href="#get_active_item">#</a></h3>
 <pre><code class="language-gdscript">func get_active_item()
 </code></pre>
-<p>Get the active item</p>
+<p>Get the active item if there is one TODO: Typehint this when nullable static types are supported. <a href="https://github.com/godotengine/godot-proposals/issues/162">https://github.com/godotengine/godot-proposals/issues/162</a></p>
 <h3 id="get_all_items">get_all_items <a class="heading-anchor-permalink" href="#get_all_items">#</a></h3>
-<pre><code class="language-gdscript">func get_all_items()
+<pre><code class="language-gdscript">func get_all_items() -&gt; Array[FirstPersonItem]
 </code></pre>
 <p>Get all FirstPersonItems</p>
+<p><strong>Returns</strong>: <code>Array[FirstPersonItem]</code></p>
 <h3 id="change_item">change_item <a class="heading-anchor-permalink" href="#change_item">#</a></h3>
-<pre><code class="language-gdscript">func change_item(new_index: int)
+<pre><code class="language-gdscript">func change_item(new_index: int) -&gt; void
 </code></pre>
 <p>Change which item is active.</p>
 <h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>

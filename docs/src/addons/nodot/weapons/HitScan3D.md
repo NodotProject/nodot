@@ -6,13 +6,13 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[enabled](#enabled)|`undefined`|`false`|
+|[enabled](#enabled)|`bool`|`false`|
 |[raycast](#raycast)|`RayCast3D`|-|
 |[accuracy](#accuracy)|`float`|`0.0`|
 |[damage](#damage)|`float`|`0.0`|
 |[damage_distance_reduction](#damage_distance_reduction)|`float`|`0.0`|
-|[distance](#distance)|`int`|`500`|
-|[healing](#healing)|`undefined`|`false`|
+|[distance](#distance)|`float`|`500`|
+|[healing](#healing)|`bool`|`false`|
 
 ### Functions
 
@@ -28,14 +28,14 @@
 ### enabled
 
 ```gdscript
-@export var enabled = false
+@export var enabled: bool = false
 ```
 
 Whether to enable the hitscan or not
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`enabled`|`undefined`|`false`|
+|`enabled`|`bool`|`false`|
 
 ### raycast
 
@@ -52,7 +52,7 @@ Which raycast to use
 ### accuracy
 
 ```gdscript
-@export var accuracy := 0.0
+@export var accuracy : float = 0.0
 ```
 
 The accuracy of the shot (0.0 = 100% accurate)
@@ -64,7 +64,7 @@ The accuracy of the shot (0.0 = 100% accurate)
 ### damage
 
 ```gdscript
-@export var damage = 0.0
+@export var damage: float = 0.0
 ```
 
 How much damage to deal to the target (0.0 to disable)
@@ -76,7 +76,7 @@ How much damage to deal to the target (0.0 to disable)
 ### damage_distance_reduction
 
 ```gdscript
-@export var damage_distance_reduction = 0.0
+@export var damage_distance_reduction: float = 0.0
 ```
 
 Damage reduction per meter of distance as a percentage (0.0 to disable)
@@ -88,26 +88,26 @@ Damage reduction per meter of distance as a percentage (0.0 to disable)
 ### distance
 
 ```gdscript
-@export var distance := 500
+@export var distance : float = 500
 ```
 
 Total distance (meters) to search for hit targets
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`distance`|`int`|`500`|
+|`distance`|`float`|`500`|
 
 ### healing
 
 ```gdscript
-@export var healing := false
+@export var healing : bool = false
 ```
 
 Reverses the damage to heal instead
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`healing`|`undefined`|`false`|
+|`healing`|`bool`|`false`|
 
 ## Functions
 
@@ -117,12 +117,12 @@ Reverses the damage to heal instead
 func action()
 ```
 
-Execute the hitscan
+Execute the hitscan TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 
 ### aim_raycast
 
 ```gdscript
-func aim_raycast()
+func aim_raycast() -> void
 ```
 
 Point the raycast at the target with a random offset based on accuracy
@@ -133,15 +133,17 @@ Point the raycast at the target with a random offset based on accuracy
 func get_hit_target()
 ```
 
-Get the objects that the raycast is colliding with
+Get the objects that the raycast is colliding with TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 
 ### get_distance
 
 ```gdscript
-func get_distance(object: Variant)
+func get_distance(object: Variant) -> float
 ```
 
 Returns the distance from the raycast origin to the target
+
+**Returns**: `float`
 
 #### Parameters
 

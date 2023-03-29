@@ -7,22 +7,22 @@
 |Name|Type|Default|
 |:-|:-|:-|
 |[health_depleted](#health_depleted)|||
-|[health_lost](#health_lost)|`int`|-|
-|[health_gained](#health_gained)|`int`|-|
-|[health_changed](#health_changed)|`int`|-|
+|[health_lost](#health_lost)|`float`|-|
+|[health_gained](#health_gained)|`float`|-|
+|[health_changed](#health_changed)|`float`|-|
 
 ### Variables
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[max_health](#max_health)|`int`|`100`|
-|[current_health](#current_health)|`undefined`|`max_health`|
+|[max_health](#max_health)|`float`|`100.0`|
+|[current_health](#current_health)|`float`|`max_health`|
 
 ### Functions
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[set_health](#set_health)|`int`|-|
+|[set_health](#set_health)|`float`|-|
 
 ## Signals
 
@@ -37,7 +37,7 @@ current_health has reached zero
 ### health_lost
 
 ```gdscript
-signal health_lost(old_health: int, new_health: int)
+signal health_lost(old_health: float, new_health: float)
 ```
 
 current_health has been reduced
@@ -46,13 +46,13 @@ current_health has been reduced
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`old_health`|`int`|-|
-|`new_health`|`int`|-|
+|`old_health`|`float`|-|
+|`new_health`|`float`|-|
 
 ### health_gained
 
 ```gdscript
-signal health_gained(old_health: int, new_health: int)
+signal health_gained(old_health: float, new_health: float)
 ```
 
 current_health has been increased
@@ -61,13 +61,13 @@ current_health has been increased
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`old_health`|`int`|-|
-|`new_health`|`int`|-|
+|`old_health`|`float`|-|
+|`new_health`|`float`|-|
 
 ### health_changed
 
 ```gdscript
-signal health_changed(old_health: int, new_health: int)
+signal health_changed(old_health: float, new_health: float)
 ```
 
 current_health has changed
@@ -76,41 +76,41 @@ current_health has changed
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`old_health`|`int`|-|
-|`new_health`|`int`|-|
+|`old_health`|`float`|-|
+|`new_health`|`float`|-|
 
 ## Variables
 
 ### max_health
 
 ```gdscript
-@export var max_health := 100
+@export var max_health : float = 100.0
 ```
 
 The maximum health
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`max_health`|`int`|`100`|
+|`max_health`|`float`|`100.0`|
 
 ### current_health
 
 ```gdscript
-@export var current_health := max_health
+@export var current_health : float = max_health
 ```
 
 The current health
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`current_health`|`undefined`|`max_health`|
+|`current_health`|`float`|`max_health`|
 
 ## Functions
 
 ### set_health
 
 ```gdscript
-func set_health(modifier: int)
+func set_health(modifier: float) -> void
 ```
 
 Offsets current_health by the modifier
@@ -119,5 +119,5 @@ Offsets current_health by the modifier
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`modifier`|`int`|-|
+|`modifier`|`float`|-|
 

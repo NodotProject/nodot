@@ -6,14 +6,14 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[action](#action)|`-`|`-1`|
+|[action](#action)|`int`|`-1`|
 
 ## Functions
 
 ### action
 
 ```gdscript
-func action(index = -1)
+func action(index: int = -1) -> void
 ```
 
 Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
@@ -22,5 +22,5 @@ Loads, caches and plays the audio file at the path argument. Use `sfx_root_path`
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`index `|-|`-1`|
+|`index`|`int`|`-1`|
 

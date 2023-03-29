@@ -599,12 +599,12 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#auto_reload">auto_reload</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#rounds_left">rounds_left</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>int</code></td>
 <td style="text-align:left"><code>capacity</code></td>
 </tr>
 </tbody>
@@ -655,7 +655,7 @@
 <p>Emitted when a round is discharged</p>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="capacity">capacity <a class="heading-anchor-permalink" href="#capacity">#</a></h3>
-<pre><code class="language-gdscript">@export var capacity := 10
+<pre><code class="language-gdscript">@export var capacity : int = 10
 </code></pre>
 <p>Total rounds per magazine</p>
 <table>
@@ -675,7 +675,7 @@
 </tbody>
 </table>
 <h3 id="supply_count">supply_count <a class="heading-anchor-permalink" href="#supply_count">#</a></h3>
-<pre><code class="language-gdscript">@export var supply_count := 20
+<pre><code class="language-gdscript">@export var supply_count : int = 20
 </code></pre>
 <p>Rounds available other than the loaded rounds</p>
 <table>
@@ -695,7 +695,7 @@
 </tbody>
 </table>
 <h3 id="supply_count_limit">supply_count_limit <a class="heading-anchor-permalink" href="#supply_count_limit">#</a></h3>
-<pre><code class="language-gdscript">@export var supply_count_limit := 100
+<pre><code class="language-gdscript">@export var supply_count_limit : int = 100
 </code></pre>
 <p>Round supply maximum</p>
 <table>
@@ -715,7 +715,7 @@
 </tbody>
 </table>
 <h3 id="discharge_count">discharge_count <a class="heading-anchor-permalink" href="#discharge_count">#</a></h3>
-<pre><code class="language-gdscript">@export var discharge_count := 1
+<pre><code class="language-gdscript">@export var discharge_count : int = 1
 </code></pre>
 <p>Total rounds released per action</p>
 <table>
@@ -735,7 +735,7 @@
 </tbody>
 </table>
 <h3 id="fire_rate">fire_rate <a class="heading-anchor-permalink" href="#fire_rate">#</a></h3>
-<pre><code class="language-gdscript">@export var fire_rate := 0.5
+<pre><code class="language-gdscript">@export var fire_rate : float = 0.5
 </code></pre>
 <p>Time between round releases</p>
 <table>
@@ -755,7 +755,7 @@
 </tbody>
 </table>
 <h3 id="reload_time">reload_time <a class="heading-anchor-permalink" href="#reload_time">#</a></h3>
-<pre><code class="language-gdscript">@export var reload_time := 1.0
+<pre><code class="language-gdscript">@export var reload_time : float = 1.0
 </code></pre>
 <p>Time to reload the magazine</p>
 <table>
@@ -775,7 +775,7 @@
 </tbody>
 </table>
 <h3 id="auto_reload">auto_reload <a class="heading-anchor-permalink" href="#auto_reload">#</a></h3>
-<pre><code class="language-gdscript">@export var auto_reload := true
+<pre><code class="language-gdscript">@export var auto_reload : bool = true
 </code></pre>
 <p>Automatically reloads the weapon when ammo has depleted and the player attempts to fire</p>
 <table>
@@ -789,13 +789,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>auto_reload</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="rounds_left">rounds_left <a class="heading-anchor-permalink" href="#rounds_left">#</a></h3>
-<pre><code class="language-gdscript">@export var rounds_left := capacity
+<pre><code class="language-gdscript">@export var rounds_left : int = capacity
 </code></pre>
 <p>Number of rounds currently loaded</p>
 <table>
@@ -809,18 +809,18 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>rounds_left</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>int</code></td>
 <td style="text-align:left"><code>capacity</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action()
+<pre><code class="language-gdscript">func action() -&gt; void
 </code></pre>
 <p>Dispatches a round</p>
 <h3 id="reload">reload <a class="heading-anchor-permalink" href="#reload">#</a></h3>
-<pre><code class="language-gdscript">func reload()
+<pre><code class="language-gdscript">func reload() -&gt; void
 </code></pre>
 <p>Initiates a reload of the magazine</p>
 <h3 id="resupply">resupply <a class="heading-anchor-permalink" href="#resupply">#</a></h3>

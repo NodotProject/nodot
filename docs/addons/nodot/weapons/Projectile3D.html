@@ -542,7 +542,7 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#self_propelling">self_propelling</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -552,14 +552,14 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#destroy_on_impact">destroy_on_impact</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="speed">speed <a class="heading-anchor-permalink" href="#speed">#</a></h3>
-<pre><code class="language-gdscript">@export var speed := 50.0
+<pre><code class="language-gdscript">@export var speed : float = 50.0
 </code></pre>
 <p>The speed of the projectile</p>
 <table>
@@ -579,7 +579,7 @@
 </tbody>
 </table>
 <h3 id="self_propelling">self_propelling <a class="heading-anchor-permalink" href="#self_propelling">#</a></h3>
-<pre><code class="language-gdscript">@export var self_propelling := true
+<pre><code class="language-gdscript">@export var self_propelling : bool = true
 </code></pre>
 <p>Applies the speed consistently</p>
 <table>
@@ -593,13 +593,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>self_propelling</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="lifespan">lifespan <a class="heading-anchor-permalink" href="#lifespan">#</a></h3>
-<pre><code class="language-gdscript">@export var lifespan := 0.0
+<pre><code class="language-gdscript">@export var lifespan : float = 0.0
 </code></pre>
 <p>Destroys the projectile after this timespan (0.0 for never)</p>
 <table>
@@ -619,7 +619,7 @@
 </tbody>
 </table>
 <h3 id="destroy_on_impact">destroy_on_impact <a class="heading-anchor-permalink" href="#destroy_on_impact">#</a></h3>
-<pre><code class="language-gdscript">@export var destroy_on_impact := false
+<pre><code class="language-gdscript">@export var destroy_on_impact : bool = false
 </code></pre>
 <p>Destroys the projectile on impact</p>
 <table>
@@ -633,7 +633,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>destroy_on_impact</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>

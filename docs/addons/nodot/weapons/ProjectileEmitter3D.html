@@ -537,7 +537,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -571,7 +571,7 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled = true
+<pre><code class="language-gdscript">@export var enabled: bool = true
 </code></pre>
 <p>Whether to enable the projectile emitter or not</p>
 <table>
@@ -585,13 +585,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="accuracy">accuracy <a class="heading-anchor-permalink" href="#accuracy">#</a></h3>
-<pre><code class="language-gdscript">@export var accuracy := 0.0
+<pre><code class="language-gdscript">@export var accuracy : float = 0.0
 </code></pre>
 <p>The accuracy of the emission (0.0 = emit with 100% accuracy, 50.0 = emit in any forward direction, 100.0 = emit in any direction)</p>
 <table>
@@ -612,11 +612,11 @@
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="aim_emitter">aim_emitter <a class="heading-anchor-permalink" href="#aim_emitter">#</a></h3>
-<pre><code class="language-gdscript">func aim_emitter()
+<pre><code class="language-gdscript">func aim_emitter() -&gt; void
 </code></pre>
 <p>Apply the accuracy to the emitter</p>
 <h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action()
+<pre><code class="language-gdscript">func action() -&gt; void
 </code></pre>
 <p>Execute the emitter</p>
 

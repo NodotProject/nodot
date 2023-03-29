@@ -537,7 +537,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 <tr>
@@ -562,12 +562,12 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#distance">distance</a></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left"><code>500</code></td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#healing">healing</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -606,7 +606,7 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled = false
+<pre><code class="language-gdscript">@export var enabled: bool = false
 </code></pre>
 <p>Whether to enable the hitscan or not</p>
 <table>
@@ -620,7 +620,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -646,7 +646,7 @@
 </tbody>
 </table>
 <h3 id="accuracy">accuracy <a class="heading-anchor-permalink" href="#accuracy">#</a></h3>
-<pre><code class="language-gdscript">@export var accuracy := 0.0
+<pre><code class="language-gdscript">@export var accuracy : float = 0.0
 </code></pre>
 <p>The accuracy of the shot (0.0 = 100% accurate)</p>
 <table>
@@ -666,7 +666,7 @@
 </tbody>
 </table>
 <h3 id="damage">damage <a class="heading-anchor-permalink" href="#damage">#</a></h3>
-<pre><code class="language-gdscript">@export var damage = 0.0
+<pre><code class="language-gdscript">@export var damage: float = 0.0
 </code></pre>
 <p>How much damage to deal to the target (0.0 to disable)</p>
 <table>
@@ -686,7 +686,7 @@
 </tbody>
 </table>
 <h3 id="damage_distance_reduction">damage_distance_reduction <a class="heading-anchor-permalink" href="#damage_distance_reduction">#</a></h3>
-<pre><code class="language-gdscript">@export var damage_distance_reduction = 0.0
+<pre><code class="language-gdscript">@export var damage_distance_reduction: float = 0.0
 </code></pre>
 <p>Damage reduction per meter of distance as a percentage (0.0 to disable)</p>
 <table>
@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <h3 id="distance">distance <a class="heading-anchor-permalink" href="#distance">#</a></h3>
-<pre><code class="language-gdscript">@export var distance := 500
+<pre><code class="language-gdscript">@export var distance : float = 500
 </code></pre>
 <p>Total distance (meters) to search for hit targets</p>
 <table>
@@ -720,13 +720,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>distance</code></td>
-<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>float</code></td>
 <td style="text-align:left"><code>500</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="healing">healing <a class="heading-anchor-permalink" href="#healing">#</a></h3>
-<pre><code class="language-gdscript">@export var healing := false
+<pre><code class="language-gdscript">@export var healing : bool = false
 </code></pre>
 <p>Reverses the damage to heal instead</p>
 <table>
@@ -740,7 +740,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>healing</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -749,19 +749,20 @@
 <h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
 <pre><code class="language-gdscript">func action()
 </code></pre>
-<p>Execute the hitscan</p>
+<p>Execute the hitscan TODO: Typehint this when nullable static types are supported. <a href="https://github.com/godotengine/godot-proposals/issues/162">https://github.com/godotengine/godot-proposals/issues/162</a></p>
 <h3 id="aim_raycast">aim_raycast <a class="heading-anchor-permalink" href="#aim_raycast">#</a></h3>
-<pre><code class="language-gdscript">func aim_raycast()
+<pre><code class="language-gdscript">func aim_raycast() -&gt; void
 </code></pre>
 <p>Point the raycast at the target with a random offset based on accuracy</p>
 <h3 id="get_hit_target">get_hit_target <a class="heading-anchor-permalink" href="#get_hit_target">#</a></h3>
 <pre><code class="language-gdscript">func get_hit_target()
 </code></pre>
-<p>Get the objects that the raycast is colliding with</p>
+<p>Get the objects that the raycast is colliding with TODO: Typehint this when nullable static types are supported. <a href="https://github.com/godotengine/godot-proposals/issues/162">https://github.com/godotengine/godot-proposals/issues/162</a></p>
 <h3 id="get_distance">get_distance <a class="heading-anchor-permalink" href="#get_distance">#</a></h3>
-<pre><code class="language-gdscript">func get_distance(object: Variant)
+<pre><code class="language-gdscript">func get_distance(object: Variant) -&gt; float
 </code></pre>
 <p>Returns the distance from the raycast origin to the target</p>
+<p><strong>Returns</strong>: <code>float</code></p>
 <h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>
 <table>
 <thead>

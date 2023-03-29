@@ -21,8 +21,8 @@
 |[discharge_count](#discharge_count)|`int`|`1`|
 |[fire_rate](#fire_rate)|`float`|`0.5`|
 |[reload_time](#reload_time)|`float`|`1.0`|
-|[auto_reload](#auto_reload)|`undefined`|`true`|
-|[rounds_left](#rounds_left)|`undefined`|`capacity`|
+|[auto_reload](#auto_reload)|`bool`|`true`|
+|[rounds_left](#rounds_left)|`int`|`capacity`|
 
 ### Functions
 
@@ -71,7 +71,7 @@ Emitted when a round is discharged
 ### capacity
 
 ```gdscript
-@export var capacity := 10
+@export var capacity : int = 10
 ```
 
 Total rounds per magazine
@@ -83,7 +83,7 @@ Total rounds per magazine
 ### supply_count
 
 ```gdscript
-@export var supply_count := 20
+@export var supply_count : int = 20
 ```
 
 Rounds available other than the loaded rounds
@@ -95,7 +95,7 @@ Rounds available other than the loaded rounds
 ### supply_count_limit
 
 ```gdscript
-@export var supply_count_limit := 100
+@export var supply_count_limit : int = 100
 ```
 
 Round supply maximum
@@ -107,7 +107,7 @@ Round supply maximum
 ### discharge_count
 
 ```gdscript
-@export var discharge_count := 1
+@export var discharge_count : int = 1
 ```
 
 Total rounds released per action
@@ -119,7 +119,7 @@ Total rounds released per action
 ### fire_rate
 
 ```gdscript
-@export var fire_rate := 0.5
+@export var fire_rate : float = 0.5
 ```
 
 Time between round releases
@@ -131,7 +131,7 @@ Time between round releases
 ### reload_time
 
 ```gdscript
-@export var reload_time := 1.0
+@export var reload_time : float = 1.0
 ```
 
 Time to reload the magazine
@@ -143,33 +143,33 @@ Time to reload the magazine
 ### auto_reload
 
 ```gdscript
-@export var auto_reload := true
+@export var auto_reload : bool = true
 ```
 
 Automatically reloads the weapon when ammo has depleted and the player attempts to fire
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`auto_reload`|`undefined`|`true`|
+|`auto_reload`|`bool`|`true`|
 
 ### rounds_left
 
 ```gdscript
-@export var rounds_left := capacity
+@export var rounds_left : int = capacity
 ```
 
 Number of rounds currently loaded
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`rounds_left`|`undefined`|`capacity`|
+|`rounds_left`|`int`|`capacity`|
 
 ## Functions
 
 ### action
 
 ```gdscript
-func action()
+func action() -> void
 ```
 
 Dispatches a round
@@ -177,7 +177,7 @@ Dispatches a round
 ### reload
 
 ```gdscript
-func reload()
+func reload() -> void
 ```
 
 Initiates a reload of the magazine

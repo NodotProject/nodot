@@ -7,7 +7,7 @@
 |Name|Type|Default|
 |:-|:-|:-|
 |[textures](#textures)|`Array[StandardMaterial3D]`|-|
-|[random_rotation](#random_rotation)|`undefined`|`true`|
+|[random_rotation](#random_rotation)|`bool`|`true`|
 |[lifespan](#lifespan)|`float`|`20.0`|
 |[sfx_player](#sfx_player)|`SFXPlayer3D`|-|
 
@@ -34,19 +34,19 @@ An array of StandardMaterial3Ds to use as the bullethole decal. The material ind
 ### random_rotation
 
 ```gdscript
-@export var random_rotation := true
+@export var random_rotation : bool = true
 ```
 
 Randomly rotate the decal
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`random_rotation`|`undefined`|`true`|
+|`random_rotation`|`bool`|`true`|
 
 ### lifespan
 
 ```gdscript
-@export var lifespan := 20.0
+@export var lifespan : float = 20.0
 ```
 
 Seconds before the bullet hole is removed. (0.0 to keep forever)
@@ -72,7 +72,7 @@ For playing a sound when created
 ### action
 
 ```gdscript
-func action(hit_target: HitTarget)
+func action(hit_target: HitTarget) -> void
 ```
 
 Creates a bullethole decale, applies the texture and rotation/position calculations and removes the bullethole after the lifespan

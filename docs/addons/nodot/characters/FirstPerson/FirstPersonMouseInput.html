@@ -525,6 +525,28 @@
       <article id="main" class="content">
         <h1 id="firstpersonmouseinput-extends-nodot">FirstPersonMouseInput extends Nodot <a class="heading-anchor-permalink" href="#firstpersonmouseinput-extends-nodot">#</a></h1>
 <h2 id="table-of-contents">Table of contents <a class="heading-anchor-permalink" href="#table-of-contents">#</a></h2>
+<h3 id="variables">Variables <a class="heading-anchor-permalink" href="#variables">#</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#enabled">enabled</a></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>true</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#mouse_sensitivity">mouse_sensitivity</a></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="functions">Functions <a class="heading-anchor-permalink" href="#functions">#</a></h3>
 <table>
 <thead>
@@ -547,13 +569,54 @@
 </tr>
 </tbody>
 </table>
+<h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
+<h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
+<pre><code class="language-gdscript">@export var enabled := true
+</code></pre>
+<p>Is input enabled</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>enabled</code></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>true</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="mouse_sensitivity">mouse_sensitivity <a class="heading-anchor-permalink" href="#mouse_sensitivity">#</a></h3>
+<pre><code class="language-gdscript">@export var mouse_sensitivity := 0.1
+</code></pre>
+<p>Sensitivity of mouse movement</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>mouse_sensitivity</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
 <h3 id="disable">disable <a class="heading-anchor-permalink" href="#disable">#</a></h3>
-<pre><code class="language-gdscript">func disable()
+<pre><code class="language-gdscript">func disable() -&gt; void
 </code></pre>
 <p>Disable input and release mouse</p>
 <h3 id="enable">enable <a class="heading-anchor-permalink" href="#enable">#</a></h3>
-<pre><code class="language-gdscript">func enable()
+<pre><code class="language-gdscript">func enable() -&gt; void
 </code></pre>
 <p>Enable input and capture mouse</p>
 
