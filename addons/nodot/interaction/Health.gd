@@ -15,7 +15,7 @@ signal health_gained(old_health: float, new_health: float)
 signal health_changed(old_health: float, new_health: float)
 
 ## Offsets current_health by the modifier
-func set_health(modifier: float) -> void:
+func add_health(modifier: float) -> void:
   if modifier == 0:
     return
   var old_health: float = current_health

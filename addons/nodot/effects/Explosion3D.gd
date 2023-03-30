@@ -61,7 +61,7 @@ func action() -> void:
         var collider_health: Health = collider_healths[0]
         if !healing:
           final_damage = -final_damage
-        collider_health.set_health(final_damage)
+        collider_health.add_health(final_damage)
 
   if force_range > 0.0:
     var force_colliders: Array[Node3D] = force_area.get_overlapping_bodies()

@@ -54,7 +54,7 @@ func get_hit_target():
       if damage > 0.0:
         var collider_healths: Array[Node] = collider.find_children("*", "Health")
         if collider_healths.size() > 0:
-          var collider_health: Node = collider_healths[0]
+          var collider_health: Health = collider_healths[0]
           var final_damage: float = damage
           # Calculate damage reduction
           if damage_distance_reduction > 0.0:
@@ -63,7 +63,7 @@ func get_hit_target():
           # Apply damage to the hit target
           if !healing:
             final_damage = -final_damage
-          collider_health.set_health(final_damage)
+          collider_health.add_health(final_damage)
 
       emit_signal("target_hit", hit_target)
       return hit_target
