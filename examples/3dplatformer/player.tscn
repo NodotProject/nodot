@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://iqc5bp3n72a0"]
+[gd_scene load_steps=13 format=3 uid="uid://iqc5bp3n72a0"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCharacter.gd" id="1_vhcpw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCamera.gd" id="2_oac3o"]
@@ -6,7 +6,24 @@
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonMouseInput.gd" id="4_hvhp3"]
 [ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="5_7yi3r"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jl58s"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn3bd"]
+noise = SubResource("FastNoiseLite_jl58s")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1rppe"]
+albedo_color = Color(0.643137, 0.721569, 1, 1)
+albedo_texture = SubResource("NoiseTexture2D_hn3bd")
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_hxift"]
+material = SubResource("StandardMaterial3D_1rppe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l22pf"]
+albedo_color = Color(0.360784, 0.478431, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_g5ogk"]
+material = SubResource("StandardMaterial3D_l22pf")
+size = Vector3(0.395, 0.393, 0.389)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m1tjm"]
 
@@ -15,6 +32,10 @@ script = ExtResource("1_vhcpw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_hxift")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.479547, -0.549152)
+mesh = SubResource("BoxMesh_g5ogk")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_m1tjm")

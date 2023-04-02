@@ -16,17 +16,23 @@ class_name ThirdPersonKeyboardInput extends Nodot
 @export var speed := 5.0
 ## How high the character can jump
 @export var jump_velocity = 4.5
+## Instead of turning the character, the character will strafe on left and right input action
+@export var strafing := false
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 
 var is_jumping: bool = false
 var is_editor: bool = Engine.is_editor_hint()
+var camera: ThirdPersonCamera
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
   if !(get_parent() is ThirdPersonCharacter):
     warnings.append("Parent should be a ThirdPersonCharacter")
   return warnings
+  
+func _ready():
+  camera = parent.camera
 
 func _physics_process(delta: float) -> void:
   if enabled and !is_editor:
@@ -42,7 +48,7 @@ func _physics_process(delta: float) -> void:
     # Get the input direction and handle the movement/deceleration.
     # As good practice, you should replace UI actions with custom gameplay actions.
     var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
-    var direction = (parent.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+    var direction = (camera.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     if direction:
       parent.velocity.x = direction.x * speed
       parent.velocity.z = direction.z * speed

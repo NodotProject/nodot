@@ -16,8 +16,9 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
   
 func _enter_tree():
-  raycast = RayCast3D.new()
-  add_child(raycast)
+  if always_in_front:
+    raycast = RayCast3D.new()
+    add_child(raycast)
 
 func _ready():
   position = camera_offset

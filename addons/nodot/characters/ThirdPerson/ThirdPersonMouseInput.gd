@@ -9,8 +9,10 @@ class_name ThirdPersonMouseInput extends Nodot
 @export var enabled := true
 ## Sensitivity of mouse movement
 @export var mouse_sensitivity := 0.1
-## Disable camera movement while camera_rotate_action input action is not pressed
+## Enable camera movement only while camera_rotate_action input action is pressed
 @export var lock_camera_rotation := false
+## Rotate the ThirdPersonCharacter with the camera
+@export var lock_character_rotation := false
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 
@@ -35,11 +37,16 @@ func _input(event: InputEvent) -> void:
       mouse_rotation.x = event.relative.y * mouse_sensitivity
 
 func _physics_process(delta: float) -> void:
-  if enabled and !is_editor and Input.is_action_pressed("camera_rotate"):
+  if enabled and !is_editor and (!lock_camera_rotation or Input.is_action_pressed("camera_rotate")):
     var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 
     # Handle look left and right
-    parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+    if lock_character_rotation:
+      parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+    else:
+      var radius = camera.position.distance_to(parent.position)
+      var rotation = parent.rotation.y + look_angle.y
+      camera.position = Vector3(parent.rotation.x, rotation, parent.rotation.z) * camera.position * radius
 
     # Handle look up and down
     camera.rotate_object_local(Vector3(1, 0, 0), look_angle.x)

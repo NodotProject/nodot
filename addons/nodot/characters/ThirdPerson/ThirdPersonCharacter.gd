@@ -7,11 +7,12 @@ class_name ThirdPersonCharacter extends CharacterBody3D
 @export var input_enabled := true
 
 var camera: ThirdPersonCamera
-
-func _enter_tree() -> void:
-  camera = ThirdPersonCamera.new()
-  camera.name = "ThirdPersonCamera"
-  add_child(camera)
+  
+func _ready() -> void:
+  # If there is a camera, set it
+  for child in get_children():
+    if child is ThirdPersonCamera:
+      camera = child
   
 func _physics_process(delta: float) -> void:
   move_and_slide()
