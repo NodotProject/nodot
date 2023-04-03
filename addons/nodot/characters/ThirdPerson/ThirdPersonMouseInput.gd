@@ -19,6 +19,7 @@ class_name ThirdPersonMouseInput extends Nodot
 var is_editor: bool = Engine.is_editor_hint()
 var mouse_rotation: Vector2 = Vector2.ZERO
 var camera: ThirdPersonCamera
+var camera_container: Node3D
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -29,6 +30,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _ready() -> void:
   enable()
   camera = parent.camera
+  camera_container = camera.get_parent()
 
 func _input(event: InputEvent) -> void:
   if enabled:
@@ -44,9 +46,7 @@ func _physics_process(delta: float) -> void:
     if lock_character_rotation:
       parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
     else:
-      var radius = camera.position.distance_to(parent.position)
-      var rotation = parent.rotation.y + look_angle.y
-      camera.position = Vector3(parent.rotation.x, rotation, parent.rotation.z) * camera.position * radius
+      camera_container.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
 
     # Handle look up and down
     camera.rotate_object_local(Vector3(1, 0, 0), look_angle.x)

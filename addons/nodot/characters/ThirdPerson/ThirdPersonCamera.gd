@@ -5,7 +5,7 @@ class_name ThirdPersonCamera extends Camera3D
 ## Camera should move in front of objects that block vision of the character
 @export var always_in_front := true
 
-@onready var parent: ThirdPersonCharacter = get_parent()
+@onready var parent: Node3D = get_parent()
 
 var raycast: RayCast3D
 

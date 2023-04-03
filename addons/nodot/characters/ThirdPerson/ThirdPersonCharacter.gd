@@ -8,14 +8,18 @@ class_name ThirdPersonCharacter extends CharacterBody3D
 
 var camera: ThirdPersonCamera
   
-func _ready() -> void:
-  # If there is a camera, set it
-  for child in get_children():
-    if child is ThirdPersonCamera:
-      camera = child
-  
 func _physics_process(delta: float) -> void:
   move_and_slide()
+
+func _enter_tree():
+  # Set up camera container
+  for child in get_children():
+    if child is ThirdPersonCamera:
+      var node3d = Node3D.new()
+      node3d.name = "ThirdPersonCameraContainer"
+      add_child(node3d)
+      child.reparent(node3d, true)
+      camera = child
 
 func _input(event: InputEvent) -> void:
   if event.is_action_pressed("escape"):

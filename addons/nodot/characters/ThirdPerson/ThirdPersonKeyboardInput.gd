@@ -24,6 +24,7 @@ class_name ThirdPersonKeyboardInput extends Nodot
 var is_jumping: bool = false
 var is_editor: bool = Engine.is_editor_hint()
 var camera: ThirdPersonCamera
+var camera_container: Node3D
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
@@ -33,6 +34,7 @@ func _get_configuration_warnings() -> PackedStringArray:
   
 func _ready():
   camera = parent.camera
+  camera_container = camera.get_parent()
 
 func _physics_process(delta: float) -> void:
   if enabled and !is_editor:
@@ -48,13 +50,18 @@ func _physics_process(delta: float) -> void:
     # Get the input direction and handle the movement/deceleration.
     # As good practice, you should replace UI actions with custom gameplay actions.
     var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
-    var direction = (camera.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+    var direction = (camera_container.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     if direction:
       parent.velocity.x = direction.x * speed
       parent.velocity.z = direction.z * speed
     else:
       parent.velocity.x = move_toward(parent.velocity.x, 0, speed)
       parent.velocity.z = move_toward(parent.velocity.z, 0, speed)
+    
+    # TODO: Turn the character to face the direction pressed
+    var camera_rotation = camera_container.global_rotation
+    parent.look_at(parent.position + Vector3(input_dir.x, 0, input_dir.y), Vector3.UP)
+    camera_container.global_rotation = camera_rotation
 
 ## Disable input
 func disable() -> void:
