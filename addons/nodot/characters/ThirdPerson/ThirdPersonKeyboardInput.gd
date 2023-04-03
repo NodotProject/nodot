@@ -50,8 +50,6 @@ func _physics_process(delta: float) -> void:
       if jump_pressed:
         parent.velocity.y = jump_velocity
 
-    # Get the input direction and handle the movement/deceleration.
-    # As good practice, you should replace UI actions with custom gameplay actions.
     var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
     var direction = (camera_container.global_transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     if direction:
@@ -71,15 +69,18 @@ func _physics_process(delta: float) -> void:
           face_target(parent.position + direction, turn_rate)
       else:
         face_target(parent.position + direction, turn_rate)
+        
       camera_container.global_rotation = camera_rotation
+      camera.time_since_last_move = 0.0
 
 ## Turn to face the target. Essentially lerping look_at
-func face_target(target_position: Vector3, weight: float):
-    var rot = parent.rotation
-    parent.look_at(target_position, Vector3.UP)
-    var target_rot = parent.rotation
-    # TODO: Fix some bug turning back around the circle the wrong way
-    parent.rotation = rot.slerp(target_rot, weight)
+func face_target(target_position: Vector3, weight: float) -> void:
+  # First look directly at the target
+  var initial_rotation = parent.rotation
+  parent.look_at(target_position)
+  # Then lerp the next rotation
+  var target_rot = parent.rotation
+  parent.rotation.y = lerp_angle(initial_rotation.y, target_rot.y, weight)
     
 ## Disable input
 func disable() -> void:

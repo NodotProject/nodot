@@ -39,6 +39,7 @@ func _input(event: InputEvent) -> void:
     if event is InputEventMouseMotion:
       mouse_rotation.y = event.relative.x * mouse_sensitivity
       mouse_rotation.x = event.relative.y * mouse_sensitivity
+      camera.time_since_last_move = 0.0
 
 func _physics_process(delta: float) -> void:
   if enabled and !is_editor and (!lock_camera_rotation or Input.is_action_pressed("camera_rotate")):
