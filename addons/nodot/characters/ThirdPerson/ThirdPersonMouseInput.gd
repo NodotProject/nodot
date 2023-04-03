@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
       camera.time_since_last_move = 0.0
 
 func _physics_process(delta: float) -> void:
-  if enabled and !is_editor and (!lock_camera_rotation or Input.is_action_pressed("camera_rotate")):
+  if enabled and !is_editor and (!lock_camera_rotation or Input.is_action_pressed(camera_rotate_action)):
     var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 
     # Handle look left and right

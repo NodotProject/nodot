@@ -531,6 +531,7 @@
       </nav>
       <article id="main" class="content">
         <h1 id="thirdpersoncamera-extends-camera3d">ThirdPersonCamera extends Camera3D <a class="heading-anchor-permalink" href="#thirdpersoncamera-extends-camera3d">#</a></h1>
+<p>A camera for use with third person games</p>
 <h2 id="table-of-contents">Table of contents <a class="heading-anchor-permalink" href="#table-of-contents">#</a></h2>
 <h3 id="variables">Variables <a class="heading-anchor-permalink" href="#variables">#</a></h3>
 <table>
@@ -549,7 +550,7 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#always_in_front">always_in_front</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -561,7 +562,7 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="camera_offset">camera_offset <a class="heading-anchor-permalink" href="#camera_offset">#</a></h3>
-<pre><code class="language-gdscript">@export var camera_offset := Vector3(0, 2, 5)
+<pre><code class="language-gdscript">@export var camera_offset: Vector3 = Vector3(0, 2, 5)
 </code></pre>
 <p>Camera default offset</p>
 <table>
@@ -581,7 +582,7 @@
 </tbody>
 </table>
 <h3 id="always_in_front">always_in_front <a class="heading-anchor-permalink" href="#always_in_front">#</a></h3>
-<pre><code class="language-gdscript">@export var always_in_front := true
+<pre><code class="language-gdscript">@export var always_in_front: bool = true
 </code></pre>
 <p>Camera should move in front of objects that block vision of the character</p>
 <table>
@@ -595,7 +596,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>always_in_front</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>

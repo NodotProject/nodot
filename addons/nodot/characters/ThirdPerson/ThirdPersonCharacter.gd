@@ -4,7 +4,7 @@ class_name ThirdPersonCharacter extends CharacterBody3D
 ## The input action to pause input
 @export var escape_action : String = "escape"
 ## Allow player input
-@export var input_enabled := true
+@export var input_enabled: bool = true
 
 var camera: ThirdPersonCamera
   
@@ -22,7 +22,7 @@ func _enter_tree() -> void:
       camera = child
 
 func _input(event: InputEvent) -> void:
-  if event.is_action_pressed("escape"):
+  if event.is_action_pressed(escape_action):
     if input_enabled:
       disable_input()
       input_enabled = false

@@ -1,5 +1,7 @@
 # ThirdPersonCamera extends Camera3D
 
+A camera for use with third person games
+
 ## Table of contents
 
 ### Variables
@@ -7,7 +9,7 @@
 |Name|Type|Default|
 |:-|:-|:-|
 |[camera_offset](#camera_offset)|`0`|`Vector3(0, 2, 5)`|
-|[always_in_front](#always_in_front)|`undefined`|`true`|
+|[always_in_front](#always_in_front)|`bool`|`true`|
 |[time_to_reset](#time_to_reset)|`float`|`2.0`|
 
 ## Variables
@@ -15,7 +17,7 @@
 ### camera_offset
 
 ```gdscript
-@export var camera_offset := Vector3(0, 2, 5)
+@export var camera_offset: Vector3 = Vector3(0, 2, 5)
 ```
 
 Camera default offset
@@ -27,14 +29,14 @@ Camera default offset
 ### always_in_front
 
 ```gdscript
-@export var always_in_front := true
+@export var always_in_front: bool = true
 ```
 
 Camera should move in front of objects that block vision of the character
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`always_in_front`|`undefined`|`true`|
+|`always_in_front`|`bool`|`true`|
 
 ### time_to_reset
 

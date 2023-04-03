@@ -1,9 +1,10 @@
+## A camera for use with third person games
 class_name ThirdPersonCamera extends Camera3D
 
 ## Camera default offset
-@export var camera_offset := Vector3(0, 2, 5)
+@export var camera_offset: Vector3 = Vector3(0, 2, 5)
 ## Camera should move in front of objects that block vision of the character
-@export var always_in_front := true
+@export var always_in_front: bool = true
 ## Move the camera to the initial position after some inactivity (0.0 to disable)
 @export var time_to_reset: float = 2.0
 

@@ -544,7 +544,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
@@ -564,7 +564,7 @@
 </tr>
 <tr>
 <td style="text-align:left"><a href="#strafing">strafing</a></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
@@ -598,7 +598,7 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled = true
+<pre><code class="language-gdscript">@export var enabled: bool = true
 </code></pre>
 <p>Is input enabled</p>
 <table>
@@ -612,13 +612,13 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="speed">speed <a class="heading-anchor-permalink" href="#speed">#</a></h3>
-<pre><code class="language-gdscript">@export var speed := 5.0
+<pre><code class="language-gdscript">@export var speed: float = 5.0
 </code></pre>
 <p>How fast the character can move</p>
 <table>
@@ -638,7 +638,7 @@
 </tbody>
 </table>
 <h3 id="turn_rate">turn_rate <a class="heading-anchor-permalink" href="#turn_rate">#</a></h3>
-<pre><code class="language-gdscript">@export var turn_rate := 0.1
+<pre><code class="language-gdscript">@export var turn_rate: float = 0.1
 </code></pre>
 <p>How fast the player turns to face a direction</p>
 <table>
@@ -658,7 +658,7 @@
 </tbody>
 </table>
 <h3 id="jump_velocity">jump_velocity <a class="heading-anchor-permalink" href="#jump_velocity">#</a></h3>
-<pre><code class="language-gdscript">@export var jump_velocity = 4.5
+<pre><code class="language-gdscript">@export var jump_velocity: float = 4.5
 </code></pre>
 <p>How high the character can jump</p>
 <table>
@@ -678,7 +678,7 @@
 </tbody>
 </table>
 <h3 id="strafing">strafing <a class="heading-anchor-permalink" href="#strafing">#</a></h3>
-<pre><code class="language-gdscript">@export var strafing := false
+<pre><code class="language-gdscript">@export var strafing: bool = false
 </code></pre>
 <p>Instead of turning the character, the character will strafe on left and right input action</p>
 <table>
@@ -692,7 +692,7 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>strafing</code></td>
-<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>bool</code></td>
 <td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>

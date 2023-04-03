@@ -6,11 +6,11 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[enabled](#enabled)|`undefined`|`true`|
+|[enabled](#enabled)|`bool`|`true`|
 |[speed](#speed)|`float`|`5.0`|
 |[turn_rate](#turn_rate)|`float`|`0.1`|
 |[jump_velocity](#jump_velocity)|`float`|`4.5`|
-|[strafing](#strafing)|`undefined`|`false`|
+|[strafing](#strafing)|`bool`|`false`|
 
 ### Functions
 
@@ -25,19 +25,19 @@
 ### enabled
 
 ```gdscript
-@export var enabled = true
+@export var enabled: bool = true
 ```
 
 Is input enabled
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`enabled`|`undefined`|`true`|
+|`enabled`|`bool`|`true`|
 
 ### speed
 
 ```gdscript
-@export var speed := 5.0
+@export var speed: float = 5.0
 ```
 
 How fast the character can move
@@ -49,7 +49,7 @@ How fast the character can move
 ### turn_rate
 
 ```gdscript
-@export var turn_rate := 0.1
+@export var turn_rate: float = 0.1
 ```
 
 How fast the player turns to face a direction
@@ -61,7 +61,7 @@ How fast the player turns to face a direction
 ### jump_velocity
 
 ```gdscript
-@export var jump_velocity = 4.5
+@export var jump_velocity: float = 4.5
 ```
 
 How high the character can jump
@@ -73,14 +73,14 @@ How high the character can jump
 ### strafing
 
 ```gdscript
-@export var strafing := false
+@export var strafing: bool = false
 ```
 
 Instead of turning the character, the character will strafe on left and right input action
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`strafing`|`undefined`|`false`|
+|`strafing`|`bool`|`false`|
 
 ## Functions
 

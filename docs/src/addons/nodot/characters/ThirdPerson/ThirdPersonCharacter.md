@@ -9,7 +9,7 @@ A CharacterBody3D for third person games
 |Name|Type|Default|
 |:-|:-|:-|
 |[escape_action](#escape_action)|`String`|`"escape"`|
-|[input_enabled](#input_enabled)|`undefined`|`true`|
+|[input_enabled](#input_enabled)|`bool`|`true`|
 
 ### Functions
 
@@ -35,14 +35,14 @@ The input action to pause input
 ### input_enabled
 
 ```gdscript
-@export var input_enabled := true
+@export var input_enabled: bool = true
 ```
 
 Allow player input
 
 |Name|Type|Default|
 |:-|:-|:-|
-|`input_enabled`|`undefined`|`true`|
+|`input_enabled`|`bool`|`true`|
 
 ## Functions
 
