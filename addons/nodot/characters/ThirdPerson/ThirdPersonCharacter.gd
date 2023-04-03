@@ -11,7 +11,7 @@ var camera: ThirdPersonCamera
 func _physics_process(delta: float) -> void:
   move_and_slide()
 
-func _enter_tree():
+func _enter_tree() -> void:
   # Set up camera container
   for child in get_children():
     if child is ThirdPersonCamera:

@@ -13,6 +13,8 @@ class_name ThirdPersonMouseInput extends Nodot
 @export var lock_camera_rotation := false
 ## Rotate the ThirdPersonCharacter with the camera
 @export var lock_character_rotation := false
+## Restrict vertical look angle
+@export var vertical_clamp := Vector2(-1.36, 1.4)
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 
@@ -51,7 +53,7 @@ func _physics_process(delta: float) -> void:
     # Handle look up and down
     camera.rotate_object_local(Vector3(1, 0, 0), look_angle.x)
 
-    camera.rotation.x = clamp(camera.rotation.x, -1.36, 1.4)
+    camera.rotation.x = clamp(camera.rotation.x, vertical_clamp.x, vertical_clamp.y)
     mouse_rotation = Vector2.ZERO
 
 ## Disable input and release mouse

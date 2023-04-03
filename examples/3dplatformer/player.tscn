@@ -45,9 +45,12 @@ script = ExtResource("2_oac3o")
 
 [node name="ThirdPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("3_j23gj")
+sprint_action = null
+turn_rate = null
 
 [node name="ThirdPersonMouseInput" type="Node" parent="."]
 script = ExtResource("4_hvhp3")
+vertical_clamp = Vector2(-0.379, 0.062)
 
 [node name="GravityPhysics" type="Node" parent="."]
 script = ExtResource("5_7yi3r")

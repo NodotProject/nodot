@@ -15,11 +15,21 @@ func _get_configuration_warnings() -> PackedStringArray:
     warnings.append("Parent should be a ThirdPersonCharacter")
   return warnings
   
-func _enter_tree():
+func _enter_tree() -> void:
   if always_in_front:
     raycast = RayCast3D.new()
-    add_child(raycast)
+    get_parent().add_child(raycast)
 
-func _ready():
+func _ready() -> void:
   position = camera_offset
   look_at(parent.position)
+  
+  raycast.position = parent.position
+  raycast.target_position = position
+
+func _physics_process(delta) -> void:
+  if raycast:
+    if raycast.is_colliding() and !raycast.hit_from_inside:
+      global_position = raycast.get_collision_point()
+    else:
+      position = lerp(position, camera_offset, 0.1)
