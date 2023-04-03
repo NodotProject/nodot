@@ -477,7 +477,7 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="" href="..\..\..\index.html">index</a></li>
+<li><a class="" href="..\..\..\..\index.html">index</a></li>
 <li class="heading"><span>addons</span></li>
 <ul>
 <li class="heading"><span>nodot</span></li>
@@ -486,51 +486,52 @@
 <ul>
 <li class="heading"><span>FirstPerson</span></li>
 <ul>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonCharacter.html">FirstPersonCharacter</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonIronSight.html">FirstPersonIronSight</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonItem.html">FirstPersonItem</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonKeyboardInput.html">FirstPersonKeyboardInput</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonMouseInput.html">FirstPersonMouseInput</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonViewport.html">FirstPersonViewport</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonCharacter.html">FirstPersonCharacter</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonIronSight.html">FirstPersonIronSight</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonItem.html">FirstPersonItem</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonKeyboardInput.html">FirstPersonKeyboardInput</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonMouseInput.html">FirstPersonMouseInput</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonViewport.html">FirstPersonViewport</a></li>
 </ul>
 <li class="heading"><span>ThirdPerson</span></li>
 <ul>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonCamera.html">ThirdPersonCamera</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonCharacter.html">ThirdPersonCharacter</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonKeyboardInput.html">ThirdPersonKeyboardInput</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonMouseInput.html">ThirdPersonMouseInput</a></li>
+<li><a class="" href="ThirdPersonCamera.html">ThirdPersonCamera</a></li>
+<li><a class="active" href="ThirdPersonCharacter.html">ThirdPersonCharacter</a></li>
+<li><a class="" href="ThirdPersonKeyboardInput.html">ThirdPersonKeyboardInput</a></li>
+<li><a class="" href="ThirdPersonMouseInput.html">ThirdPersonMouseInput</a></li>
 </ul>
 </ul>
 <li class="heading"><span>effects</span></li>
 <ul>
-<li><a class="" href="..\effects\Explosion3D.html">Explosion3D</a></li>
+<li><a class="" href="..\..\effects\Explosion3D.html">Explosion3D</a></li>
 </ul>
 <li class="heading"><span>interaction</span></li>
 <ul>
-<li><a class="" href="..\interaction\Health.html">Health</a></li>
+<li><a class="" href="..\..\interaction\Health.html">Health</a></li>
 </ul>
 <li class="heading"><span>menus</span></li>
 <ul>
-<li><a class="" href="..\menus\MenuManager.html">MenuManager</a></li>
+<li><a class="" href="..\..\menus\MenuManager.html">MenuManager</a></li>
 </ul>
 <li class="heading"><span>sound</span></li>
 <ul>
-<li><a class="" href="..\sound\SFXPlayer.html">SFXPlayer</a></li>
+<li><a class="" href="..\..\sound\SFXPlayer.html">SFXPlayer</a></li>
 </ul>
 <li class="heading"><span>weapons</span></li>
 <ul>
-<li><a class="" href="BulletHole.html">BulletHole</a></li>
-<li><a class="" href="HitScan3D.html">HitScan3D</a></li>
-<li><a class="" href="Magazine.html">Magazine</a></li>
-<li><a class="" href="Projectile3D.html">Projectile3D</a></li>
-<li><a class="active" href="ProjectileEmitter3D.html">ProjectileEmitter3D</a></li>
+<li><a class="" href="..\..\weapons\BulletHole.html">BulletHole</a></li>
+<li><a class="" href="..\..\weapons\HitScan3D.html">HitScan3D</a></li>
+<li><a class="" href="..\..\weapons\Magazine.html">Magazine</a></li>
+<li><a class="" href="..\..\weapons\Projectile3D.html">Projectile3D</a></li>
+<li><a class="" href="..\..\weapons\ProjectileEmitter3D.html">ProjectileEmitter3D</a></li>
 </ul>
 </ul>
 </ul>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="projectileemitter3d-extends-nodot3d">ProjectileEmitter3D extends Nodot3D <a class="heading-anchor-permalink" href="#projectileemitter3d-extends-nodot3d">#</a></h1>
+        <h1 id="thirdpersoncharacter-extends-characterbody3d">ThirdPersonCharacter extends CharacterBody3D <a class="heading-anchor-permalink" href="#thirdpersoncharacter-extends-characterbody3d">#</a></h1>
+<p>A CharacterBody3D for third person games</p>
 <h2 id="table-of-contents">Table of contents <a class="heading-anchor-permalink" href="#table-of-contents">#</a></h2>
 <h3 id="variables">Variables <a class="heading-anchor-permalink" href="#variables">#</a></h3>
 <table>
@@ -543,14 +544,14 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>bool</code></td>
-<td style="text-align:left"><code>true</code></td>
+<td style="text-align:left"><a href="#escape_action">escape_action</a></td>
+<td style="text-align:left"><code>String</code></td>
+<td style="text-align:left"><code>&quot;escape&quot;</code></td>
 </tr>
 <tr>
-<td style="text-align:left"><a href="#accuracy">accuracy</a></td>
-<td style="text-align:left"><code>float</code></td>
-<td style="text-align:left"><code>0.0</code></td>
+<td style="text-align:left"><a href="#input_enabled">input_enabled</a></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
@@ -565,22 +566,22 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><a href="#aim_emitter">aim_emitter</a></td>
+<td style="text-align:left"><a href="#disable_input">disable_input</a></td>
 <td style="text-align:left"></td>
 <td style="text-align:left"></td>
 </tr>
 <tr>
-<td style="text-align:left"><a href="#action">action</a></td>
+<td style="text-align:left"><a href="#enable_input">enable_input</a></td>
 <td style="text-align:left"></td>
 <td style="text-align:left"></td>
 </tr>
 </tbody>
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
-<h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled: bool = true
+<h3 id="escape_action">escape_action <a class="heading-anchor-permalink" href="#escape_action">#</a></h3>
+<pre><code class="language-gdscript">@export var escape_action : String = &quot;escape&quot;
 </code></pre>
-<p>Whether to enable the projectile emitter or not</p>
+<p>The input action to pause input</p>
 <table>
 <thead>
 <tr>
@@ -591,41 +592,41 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left"><code>escape_action</code></td>
+<td style="text-align:left"><code>String</code></td>
+<td style="text-align:left"><code>&quot;escape&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="input_enabled">input_enabled <a class="heading-anchor-permalink" href="#input_enabled">#</a></h3>
+<pre><code class="language-gdscript">@export var input_enabled := true
+</code></pre>
+<p>Allow player input</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>input_enabled</code></td>
+<td style="text-align:left"><code>undefined</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="accuracy">accuracy <a class="heading-anchor-permalink" href="#accuracy">#</a></h3>
-<pre><code class="language-gdscript">@export var accuracy : float = 0.0
-</code></pre>
-<p>The accuracy of the emission (0.0 = emit with 100% accuracy, 50.0 = emit in any forward direction, 100.0 = emit in any direction)</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Name</th>
-<th style="text-align:left">Type</th>
-<th style="text-align:left">Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><code>accuracy</code></td>
-<td style="text-align:left"><code>float</code></td>
-<td style="text-align:left"><code>0.0</code></td>
-</tr>
-</tbody>
-</table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
-<h3 id="aim_emitter">aim_emitter <a class="heading-anchor-permalink" href="#aim_emitter">#</a></h3>
-<pre><code class="language-gdscript">func aim_emitter() -&gt; void
+<h3 id="disable_input">disable_input <a class="heading-anchor-permalink" href="#disable_input">#</a></h3>
+<pre><code class="language-gdscript">func disable_input() -&gt; void
 </code></pre>
-<p>Apply the accuracy to the emitter</p>
-<h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action() -&gt; void
+<p>Disable player input</p>
+<h3 id="enable_input">enable_input <a class="heading-anchor-permalink" href="#enable_input">#</a></h3>
+<pre><code class="language-gdscript">func enable_input() -&gt; void
 </code></pre>
-<p>Execute the emitter</p>
+<p>Enable player input</p>
 
       </article>
     </div>

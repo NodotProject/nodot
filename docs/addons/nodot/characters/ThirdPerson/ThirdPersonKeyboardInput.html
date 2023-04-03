@@ -477,7 +477,7 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="" href="..\..\..\index.html">index</a></li>
+<li><a class="" href="..\..\..\..\index.html">index</a></li>
 <li class="heading"><span>addons</span></li>
 <ul>
 <li class="heading"><span>nodot</span></li>
@@ -486,51 +486,51 @@
 <ul>
 <li class="heading"><span>FirstPerson</span></li>
 <ul>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonCharacter.html">FirstPersonCharacter</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonIronSight.html">FirstPersonIronSight</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonItem.html">FirstPersonItem</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonKeyboardInput.html">FirstPersonKeyboardInput</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonMouseInput.html">FirstPersonMouseInput</a></li>
-<li><a class="" href="..\characters\FirstPerson\FirstPersonViewport.html">FirstPersonViewport</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonCharacter.html">FirstPersonCharacter</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonIronSight.html">FirstPersonIronSight</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonItem.html">FirstPersonItem</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonKeyboardInput.html">FirstPersonKeyboardInput</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonMouseInput.html">FirstPersonMouseInput</a></li>
+<li><a class="" href="..\FirstPerson\FirstPersonViewport.html">FirstPersonViewport</a></li>
 </ul>
 <li class="heading"><span>ThirdPerson</span></li>
 <ul>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonCamera.html">ThirdPersonCamera</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonCharacter.html">ThirdPersonCharacter</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonKeyboardInput.html">ThirdPersonKeyboardInput</a></li>
-<li><a class="" href="..\characters\ThirdPerson\ThirdPersonMouseInput.html">ThirdPersonMouseInput</a></li>
+<li><a class="" href="ThirdPersonCamera.html">ThirdPersonCamera</a></li>
+<li><a class="" href="ThirdPersonCharacter.html">ThirdPersonCharacter</a></li>
+<li><a class="active" href="ThirdPersonKeyboardInput.html">ThirdPersonKeyboardInput</a></li>
+<li><a class="" href="ThirdPersonMouseInput.html">ThirdPersonMouseInput</a></li>
 </ul>
 </ul>
 <li class="heading"><span>effects</span></li>
 <ul>
-<li><a class="" href="..\effects\Explosion3D.html">Explosion3D</a></li>
+<li><a class="" href="..\..\effects\Explosion3D.html">Explosion3D</a></li>
 </ul>
 <li class="heading"><span>interaction</span></li>
 <ul>
-<li><a class="" href="..\interaction\Health.html">Health</a></li>
+<li><a class="" href="..\..\interaction\Health.html">Health</a></li>
 </ul>
 <li class="heading"><span>menus</span></li>
 <ul>
-<li><a class="" href="..\menus\MenuManager.html">MenuManager</a></li>
+<li><a class="" href="..\..\menus\MenuManager.html">MenuManager</a></li>
 </ul>
 <li class="heading"><span>sound</span></li>
 <ul>
-<li><a class="" href="..\sound\SFXPlayer.html">SFXPlayer</a></li>
+<li><a class="" href="..\..\sound\SFXPlayer.html">SFXPlayer</a></li>
 </ul>
 <li class="heading"><span>weapons</span></li>
 <ul>
-<li><a class="" href="BulletHole.html">BulletHole</a></li>
-<li><a class="" href="HitScan3D.html">HitScan3D</a></li>
-<li><a class="" href="Magazine.html">Magazine</a></li>
-<li><a class="" href="Projectile3D.html">Projectile3D</a></li>
-<li><a class="active" href="ProjectileEmitter3D.html">ProjectileEmitter3D</a></li>
+<li><a class="" href="..\..\weapons\BulletHole.html">BulletHole</a></li>
+<li><a class="" href="..\..\weapons\HitScan3D.html">HitScan3D</a></li>
+<li><a class="" href="..\..\weapons\Magazine.html">Magazine</a></li>
+<li><a class="" href="..\..\weapons\Projectile3D.html">Projectile3D</a></li>
+<li><a class="" href="..\..\weapons\ProjectileEmitter3D.html">ProjectileEmitter3D</a></li>
 </ul>
 </ul>
 </ul>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="projectileemitter3d-extends-nodot3d">ProjectileEmitter3D extends Nodot3D <a class="heading-anchor-permalink" href="#projectileemitter3d-extends-nodot3d">#</a></h1>
+        <h1 id="thirdpersonkeyboardinput-extends-nodot">ThirdPersonKeyboardInput extends Nodot <a class="heading-anchor-permalink" href="#thirdpersonkeyboardinput-extends-nodot">#</a></h1>
 <h2 id="table-of-contents">Table of contents <a class="heading-anchor-permalink" href="#table-of-contents">#</a></h2>
 <h3 id="variables">Variables <a class="heading-anchor-permalink" href="#variables">#</a></h3>
 <table>
@@ -544,13 +544,28 @@
 <tbody>
 <tr>
 <td style="text-align:left"><a href="#enabled">enabled</a></td>
-<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left"><code>undefined</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
-<td style="text-align:left"><a href="#accuracy">accuracy</a></td>
+<td style="text-align:left"><a href="#speed">speed</a></td>
 <td style="text-align:left"><code>float</code></td>
-<td style="text-align:left"><code>0.0</code></td>
+<td style="text-align:left"><code>5.0</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#turn_rate">turn_rate</a></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>0.1</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#jump_velocity">jump_velocity</a></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>4.5</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#strafing">strafing</a></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
 </table>
@@ -565,12 +580,17 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><a href="#aim_emitter">aim_emitter</a></td>
+<td style="text-align:left"><a href="#face_target">face_target</a></td>
+<td style="text-align:left"><code>Vector3</code></td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#disable">disable</a></td>
 <td style="text-align:left"></td>
 <td style="text-align:left"></td>
 </tr>
 <tr>
-<td style="text-align:left"><a href="#action">action</a></td>
+<td style="text-align:left"><a href="#enable">enable</a></td>
 <td style="text-align:left"></td>
 <td style="text-align:left"></td>
 </tr>
@@ -578,9 +598,9 @@
 </table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
 <h3 id="enabled">enabled <a class="heading-anchor-permalink" href="#enabled">#</a></h3>
-<pre><code class="language-gdscript">@export var enabled: bool = true
+<pre><code class="language-gdscript">@export var enabled = true
 </code></pre>
-<p>Whether to enable the projectile emitter or not</p>
+<p>Is input enabled</p>
 <table>
 <thead>
 <tr>
@@ -592,15 +612,15 @@
 <tbody>
 <tr>
 <td style="text-align:left"><code>enabled</code></td>
-<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left"><code>undefined</code></td>
 <td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="accuracy">accuracy <a class="heading-anchor-permalink" href="#accuracy">#</a></h3>
-<pre><code class="language-gdscript">@export var accuracy : float = 0.0
+<h3 id="speed">speed <a class="heading-anchor-permalink" href="#speed">#</a></h3>
+<pre><code class="language-gdscript">@export var speed := 5.0
 </code></pre>
-<p>The accuracy of the emission (0.0 = emit with 100% accuracy, 50.0 = emit in any forward direction, 100.0 = emit in any direction)</p>
+<p>How fast the character can move</p>
 <table>
 <thead>
 <tr>
@@ -611,21 +631,107 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><code>accuracy</code></td>
+<td style="text-align:left"><code>speed</code></td>
 <td style="text-align:left"><code>float</code></td>
-<td style="text-align:left"><code>0.0</code></td>
+<td style="text-align:left"><code>5.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="turn_rate">turn_rate <a class="heading-anchor-permalink" href="#turn_rate">#</a></h3>
+<pre><code class="language-gdscript">@export var turn_rate := 0.1
+</code></pre>
+<p>How fast the player turns to face a direction</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>turn_rate</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="jump_velocity">jump_velocity <a class="heading-anchor-permalink" href="#jump_velocity">#</a></h3>
+<pre><code class="language-gdscript">@export var jump_velocity = 4.5
+</code></pre>
+<p>How high the character can jump</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>jump_velocity</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left"><code>4.5</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="strafing">strafing <a class="heading-anchor-permalink" href="#strafing">#</a></h3>
+<pre><code class="language-gdscript">@export var strafing := false
+</code></pre>
+<p>Instead of turning the character, the character will strafe on left and right input action</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>strafing</code></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left"><code>false</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="functions-2">Functions <a class="heading-anchor-permalink" href="#functions-2">#</a></h2>
-<h3 id="aim_emitter">aim_emitter <a class="heading-anchor-permalink" href="#aim_emitter">#</a></h3>
-<pre><code class="language-gdscript">func aim_emitter() -&gt; void
+<h3 id="face_target">face_target <a class="heading-anchor-permalink" href="#face_target">#</a></h3>
+<pre><code class="language-gdscript">func face_target(target_position: Vector3, weight: float) -&gt; void
 </code></pre>
-<p>Apply the accuracy to the emitter</p>
-<h3 id="action">action <a class="heading-anchor-permalink" href="#action">#</a></h3>
-<pre><code class="language-gdscript">func action() -&gt; void
+<p>Turn to face the target. Essentially lerping look_at</p>
+<h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>target_position</code></td>
+<td style="text-align:left"><code>Vector3</code></td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>weight</code></td>
+<td style="text-align:left"><code>float</code></td>
+<td style="text-align:left">-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="disable">disable <a class="heading-anchor-permalink" href="#disable">#</a></h3>
+<pre><code class="language-gdscript">func disable() -&gt; void
 </code></pre>
-<p>Execute the emitter</p>
+<p>Disable input</p>
+<h3 id="enable">enable <a class="heading-anchor-permalink" href="#enable">#</a></h3>
+<pre><code class="language-gdscript">func enable() -&gt; void
+</code></pre>
+<p>Enable input</p>
 
       </article>
     </div>
