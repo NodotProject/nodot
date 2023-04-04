@@ -25,3 +25,7 @@ https://krazyjakee.github.io/nodot
 ## Examples
 
 https://github.com/krazyjakee/nodot/tree/main/examples
+
+Example model asset credits:
+- https://quaternius.com (CC0)
+- https://www.kenney.nl (CC0)

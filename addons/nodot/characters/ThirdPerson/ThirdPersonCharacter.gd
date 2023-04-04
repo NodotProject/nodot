@@ -32,14 +32,12 @@ func _input(event: InputEvent) -> void:
 
 ## Disable player input
 func disable_input() -> void:
-  if has_node("FirstPersonKeyboardInput"):
-    get_node("FirstPersonKeyboardInput").disable()
-  if has_node("FirstPersonMouseInput"):
-    get_node("FirstPersonMouseInput").disable()
+  for child in get_children():
+    if child is ThirdPersonKeyboardInput: child.disable()
+    if child is ThirdPersonMouseInput: child.disable()
 
 ## Enable player input
 func enable_input() -> void:
-  if has_node("FirstPersonKeyboardInput"):
-    get_node("FirstPersonKeyboardInput").enable()
-  if has_node("FirstPersonMouseInput"):
-    get_node("FirstPersonMouseInput").enable()
+  for child in get_children():
+    if child is ThirdPersonKeyboardInput: child.enable()
+    if child is ThirdPersonMouseInput: child.enable()
