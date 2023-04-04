@@ -16,14 +16,31 @@ script/source = "extends Node3D
 @onready var parent: ThirdPersonCharacter = get_parent()
 @onready var animation_player: AnimationPlayer = get_node(\"AnimationPlayer\")
 
+var animation_busy = false
+
 func _physics_process(delta) -> void:
-  if parent.is_on_floor():
-    if parent.velocity != Vector3.ZERO:
-      animation_player.play(\"CharacterArmature|Run\")
-    else:
-      animation_player.play(\"CharacterArmature|Idle\")
-  else:
-    animation_player.play(\"CharacterArmature|Jump\")
+  if !animation_busy:
+    if parent.is_on_floor():
+      if parent.velocity != Vector3.ZERO:
+        animation_player.play(\"CharacterArmature|Run\")
+      else:
+        animation_player.play(\"CharacterArmature|Idle\")
+        
+    if Input.is_action_just_pressed(\"jump\"):
+      animation_player.play(\"CharacterArmature|Jump\")
+      
+    if Input.is_action_just_pressed(\"action\"):
+      punch()
+      
+func punch() -> void:
+  animation_player.play(\"CharacterArmature|Punch\")
+  await set_animation_busy()
+    
+func set_animation_busy() -> void:
+  animation_busy = true
+  var wait_time = animation_player.current_animation_length
+  await get_tree().create_timer(wait_time).timeout
+  animation_busy = false
   
 "
 
