@@ -91,8 +91,8 @@ func change_item(new_index: int) -> void:
     else:
       active_item_index = new_index
 
-	# TODO: Typehint this when nullable static types are supported.
-	# https://github.com/godotengine/godot-proposals/issues/162
+  # TODO: Typehint this when nullable static types are supported.
+  # https://github.com/godotengine/godot-proposals/issues/162
     var active_item = get_active_item()
     if active_item:
       await (active_item as FirstPersonItem).deactivate()

@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://iqc5bp3n72a0"]
+
+[ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCharacter.gd" id="1_vhcpw"]
+[ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCamera.gd" id="2_oac3o"]
+[ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonKeyboardInput.gd" id="3_j23gj"]
+[ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonMouseInput.gd" id="4_hvhp3"]
+[ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="5_7yi3r"]
+[ext_resource type="PackedScene" uid="uid://bq2uerkxo6ojl" path="res://examples/3dplatformer/models/pirate_male.tscn" id="6_e8xeq"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m1tjm"]
+
+[sub_resource type="GDScript" id="GDScript_nrkwj"]
+resource_name = "character_model"
+script/source = "extends Node3D
+
+@onready var parent: ThirdPersonCharacter = get_parent()
+@onready var animation_player: AnimationPlayer = get_node(\"AnimationPlayer\")
+
+var animation_busy = false
+
+func _physics_process(delta) -> void:
+  if !animation_busy:
+    if parent.is_on_floor():
+      if parent.velocity != Vector3.ZERO:
+        animation_player.play(\"CharacterArmature|Run\")
+      else:
+        animation_player.play(\"CharacterArmature|Idle\")
+        
+    if Input.is_action_just_pressed(\"jump\"):
+      animation_player.play(\"CharacterArmature|Jump\")
+      
+    if Input.is_action_just_pressed(\"action\"):
+      punch()
+      
+func punch() -> void:
+  animation_player.play(\"CharacterArmature|Punch\")
+  await set_animation_busy()
+    
+func set_animation_busy() -> void:
+  animation_busy = true
+  var wait_time = animation_player.current_animation_length
+  await get_tree().create_timer(wait_time).timeout
+  animation_busy = false
+  
+"
+
+[node name="ThirdPersonCharacter" type="CharacterBody3D"]
+script = ExtResource("1_vhcpw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_m1tjm")
+
+[node name="ThirdPersonCamera" type="Camera3D" parent="."]
+script = ExtResource("2_oac3o")
+
+[node name="ThirdPersonKeyboardInput" type="Node" parent="."]
+script = ExtResource("3_j23gj")
+
+[node name="ThirdPersonMouseInput" type="Node" parent="."]
+script = ExtResource("4_hvhp3")
+vertical_clamp = Vector2(-0.379, 0.062)
+
+[node name="GravityPhysics" type="Node" parent="."]
+script = ExtResource("5_7yi3r")
+
+[node name="Pirate_Male" parent="." instance=ExtResource("6_e8xeq")]
+transform = Transform3D(-0.517, 0, -4.51976e-08, 0, 0.517, 0, 4.51976e-08, 0, -0.517, 0, -0.985823, 0)
+script = SubResource("GDScript_nrkwj")

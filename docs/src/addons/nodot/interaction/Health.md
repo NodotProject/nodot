@@ -22,7 +22,7 @@
 
 |Name|Type|Default|
 |:-|:-|:-|
-|[set_health](#set_health)|`float`|-|
+|[add_health](#add_health)|`float`|-|
 
 ## Signals
 
@@ -107,10 +107,10 @@ The current health
 
 ## Functions
 
-### set_health
+### add_health
 
 ```gdscript
-func set_health(modifier: float) -> void
+func add_health(modifier: float) -> void
 ```
 
 Offsets current_health by the modifier
