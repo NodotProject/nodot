@@ -12,6 +12,7 @@
 |[damage](#damage)|`float`|`0.0`|
 |[damage_distance_reduction](#damage_distance_reduction)|`float`|`0.0`|
 |[distance](#distance)|`float`|`500`|
+|[applied_force](#applied_force)|`float`|`1.0`|
 |[healing](#healing)|`bool`|`false`|
 
 ### Functions
@@ -96,6 +97,18 @@ Total distance (meters) to search for hit targets
 |Name|Type|Default|
 |:-|:-|:-|
 |`distance`|`float`|`500`|
+
+### applied_force
+
+```gdscript
+@export var applied_force: float = 1.0
+```
+
+Amount of applied force to a RigidBody3D on impact
+
+|Name|Type|Default|
+|:-|:-|:-|
+|`applied_force`|`float`|`1.0`|
 
 ### healing
 
