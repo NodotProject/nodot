@@ -1,9 +1,8 @@
-[gd_scene load_steps=39 format=3 uid="uid://bqa7k4m0f1es6"]
+[gd_scene load_steps=39 format=3 uid="uid://wsnjwetrppks"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
-[ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="4_kdoii"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
 [ext_resource type="PackedScene" uid="uid://v7ppyg7d68lg" path="res://examples/fps/weapon_models/pistol.tscn" id="6_k56ep"]
@@ -25,8 +24,9 @@
 [ext_resource type="PackedScene" uid="uid://6pdowc3cdf6t" path="res://examples/fps/weapon_models/rocket.tscn" id="22_4olq1"]
 [ext_resource type="AudioStream" uid="uid://cg2rdrr0nuoq1" path="res://examples/fps/sfx/thruster.mp3" id="23_eltmd"]
 [ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
-[ext_resource type="Script" path="res://addons/nodot/effects/Explosion3D.gd" id="25_fupwb"]
+[ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
+[ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="27_gxftb"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -131,6 +131,7 @@ raycast = NodePath("../../RayCast3D")
 accuracy = 10.0
 damage = 12.0
 damage_distance_reduction = 1.0
+applied_force = 4.0
 
 [node name="Magazine" type="Node" parent="FirstPersonViewport/Pistol"]
 script = ExtResource("12_hk1bj")
@@ -261,6 +262,7 @@ doppler_tracking = 2
 [node name="Explosion3D" type="Node3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D"]
 script = ExtResource("25_fupwb")
 effect_time = 2.0
+max_force = 6.0
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D/Explosion3D"]
 amount = 6
@@ -277,5 +279,5 @@ shape = SubResource("CapsuleShape3D_5gmd7")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_wgoe5")
 
-[node name="GravityPhysics" type="Node" parent="."]
-script = ExtResource("4_kdoii")
+[node name="CharacterGravityPhysics" type="Node" parent="."]
+script = ExtResource("27_gxftb")

@@ -45,9 +45,19 @@ func _ready() -> void:
 func action() -> void:
   # Required because action can be called too early
   await get_tree().physics_frame
-
-  ## TODO: Use a raycast to detect line of sight.
-
+  
+  if force_range > 0.0:
+    var force_colliders: Array[Node3D] = force_area.get_overlapping_bodies()
+    for collider in force_colliders:
+      var distance: float = global_position.distance_to(collider.global_position)
+      var direction: Vector3 = global_position.direction_to(collider.global_position)
+      var distance_percent: float = 100 / distance * force_range
+      var final_force: float = (force_range / 100) * distance_percent
+      if collider is RigidBody3D:
+        collider.apply_impulse(direction * final_force, collider.global_position - global_position)
+      if collider is StaticBreakable3D or collider is RigidBreakable3D:
+        collider.save_impulse(direction * final_force, collider.global_position, global_position)
+        
   if max_damage > 0.0:
     var damage_colliders: Array[Node3D] = damage_area.get_overlapping_bodies()
     for collider in damage_colliders:
@@ -62,13 +72,3 @@ func action() -> void:
         if !healing:
           final_damage = -final_damage
         collider_health.add_health(final_damage)
-
-  if force_range > 0.0:
-    var force_colliders: Array[Node3D] = force_area.get_overlapping_bodies()
-    for collider in force_colliders:
-      if collider is RigidBody3D:
-        var distance: float = global_position.distance_to(collider.global_position)
-        var direction: Vector3 = global_position.direction_to(collider.global_position)
-        var distance_percent: float = 100 / distance * force_range
-        var final_force: float = (force_range / 100) * distance_percent
-        collider.apply_central_impulse(direction * final_force)

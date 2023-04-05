@@ -1,4 +1,4 @@
-class_name GravityPhysics extends Nodot
+class_name CharacterGravityPhysics extends Nodot
 
 ## Add gravity to the parent object
 

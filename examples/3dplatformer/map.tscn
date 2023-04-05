@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://knhhpghrn0tv"]
 
-[ext_resource type="PackedScene" uid="uid://iqc5bp3n72a0" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
+[ext_resource type="PackedScene" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]
 size = Vector3(50, 1, 50)
