@@ -15,6 +15,8 @@ class_name HitScan3D extends Nodot3D
 @export var damage_distance_reduction: float = 0.0
 ## Total distance (meters) to search for hit targets
 @export var distance : float = 500
+## Amount of applied force to a RigidBody3D on impact
+@export var applied_force: float = 1.0
 ## Reverses the damage to heal instead
 @export var healing : bool = false
 
@@ -50,7 +52,15 @@ func get_hit_target():
     if collider:
       var distance : float = get_distance(collider)
       var hit_target = HitTarget.new(distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider)
-      # TODO: Apply force
+      
+      if applied_force > 0:
+        var direction = raycast.global_position.direction_to(hit_target.collision_point)
+        var force = direction * applied_force
+        if collider is RigidBody3D:
+          collider.apply_impulse(force, hit_target.collision_point - collider.global_position)
+        if collider is StaticBreakable3D or collider is RigidBreakable3D:
+          collider.save_impulse(force, hit_target.collision_point, collider.global_position)
+          
       if damage > 0.0:
         var collider_healths: Array[Node] = collider.find_children("*", "Health")
         if collider_healths.size() > 0:

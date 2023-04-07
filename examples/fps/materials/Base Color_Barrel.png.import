@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuia7iie0cema"
-path.s3tc="res://.godot/imported/MilitaryTarget_Base_Color.png-ea57b14de0afe32c8c285a2b41578665.s3tc.ctex"
+uid="uid://c55rww1pcxmui"
+path.s3tc="res://.godot/imported/Base Color_Barrel.png-f4a509c6d729e9767ba385f9c4710eb8.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://examples/fps/models/MilitaryTarget_Base_Color.png"
-dest_files=["res://.godot/imported/MilitaryTarget_Base_Color.png-ea57b14de0afe32c8c285a2b41578665.s3tc.ctex"]
+source_file="res://examples/fps/materials/Base Color_Barrel.png"
+dest_files=["res://.godot/imported/Base Color_Barrel.png-f4a509c6d729e9767ba385f9c4710eb8.s3tc.ctex"]
 
 [params]
 

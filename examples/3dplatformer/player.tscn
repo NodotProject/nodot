@@ -1,10 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://iqc5bp3n72a0"]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCharacter.gd" id="1_vhcpw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCamera.gd" id="2_oac3o"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonKeyboardInput.gd" id="3_j23gj"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonMouseInput.gd" id="4_hvhp3"]
-[ext_resource type="Script" path="res://addons/nodot/physics/GravityPhysics.gd" id="5_7yi3r"]
+[ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="5_7yi3r"]
 [ext_resource type="PackedScene" uid="uid://bq2uerkxo6ojl" path="res://examples/3dplatformer/models/pirate_male.tscn" id="6_e8xeq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m1tjm"]

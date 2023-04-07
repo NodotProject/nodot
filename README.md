@@ -29,3 +29,4 @@ https://github.com/krazyjakee/nodot/tree/main/examples
 Example model asset credits:
 - https://quaternius.com (CC0)
 - https://www.kenney.nl (CC0)
+- https://loafbrr.itch.io (CC0)
