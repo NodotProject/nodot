@@ -33,11 +33,21 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
+      - name: Install gdscriptify2
+        run: npm i -g krazyjakee/GDScriptify2
+      - name: Install markdown2html
+        run: npm i -g markdown-folder-to-html
+      - name: Generate docs
+        run: |
+          gdscriptify2 -o docs/src
+          markdown-folder-to-html docs/src
+          mv docs/_src/* docs
+          rm -rf docs/_src
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: './docs'
+          path: "./docs"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
