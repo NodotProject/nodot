@@ -14,6 +14,12 @@ script/source = "extends StaticBody3D
 
 @onready var health: Health = $Health
 
+func label():
+  return \"%s health remaining\" % str(round($Health.current_health))
+
+func interact():
+  $Health.current_health = 100
+
 func _on_health_health_changed(old_health, new_health):
   $TextEmitter.action(str(round(new_health - old_health)))
 "

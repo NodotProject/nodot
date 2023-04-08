@@ -1,8 +1,9 @@
-[gd_scene load_steps=40 format=3 uid="uid://wsnjwetrppks"]
+[gd_scene load_steps=40 format=3 uid="uid://cvr3xfnhuhxn3"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="5_0d045"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
 [ext_resource type="Script" path="res://addons/nodot/hud/CrossHair.gd" id="6_id5pd"]
 [ext_resource type="PackedScene" uid="uid://v7ppyg7d68lg" path="res://examples/fps/weapon_models/pistol.tscn" id="6_k56ep"]
@@ -27,7 +28,6 @@
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
 [ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="27_gxftb"]
-[ext_resource type="Script" path="res://addons/nodot/interaction/PickUp3D.gd" id="28_lfpa1"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -108,9 +108,9 @@ script = ExtResource("5_2jvx4")
 [node name="RayCast3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -50)
 
-[node name="PickUp3D" type="RayCast3D" parent="FirstPersonViewport"]
+[node name="Interaction3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -2)
-script = ExtResource("28_lfpa1")
+script = ExtResource("5_0d045")
 
 [node name="Pistol" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)

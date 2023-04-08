@@ -2,6 +2,9 @@
 @tool
 class_name RigidBreakable3D extends RigidBody3D
 
+## Triggered when the object is broken
+signal broken
+
 ## A node to replace the breakable with that contains all the smaller parts
 @export var replacement_node: Node3D
 
@@ -44,6 +47,7 @@ func action() -> void:
   var closest_child = find_closest_child()
   if closest_child:
     closest_child.apply_impulse(saved_impulse_direction, saved_impulse_position - closest_child.global_position)
+  emit_signal("broken")
   queue_free()
 
 ## Find the closest child to the saved_impulse_position (hit position)

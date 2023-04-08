@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://yf3jwue0vvs0"]
 
-[ext_resource type="PackedScene" uid="uid://wsnjwetrppks" path="res://examples/fps/player.tscn" id="1_ry0a0"]
+[ext_resource type="PackedScene" uid="uid://cvr3xfnhuhxn3" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 [ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
 [ext_resource type="PackedScene" uid="uid://b16yeyarw2ht2" path="res://examples/fps/objects/breakable_barrel.tscn" id="3_mk7d7"]
 [ext_resource type="PackedScene" uid="uid://hme8qon3s6fl" path="res://examples/fps/objects/breakable_jar.tscn" id="4_g2uxp"]
@@ -79,8 +79,8 @@ mesh = SubResource("BoxMesh_wc1fv")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_uhgr4")
 
-[node name="MilitaryTarget" parent="." instance=ExtResource("2_x7gfq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.869, 1.2717, -3.51814)
+[node name="MilitaryTarget2" parent="." instance=ExtResource("2_x7gfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.869, 1.27283, -3.51814)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.165519, 0.428036, -0.888475, 0.0783927, 0.903762, 0.420796, 0.983086, 0, -0.183145, 9.56924, 2.22609, -3.7725)
