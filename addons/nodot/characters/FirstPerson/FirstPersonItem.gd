@@ -14,9 +14,6 @@ class_name FirstPersonItem extends Nodot3D
 ## (optional) A project emitter node
 @export var projectile_emitter_node: ProjectileEmitter3D
 @export var bullethole_node: BulletHole
-@export var action_sfxplayer_node: SFXPlayer3D
-@export var reload_sfxplayer_node: SFXPlayer3D
-@export var dryfire_sfxplayer_node: SFXPlayer3D
 
 ## Triggered when the item is activated
 signal activated
@@ -107,11 +104,5 @@ func connect_magazine() -> void:
       magazine_node.connect("discharged", hitscan_node.action)
     if projectile_emitter_node:
       magazine_node.connect("discharged", projectile_emitter_node.action)
-    if action_sfxplayer_node:
-      magazine_node.connect("discharged", action_sfxplayer_node.action)
-    if reload_sfxplayer_node:
-      magazine_node.connect("reloading", reload_sfxplayer_node.action)
-    if dryfire_sfxplayer_node:
-      magazine_node.connect("magazine_depleted", dryfire_sfxplayer_node.action)
   if hitscan_node and bullethole_node:
     hitscan_node.connect("target_hit", bullethole_node.action)

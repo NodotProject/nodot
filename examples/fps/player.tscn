@@ -112,13 +112,10 @@ target_position = Vector3(0, 0, -50)
 target_position = Vector3(0, 0, -2)
 script = ExtResource("5_0d045")
 
-[node name="Pistol" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
+[node name="Pistol" type="Node3D" parent="FirstPersonViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)
 script = ExtResource("8_15eoi")
 active = true
-action_sfxplayer_node = NodePath("ActionSFXPlayer")
-reload_sfxplayer_node = NodePath("ReloadSFXPlayer")
-dryfire_sfxplayer_node = NodePath("DryfireSFXPlayer")
 
 [node name="Pistol" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("magazine_node") instance=ExtResource("6_k56ep")]
 transform = Transform3D(-4.28372e-09, 0, 0.098, 0, 0.098, 0, -0.098, 0, -4.28372e-09, 0, 0, 0)
@@ -147,35 +144,38 @@ rounds_left = 10
 script = ExtResource("11_lo0jv")
 textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
 
-[node name="ActionSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
+[node name="ActionSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("trigger_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.637575, 0, 0)
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("16_cuws3")])
+trigger_node = NodePath("../Magazine")
+trigger_signal = "discharged"
 
-[node name="ReloadSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
+[node name="ReloadSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("trigger_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.680219, 0, 0)
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("17_x25oq")])
+trigger_node = NodePath("../Magazine")
+trigger_signal = "reloading"
 
-[node name="DryfireSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol"]
+[node name="DryfireSFXPlayer" type="AudioStreamPlayer3D" parent="FirstPersonViewport/Pistol" node_paths=PackedStringArray("trigger_node")]
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("17_qbvi5")])
+trigger_node = NodePath("../Magazine")
+trigger_signal = "magazine_depleted"
 
 [node name="CrossHair" type="Node2D" parent="FirstPersonViewport/Pistol"]
 modulate = Color(1, 1, 1, 0.435294)
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
 
-[node name="P90" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node", "action_sfxplayer_node", "reload_sfxplayer_node", "dryfire_sfxplayer_node")]
+[node name="P90" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.770482, -0.595652, -1.25501)
 visible = false
 script = ExtResource("8_15eoi")
 magazine_node = NodePath("Magazine")
 hitscan_node = NodePath("HitScan3D")
 bullethole_node = NodePath("BulletHole")
-action_sfxplayer_node = NodePath("../Pistol/ActionSFXPlayer")
-reload_sfxplayer_node = NodePath("../Pistol/ReloadSFXPlayer")
-dryfire_sfxplayer_node = NodePath("../Pistol/DryfireSFXPlayer")
 
 [node name="P90" parent="FirstPersonViewport/P90" node_paths=PackedStringArray("magazine_node") instance=ExtResource("19_s013s")]
 transform = Transform3D(0.148, 0, 0, 0, 0.148, 0, 0, 0, 0.148, 0, 0, 0)
@@ -212,13 +212,12 @@ visible = false
 script = ExtResource("6_id5pd")
 crosshair_sprite = ExtResource("7_unppw")
 
-[node name="RPG" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "projectile_emitter_node", "action_sfxplayer_node")]
+[node name="RPG" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "projectile_emitter_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.611194, -0.309441, -0.638182)
 visible = false
 script = ExtResource("8_15eoi")
 magazine_node = NodePath("Magazine")
 projectile_emitter_node = NodePath("ProjectileEmitter3D")
-action_sfxplayer_node = NodePath("FiredSFX")
 
 [node name="rpg" parent="FirstPersonViewport/RPG" instance=ExtResource("19_vfcli")]
 transform = Transform3D(-1.39876e-08, 0, -0.32, 0, 0.32, 0, 0.32, 0, -1.39876e-08, 0, 0, 0)
@@ -236,9 +235,11 @@ fire_rate = 3.0
 reload_time = 5.0
 rounds_left = 3
 
-[node name="FiredSFX" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG"]
+[node name="FiredSFX" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG" node_paths=PackedStringArray("trigger_node")]
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("24_g828x")])
+trigger_node = NodePath("../Magazine")
+trigger_signal = "discharged"
 
 [node name="ProjectileEmitter3D" type="Node3D" parent="FirstPersonViewport/RPG"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.19833)
