@@ -44,7 +44,7 @@ func _input(event: InputEvent):
       carried_body = null
     else:
       var collider = get_collider()
-      if collider.has_method("interact"):
+      if is_instance_valid(collider) and collider.has_method("interact"):
         collider.interact()
         emit_signal("interacted", collider)
       elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:

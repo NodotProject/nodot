@@ -1,0 +1,52 @@
+## A Node to move other nodes from one place to another (any maybe even back again)
+@tool
+class_name Mover3D extends Nodot3D
+
+signal destination_reached
+signal origin_reached
+signal moving_to_destination
+signal moving_to_origin
+
+## The node to move
+@export var target_node: Node
+## Only move once
+@export var one_shot: bool = false
+## The destination position
+@export var destination_position = Vector3.ZERO
+## The destination rotation
+@export var destination_rotation = Vector3.ZERO
+## Movement speed
+@export var movement_speed: float = 10.0
+
+var original_position = position
+var original_rotation = rotation
+var activated = false
+var target_reached = true
+
+func _process_physics(delta: float):
+  if target_node:
+    var speed = movement_speed * delta
+    if activated:
+      if destination_position:
+        target_node.position = lerp(target_node.position, destination_position, speed)
+      if destination_rotation:
+        target_node.rotation = lerp(target_node.rotation, destination_rotation, speed)
+      if !target_reached and target_node.position == destination_position and target_node.rotation == destination_rotation:
+        emit_signal("destination_reached")
+        target_reached = true
+    elif !one_shot:
+      if destination_position:
+        target_node.position = lerp(target_node.position, original_position, speed)
+      if destination_rotation:
+        target_node.rotation = lerp(target_node.rotation, original_rotation, speed)
+      if !target_reached and target_node.position == original_position and target_node.rotation == original_rotation:
+        emit_signal("origin_reached")
+        target_reached = true
+
+func action():
+  target_reached = false
+  activated = !activated
+  if activated:
+    emit_signal("moving_to_destination")
+  else:
+    emit_signal("moving_to_origin")
