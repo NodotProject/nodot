@@ -2,6 +2,12 @@
 
 ## Table of contents
 
+### Signals
+
+|Name|Type|Default|
+|:-|:-|:-|
+|[broken](#broken)|||
+
 ### Variables
 
 |Name|Type|Default|
@@ -15,6 +21,16 @@
 |[action](#action)|||
 |[find_closest_child](#find_closest_child)|||
 |[save_impulse](#save_impulse)|`Vector3`|-|
+
+## Signals
+
+### broken
+
+```gdscript
+signal broken
+```
+
+Triggered when the object is broken
 
 ## Variables
 

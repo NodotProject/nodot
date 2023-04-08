@@ -504,7 +504,7 @@
 <li class="heading"><span>interaction</span></li>
 <ul>
 <li><a class="" href="Health.html">Health</a></li>
-<li><a class="active" href="PickUp3D.html">PickUp3D</a></li>
+<li><a class="active" href="Interaction3D.html">Interaction3D</a></li>
 <li><a class="" href="RigidBreakable3D.html">RigidBreakable3D</a></li>
 <li><a class="" href="StaticBreakable3D.html">StaticBreakable3D</a></li>
 </ul>
@@ -530,8 +530,35 @@
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="pickup3d-extends-raycast3d">PickUp3D extends RayCast3D <a class="heading-anchor-permalink" href="#pickup3d-extends-raycast3d">#</a></h1>
+        <h1 id="interaction3d-extends-raycast3d">Interaction3D extends RayCast3D <a class="heading-anchor-permalink" href="#interaction3d-extends-raycast3d">#</a></h1>
 <h2 id="table-of-contents">Table of contents <a class="heading-anchor-permalink" href="#table-of-contents">#</a></h2>
+<h3 id="signals">Signals <a class="heading-anchor-permalink" href="#signals">#</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#carry_started">carry_started</a></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#carry_ended">carry_ended</a></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#interacted">interacted</a></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+</tbody>
+</table>
 <h3 id="variables">Variables <a class="heading-anchor-permalink" href="#variables">#</a></h3>
 <table>
 <thead>
@@ -543,9 +570,24 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><a href="#pickup_action">pickup_action</a></td>
+<td style="text-align:left"><a href="#interact_action">interact_action</a></td>
 <td style="text-align:left"><code>String</code></td>
 <td style="text-align:left"><code>&quot;interact&quot;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#font_color">font_color</a></td>
+<td style="text-align:left"><code>Color</code></td>
+<td style="text-align:left"><code>Color.WHITE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#font_size">font_size</a></td>
+<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>18</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#enable_pickup">enable_pickup</a></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left"><code>true</code></td>
 </tr>
 <tr>
 <td style="text-align:left"><a href="#max_mass">max_mass</a></td>
@@ -559,9 +601,73 @@
 </tr>
 </tbody>
 </table>
+<h2 id="signals-2">Signals <a class="heading-anchor-permalink" href="#signals-2">#</a></h2>
+<h3 id="carry_started">carry_started <a class="heading-anchor-permalink" href="#carry_started">#</a></h3>
+<pre><code class="language-gdscript">signal carry_started(carried_node: Node3D)
+</code></pre>
+<p>Triggered when starting to carry an object</p>
+<h4 id="parameters">Parameters <a class="heading-anchor-permalink" href="#parameters">#</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>carried_node</code></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="carry_ended">carry_ended <a class="heading-anchor-permalink" href="#carry_ended">#</a></h3>
+<pre><code class="language-gdscript">signal carry_ended(carried_node: Node3D)
+</code></pre>
+<p>Triggered when dropping an object that was being carried</p>
+<h4 id="parameters-2">Parameters <a class="heading-anchor-permalink" href="#parameters-2">#</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>carried_node</code></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="interacted">interacted <a class="heading-anchor-permalink" href="#interacted">#</a></h3>
+<pre><code class="language-gdscript">signal interacted(interacted_node: Node3D)
+</code></pre>
+<p>Triggered when the interact function on an object was fired</p>
+<h4 id="parameters-3">Parameters <a class="heading-anchor-permalink" href="#parameters-3">#</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>interacted_node</code></td>
+<td style="text-align:left"><code>Node3D</code></td>
+<td style="text-align:left">-</td>
+</tr>
+</tbody>
+</table>
 <h2 id="variables-2">Variables <a class="heading-anchor-permalink" href="#variables-2">#</a></h2>
-<h3 id="pickup_action">pickup_action <a class="heading-anchor-permalink" href="#pickup_action">#</a></h3>
-<pre><code class="language-gdscript">@export var pickup_action: String = &quot;interact&quot;
+<h3 id="interact_action">interact_action <a class="heading-anchor-permalink" href="#interact_action">#</a></h3>
+<pre><code class="language-gdscript">@export var interact_action: String = &quot;interact&quot;
 </code></pre>
 <p>The interact input action name</p>
 <table>
@@ -574,9 +680,69 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><code>pickup_action</code></td>
+<td style="text-align:left"><code>interact_action</code></td>
 <td style="text-align:left"><code>String</code></td>
 <td style="text-align:left"><code>&quot;interact&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="font_color">font_color <a class="heading-anchor-permalink" href="#font_color">#</a></h3>
+<pre><code class="language-gdscript">@export var font_color : Color = Color.WHITE
+</code></pre>
+<p>The font color of the interaction label</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>font_color</code></td>
+<td style="text-align:left"><code>Color</code></td>
+<td style="text-align:left"><code>Color.WHITE</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="font_size">font_size <a class="heading-anchor-permalink" href="#font_size">#</a></h3>
+<pre><code class="language-gdscript">@export var font_size : int = 18
+</code></pre>
+<p>The font size of the interaction label</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>font_size</code></td>
+<td style="text-align:left"><code>int</code></td>
+<td style="text-align:left"><code>18</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="enable_pickup">enable_pickup <a class="heading-anchor-permalink" href="#enable_pickup">#</a></h3>
+<pre><code class="language-gdscript">@export var enable_pickup: bool = true
+</code></pre>
+<p>Enable the pick up functionality</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>enable_pickup</code></td>
+<td style="text-align:left"><code>bool</code></td>
+<td style="text-align:left"><code>true</code></td>
 </tr>
 </tbody>
 </table>
