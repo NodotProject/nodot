@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://knhhpghrn0tv"]
 
-[ext_resource type="PackedScene" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
+[ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
 [ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]

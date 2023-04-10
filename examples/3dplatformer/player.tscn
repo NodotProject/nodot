@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://osaskyd3chgg"]
+[gd_scene load_steps=10 format=3 uid="uid://osaskyd3chgg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCharacter.gd" id="1_vhcpw"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCamera.gd" id="2_oac3o"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonMouseInput.gd" id="4_hvhp3"]
 [ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="5_7yi3r"]
 [ext_resource type="PackedScene" uid="uid://bq2uerkxo6ojl" path="res://examples/3dplatformer/models/pirate_male.tscn" id="6_e8xeq"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="7_1llft"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m1tjm"]
 
@@ -66,3 +67,8 @@ script = ExtResource("5_7yi3r")
 [node name="Pirate_Male" parent="." instance=ExtResource("6_e8xeq")]
 transform = Transform3D(-0.517, 0, -4.51976e-08, 0, 0.517, 0, 4.51976e-08, 0, -0.517, 0, -0.985823, 0)
 script = SubResource("GDScript_nrkwj")
+
+[node name="Interaction3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -3)
+script = ExtResource("7_1llft")
+enable_pickup = false

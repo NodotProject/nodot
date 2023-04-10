@@ -7,7 +7,7 @@ resource_name = "door"
 script/source = "extends StaticBody3D
 
 func interact():
-  %Mover3D.action()
+  $Mover3D.action()
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xg0le"]
@@ -76,26 +76,23 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_44qsd")
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oevsf"]
-points = PackedVector3Array(-0.0163995, 0.00223333, 0.0176714, 0.000266666, 0.000899935, 0.0423333, 0.000266666, -0.00109993, 0.0423333, 0.000266666, -0.00109993, -0.000333332, -0.0170656, -0.00176641, 0.0416651, -0.0170656, -0.00176641, 0.000334902, 0.000266666, 0.00156595, -0.000333332, -0.0177333, 0.00156595, 0.0416651, -0.0177333, 0.00156595, -0.000333332, -0.014398, -0.00243333, 0.0190037, 0.000266666, 0.00156595, 0.0416651, -0.00040111, -0.00176641, 0.0416651, -0.00040111, -0.00176641, 0.000334902, -0.0177333, -0.00109993, 0.0423333, -0.0177333, -0.00109993, -0.000333332, -0.014398, 0.00223333, 0.0190037, -0.0163995, -0.00243333, 0.0176714, -0.0177333, 0.000899935, 0.0423333, -0.0163995, -0.00243333, 0.0190037, -0.014398, 0.00223333, 0.0176714, -0.0163995, 0.00223333, 0.0190037, -0.014398, -0.00243333, 0.0176714)
+[sub_resource type="BoxShape3D" id="BoxShape3D_gx14s"]
+size = Vector3(1.706, 4.054, 0.242)
 
-[node name="door" type="Node3D"]
-
-[node name="door1" type="StaticBody3D" parent="."]
+[node name="door1" type="StaticBody3D"]
 script = SubResource("GDScript_61xcl")
 
-[node name="Door_4" type="MeshInstance3D" parent="door1"]
+[node name="Door_4" type="MeshInstance3D" parent="."]
 transform = Transform3D(100, 0, 0, 0, -1.19209e-05, 100, 0, -100, -1.19209e-05, 0, 0, 0)
 mesh = SubResource("ArrayMesh_qxv28")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="door1"]
-transform = Transform3D(100, 0, 0, 0, -1.19209e-05, 100, 0, -100, -1.19209e-05, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_oevsf")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.858483, 2.13245, 0.0100493)
+shape = SubResource("BoxShape3D_gx14s")
 
 [node name="Mover3D" type="Node3D" parent="." node_paths=PackedStringArray("target_node")]
-unique_name_in_owner = true
 script = ExtResource("1_rnicg")
-target_node = NodePath("../door1")
+target_node = NodePath("..")
 destination_rotation = Vector3(0, 90, 0)
 movement_speed = 5.0

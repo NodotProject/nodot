@@ -1,6 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bq2uerkxo6ojl"]
-
-[ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="1_i5c2m"]
+[gd_scene load_steps=29 format=3 uid="uid://bq2uerkxo6ojl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsbeb"]
 resource_name = "Clothes"
@@ -4610,10 +4608,3 @@ autoplay = "CharacterArmature|Idle"
 libraries = {
 "": SubResource("AnimationLibrary_huxrh")
 }
-
-[node name="Interaction3D" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.77689, 0)
-target_position = Vector3(0, 0, 5)
-collide_with_areas = true
-script = ExtResource("1_i5c2m")
-enable_pickup = false
