@@ -1,6 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://d6i6tqipdhuh"]
+[gd_scene load_steps=11 format=3 uid="uid://d6i6tqipdhuh"]
 
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="1_rnicg"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="2_h0mo5"]
+[ext_resource type="AudioStream" uid="uid://cr23kh8ja3pr6" path="res://examples/3dplatformer/sfx/door_open.mp3" id="3_2k24l"]
+[ext_resource type="AudioStream" uid="uid://clphivcaourdf" path="res://examples/3dplatformer/sfx/door_close.mp3" id="4_0t4vh"]
 
 [sub_resource type="GDScript" id="GDScript_61xcl"]
 resource_name = "door"
@@ -102,3 +105,15 @@ script = ExtResource("1_rnicg")
 target_node = NodePath("..")
 destination_rotation = Vector3(0, 90, 0)
 movement_speed = 5.0
+
+[node name="open" type="AudioStreamPlayer3D" parent="." node_paths=PackedStringArray("trigger_node")]
+script = ExtResource("2_h0mo5")
+sfx = Array[AudioStream]([ExtResource("3_2k24l")])
+trigger_node = NodePath("../Mover3D")
+trigger_signal = "moving_to_destination"
+
+[node name="close" type="AudioStreamPlayer3D" parent="." node_paths=PackedStringArray("trigger_node")]
+script = ExtResource("2_h0mo5")
+sfx = Array[AudioStream]([ExtResource("4_0t4vh")])
+trigger_node = NodePath("../Mover3D")
+trigger_signal = "moving_to_origin"
