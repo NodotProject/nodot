@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://knhhpghrn0tv"]
+[gd_scene load_steps=9 format=3 uid="uid://knhhpghrn0tv"]
 
 [ext_resource type="PackedScene" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
+[ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]
 size = Vector3(50, 1, 50)
@@ -58,3 +59,6 @@ shape = SubResource("ConvexPolygonShape3D_4sep6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.0156724, 0.999877, 0, -0.999877, -0.0156724, 0, 5.08343, 0)
+
+[node name="door" parent="." instance=ExtResource("2_mlal5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.36138, 0.190476, 0.551353)
