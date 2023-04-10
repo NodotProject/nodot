@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://knhhpghrn0tv"]
+[gd_scene load_steps=15 format=3 uid="uid://knhhpghrn0tv"]
 
 [ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
 [ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
+[ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="3_pj2b2"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]
 size = Vector3(50, 1, 50)
@@ -33,6 +34,20 @@ func _on_body_exited(body):
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nkekl"]
 size = Vector3(2, 2, 7.38342)
+
+[sub_resource type="GDScript" id="GDScript_nfjlu"]
+resource_name = "floating_platform"
+script/source = "extends Node3D
+
+func _on_timer_timeout():
+  $Mover3D.action()
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_3unkb"]
+size = Vector3(2, 1, 2)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_3d8qe"]
+points = PackedVector3Array(0.954305, 0.5, 0.954305, -0.985089, -0.5, -0.985089, -0.985089, -0.5, 0.985089, 0.985089, -0.5, -0.985089, -0.954305, 0.5, -0.954305, 0.985089, -0.5, 0.985089, -0.954305, 0.5, 0.954305, 0.954305, 0.5, -0.954305)
 
 [node name="map" type="Node3D"]
 
@@ -89,5 +104,29 @@ shape = SubResource("BoxShape3D_nkekl")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44937, 0, 0.201943)
 
+[node name="floating_platform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7324, 0, -6.57198)
+script = SubResource("GDScript_nfjlu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floating_platform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.478445, 0)
+mesh = SubResource("BoxMesh_3unkb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floating_platform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.478445, 0)
+shape = SubResource("ConvexPolygonShape3D_3d8qe")
+
+[node name="Mover3D" type="Node3D" parent="floating_platform" node_paths=PackedStringArray("target_node")]
+script = ExtResource("3_pj2b2")
+target_node = NodePath("..")
+destination_position = Vector3(-2.732, 10, -6.572)
+destination_rotation = Vector3(0, 180, 0)
+movement_speed = 0.1
+
+[node name="Timer" type="Timer" parent="floating_platform"]
+wait_time = 10.0
+autostart = true
+
 [connection signal="body_entered" from="Area3D" to="Area3D" method="_on_body_entered"]
 [connection signal="body_exited" from="Area3D" to="Area3D" method="_on_body_exited"]
+[connection signal="timeout" from="floating_platform/Timer" to="floating_platform" method="_on_timer_timeout"]

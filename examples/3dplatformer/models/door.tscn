@@ -98,7 +98,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.858483, 2.13245, 0.0100493
 shape = SubResource("BoxShape3D_gx14s")
 
 [node name="Mover3D" type="Node3D" parent="." node_paths=PackedStringArray("target_node")]
-unique_name_in_owner = true
 script = ExtResource("1_rnicg")
 target_node = NodePath("..")
 destination_rotation = Vector3(0, 90, 0)

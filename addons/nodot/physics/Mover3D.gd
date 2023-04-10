@@ -18,8 +18,8 @@ signal moving_to_origin
 ## Movement speed
 @export var movement_speed: float = 10.0
 
-var original_position = position
-var original_rotation = rotation
+@onready var original_position = target_node.position
+@onready var original_rotation = target_node.rotation
 var activated = false
 var target_reached = true
 
@@ -29,6 +29,7 @@ func _physics_process(delta: float):
     var destination_rotation_radians = Vector3(deg_to_rad(destination_rotation.x), deg_to_rad(destination_rotation.y), deg_to_rad(destination_rotation.z))
     if activated:
       if destination_position:
+        ## TODO: Add a linear motion option
         target_node.position = lerp(target_node.position, destination_position, speed)
       if destination_rotation:
         target_node.rotation = lerp(target_node.rotation, destination_rotation_radians, speed)
