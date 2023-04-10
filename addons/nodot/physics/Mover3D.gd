@@ -51,3 +51,11 @@ func action():
     emit_signal("moving_to_destination")
   else:
     emit_signal("moving_to_origin")
+
+func activate():
+  if !activated: emit_signal("moving_to_destination")
+  activated = true
+
+func deactivate():
+  if activated: emit_signal("moving_to_origin")
+  activated = false
