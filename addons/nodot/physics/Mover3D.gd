@@ -61,6 +61,7 @@ func _physics_process(delta: float):
         emit_signal("origin_reached")
         emit_signal("movement_ended")
 
+## Perform the move toggling between destination and source
 func action():
   target_reached = false
   activated = !activated
@@ -70,12 +71,14 @@ func action():
     emit_signal("moving_to_origin")
   emit_signal("movement_started")
 
+## Perform the move but only towards the destination
 func activate():
   if !activated:
     emit_signal("moving_to_destination")
     emit_signal("movement_started")
   activated = true
 
+## Perform the move but only towards the origin
 func deactivate():
   if activated:
     emit_signal("moving_to_origin")

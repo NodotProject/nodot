@@ -1,9 +1,15 @@
+## Connects signals to methods
 class_name SignalConnector extends Nodot
 
+## The node that will emit the signal
 @export var trigger_node: Node
+## The name of the signal
 @export var trigger_signal: String = "interacted"
+## The node that has the method
 @export var target_node: Node
+## The name of the method
 @export var target_method: String = "action"
+## (optional) The number of arguments in the method to ignore
 @export var ignored_arguments: int = 0
 
 func _ready():
