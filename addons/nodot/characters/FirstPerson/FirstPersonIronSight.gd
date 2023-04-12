@@ -1,4 +1,5 @@
 @tool
+## A node to position a weapon down the line of sight
 class_name FirstPersonIronSight extends Nodot3D
 
 ## Whether ironsight zoom is allowed

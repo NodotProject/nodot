@@ -1,3 +1,4 @@
+## A node that explodes causing damage
 class_name Explosion3D extends Nodot3D
 
 ## How long to play the effect

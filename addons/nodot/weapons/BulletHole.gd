@@ -1,7 +1,6 @@
 @tool
-class_name BulletHole extends Nodot3D
-
 ## Spawns a bullethole
+class_name BulletHole extends Nodot3D
 
 ## An array of StandardMaterial3Ds to use as the bullethole decal. The material index can be retrieved from the target nodes "physical_material" property. The first material is the fallback default.
 @export var textures: Array[StandardMaterial3D]

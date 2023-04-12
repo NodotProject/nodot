@@ -1,3 +1,4 @@
+## A node that can propel itself
 class_name Projectile3D extends RigidBody3D
 
 ## The speed of the projectile

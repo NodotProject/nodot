@@ -1,7 +1,6 @@
 @tool
-class_name ProjectileEmitter3D extends Nodot3D
-
 ## Launches an object or objects at the specified rotation
+class_name ProjectileEmitter3D extends Nodot3D
 
 ## Whether to enable the projectile emitter or not
 @export var enabled: bool = true

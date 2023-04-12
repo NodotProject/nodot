@@ -1,6 +1,6 @@
-## A preconfigured set of inputs for third person keyboard control
 @tool
 @icon("../../icons/keyboard.svg")
+## A preconfigured set of inputs for third person keyboard control
 class_name ThirdPersonKeyboardInput extends Nodot
 
 @export var left_action : String = "left"

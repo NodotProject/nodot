@@ -1,5 +1,5 @@
-## A raycast for interacting with, picking up, carrying and re-orienting objects
 @tool
+## A raycast for interacting with, picking up, carrying and re-orienting objects
 class_name Interaction3D extends RayCast3D
 
 ## Triggered when starting to carry an object

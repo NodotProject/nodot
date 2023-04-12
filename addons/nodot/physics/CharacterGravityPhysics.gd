@@ -1,6 +1,5 @@
+## Add gravity to the parent character
 class_name CharacterGravityPhysics extends Nodot
-
-## Add gravity to the parent object
 
 @export var gravity : float = 9.8 ## Gravity strength
 

@@ -1,6 +1,5 @@
-class_name Magazine extends Nodot
-
 ## A magazine (for example, a gun magazine or crossbow) that can be used to manage ammunition and fire rates
+class_name Magazine extends Nodot
 
 ## Total rounds per magazine
 @export var capacity : int = 10

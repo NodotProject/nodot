@@ -1,10 +1,10 @@
 @tool
 @icon("../../icons/mouse.svg")
+## Takes mouse input for a third person character
 class_name ThirdPersonMouseInput extends Nodot
 
 ## Input action for enabling camera rotation
 @export var camera_rotate_action : String = "camera_rotate"
-
 ## Is input enabled
 @export var enabled := true
 ## Sensitivity of mouse movement

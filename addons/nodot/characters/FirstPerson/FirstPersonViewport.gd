@@ -1,8 +1,5 @@
-class_name FirstPersonViewport extends SubViewportContainer
-
 ## Creates a viewport that can be used for first person items. For example hands and guns.
-##
-## The viewport camera only renders items on layer 2 so items are always rendered over the rest of the scene. This is useful when you don't want your gun to clip into a wall.
+class_name FirstPersonViewport extends SubViewportContainer
 
 @export_flags_3d_render var camera_cull_mask_layer: int = 2 ## Which cull mask layers to give the camera
 @export var fov : float = 75.0 ## The viewport cameras field of view

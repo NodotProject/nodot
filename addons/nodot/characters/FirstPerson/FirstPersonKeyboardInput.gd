@@ -1,8 +1,7 @@
 @tool
 @icon("../../icons/keyboard.svg")
-class_name FirstPersonKeyboardInput extends Nodot
-
 ## A preconfigured set of inputs for first person keyboard control
+class_name FirstPersonKeyboardInput extends Nodot
 
 @export var left_action : String = "left"
 @export var right_action : String = "right"
