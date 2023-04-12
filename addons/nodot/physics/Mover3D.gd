@@ -1,5 +1,5 @@
-## A Node to move other nodes from one place to another (any maybe even back again)
 @tool
+## A Node to move other nodes from one place to another (any maybe even back again)
 class_name Mover3D extends Nodot3D
 
 ## Destination position/rotation has been reached
