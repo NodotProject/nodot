@@ -1,6 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://knhhpghrn0tv"]
+[gd_scene load_steps=14 format=3 uid="uid://knhhpghrn0tv"]
 
-[ext_resource type="PackedScene" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
+[ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
+[ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
+[ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="3_pj2b2"]
+[ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="4_ue8ae"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]
 size = Vector3(50, 1, 50)
@@ -18,6 +21,15 @@ size = Vector3(5, 5, 1)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_4sep6"]
 points = PackedVector3Array(-2.35782, -2.35735, -0.5, 2.53919, 2.53869, 0.571429, 2.53919, -2.53869, 0.571429, -2.53919, 2.53869, 0.571429, 2.35782, 2.35735, -0.5, -2.53919, -2.53869, 0.571429, 2.35782, -2.35735, -0.5, -2.35782, 2.35735, -0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nkekl"]
+size = Vector3(2, 2, 7.38342)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3unkb"]
+size = Vector3(2, 1, 2)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_3d8qe"]
+points = PackedVector3Array(0.954305, 0.5, 0.954305, -0.985089, -0.5, -0.985089, -0.985089, -0.5, 0.985089, 0.985089, -0.5, -0.985089, -0.954305, 0.5, -0.954305, 0.985089, -0.5, 0.985089, -0.954305, 0.5, 0.954305, 0.954305, 0.5, -0.954305)
 
 [node name="map" type="Node3D"]
 
@@ -58,3 +70,57 @@ shape = SubResource("ConvexPolygonShape3D_4sep6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.0156724, 0.999877, 0, -0.999877, -0.0156724, 0, 5.08343, 0)
+
+[node name="door" parent="." instance=ExtResource("2_mlal5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.36138, 0.190476, 0.551353)
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.64818, 0.904527, 0.201943)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0573988, 0)
+shape = SubResource("BoxShape3D_nkekl")
+
+[node name="BodyEntered" type="Node" parent="Area3D" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("4_ue8ae")
+trigger_node = NodePath("..")
+trigger_signal = "body_entered"
+target_node = NodePath("../../door1")
+target_method = "activate"
+ignored_arguments = 1
+
+[node name="BodyExited" type="Node" parent="Area3D" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("4_ue8ae")
+trigger_node = NodePath("..")
+trigger_signal = "body_exited"
+target_node = NodePath("../../door1")
+target_method = "deactivate"
+ignored_arguments = 1
+
+[node name="door1" parent="." instance=ExtResource("2_mlal5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44937, 0, 0.201943)
+
+[node name="floating_platform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7324, 0, -6.57198)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floating_platform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.478445, 0)
+mesh = SubResource("BoxMesh_3unkb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floating_platform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.478445, 0)
+shape = SubResource("ConvexPolygonShape3D_3d8qe")
+
+[node name="Mover3D" type="Node3D" parent="floating_platform" node_paths=PackedStringArray("target_node")]
+script = ExtResource("3_pj2b2")
+target_node = NodePath("..")
+auto_start = true
+destination_position = Vector3(-2.732, 10, -6.572)
+destination_rotation = Vector3(0, 180, 0)
+movement_speed = 1.0
+
+[node name="SignalConnector" type="Node" parent="floating_platform" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("4_ue8ae")
+trigger_node = NodePath("../Mover3D")
+trigger_signal = "movement_ended"
+target_node = NodePath("../Mover3D")
