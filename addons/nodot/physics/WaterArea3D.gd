@@ -87,9 +87,9 @@ func _physics_process(delta: float):
       if depth > 0:
         body.linear_velocity *= 1 - water_drag
         body.angular_velocity *= 1 - water_angular_drag
+        await get_tree().physics_frame
         if is_instance_valid(body):
           # This await allows other physics to apply first
-          await get_tree().physics_frame
           body.apply_force(Vector3.UP * float_force * gravity * depth)
     
 ## Create probe points (global position coordinates) at varying positions at the bottom of the body collider      
