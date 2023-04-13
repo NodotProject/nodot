@@ -66,12 +66,16 @@ func _on_body_entered(body: Node3D):
     # TODO: Create better probe logic
     # create_probes(body)
     body_tracker.append(body)
+  if body is CharacterBody3D and body.has_method("set_submerged"):
+    body.set_submerged(true, waterMeshInstance.global_position.y)
   
 func _on_body_exited(body: Node3D):
   if body is RigidBody3D and body_tracker.has(body):
     var idx = body_tracker.find(body)
     body_tracker.remove_at(idx)
     # probe_tracker.remove_at(idx)
+  if body is CharacterBody3D and body.has_method("set_submerged"):
+    body.set_submerged(false, waterMeshInstance.global_position.y)
     
 func _physics_process(delta: float):
   time += delta
@@ -98,6 +102,7 @@ func _physics_process(delta: float):
         await get_tree().physics_frame
         if is_instance_valid(body):
           var final_float_force = Vector3.UP * float_force * gravity * depth
+          final_float_force.y = min(final_float_force.y, 90)
           body.apply_force(final_float_force + (tidal_direction * tidal_force))
     
 ## Create probe points (global position coordinates) at varying positions at the bottom of the body collider      

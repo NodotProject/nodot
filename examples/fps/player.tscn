@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://cvr3xfnhuhxn3"]
+[gd_scene load_steps=42 format=3 uid="uid://cvr3xfnhuhxn3"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -28,6 +28,7 @@
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
 [ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="27_gxftb"]
+[ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -90,12 +91,32 @@ material = SubResource("StandardMaterial3D_k3wjv")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
 
+[sub_resource type="GDScript" id="GDScript_ewv7c"]
+resource_name = "submergesound"
+script/source = "extends Node
+
+var audio_bus_index = AudioServer.get_bus_index(\"Master\")
+
+func _ready():
+  get_parent().connect(\"head_submerged\", submerge)
+  get_parent().connect(\"head_surfaced\", surface)
+
+func submerge():
+  AudioServer.set_bus_effect_enabled(audio_bus_index, 0, true)
+  $Ambience.play()
+  
+func surface():
+  AudioServer.set_bus_effect_enabled(audio_bus_index, 0, false)
+  $Ambience.stop()
+"
+
 [node name="FirstPersonCharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_4h8r1")
 head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
+submerge_speed_divider = null
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
@@ -247,6 +268,7 @@ script = ExtResource("20_jlvx1")
 accuracy = 1.0
 
 [node name="Projectile3D" type="RigidBody3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D"]
+mass = 30.0
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("21_uyk2t")
@@ -287,3 +309,9 @@ mesh = SubResource("CapsuleMesh_wgoe5")
 
 [node name="CharacterGravityPhysics" type="Node" parent="."]
 script = ExtResource("27_gxftb")
+
+[node name="SubmergeSound" type="Node" parent="."]
+script = SubResource("GDScript_ewv7c")
+
+[node name="Ambience" type="AudioStreamPlayer" parent="SubmergeSound"]
+stream = ExtResource("29_fa7xe")
