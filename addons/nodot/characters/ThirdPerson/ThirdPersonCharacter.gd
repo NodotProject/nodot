@@ -5,10 +5,17 @@ class_name ThirdPersonCharacter extends CharacterBody3D
 @export var escape_action : String = "escape"
 ## Allow player input
 @export var input_enabled: bool = true
+## Gravity strength
+@export var gravity : float = 9.8
+## Apply gravity even when the character is on the floor
+@export var always_apply_gravity: bool = false
 
 var camera: ThirdPersonCamera
   
 func _physics_process(delta: float) -> void:
+  if always_apply_gravity or !is_on_floor():
+    velocity.y -= gravity * delta
+    
   move_and_slide()
 
 func _enter_tree() -> void:

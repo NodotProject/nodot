@@ -15,7 +15,7 @@ class_name WaterArea3D extends Area3D
 @onready var default_gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var rng = RandomNumberGenerator.new()
-var waterMeshInstance: MeshInstance3D = MeshInstance3D.new()
+var water_mesh_instance: MeshInstance3D = MeshInstance3D.new()
 
 # Used to track bodies
 var body_tracker: Array[RigidBody3D] = []
@@ -43,17 +43,17 @@ func _ready():
       collider_shape = child.shape
       
   var waterMesh = QuadMesh.new()
-  waterMesh.orientation = PlaneMesh.FACE_Y
+  waterMesh.orientation = QuadMesh.FACE_Y
   waterMesh.size = Vector2(collider_shape.size.x, collider_shape.size.z)
   waterMesh.subdivide_width = 200
   waterMesh.subdivide_depth = 200
   waterMesh.material = water_shader
-  waterMeshInstance.mesh = waterMesh
-  waterMeshInstance.transparency = 0.05
-  waterMeshInstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-  waterMeshInstance.position.y = collider_shape.size.y / 2
+  water_mesh_instance.mesh = waterMesh
+  water_mesh_instance.transparency = 0.05
+  water_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+  water_mesh_instance.position.y = collider_shape.size.y / 2
   
-  add_child(waterMeshInstance)
+  add_child(water_mesh_instance)
   
   material = waterMesh.surface_get_material(0)
   noise = material.get_shader_parameter("wave").noise.get_seamless_image(512, 512)
@@ -66,16 +66,16 @@ func _on_body_entered(body: Node3D):
     # TODO: Create better probe logic
     # create_probes(body)
     body_tracker.append(body)
-  if body is CharacterBody3D and body.has_method("set_submerged"):
-    body.set_submerged(true, waterMeshInstance.global_position.y)
+  if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
+    body.submerge_handler.set_submerged(true, self)
   
 func _on_body_exited(body: Node3D):
   if body is RigidBody3D and body_tracker.has(body):
     var idx = body_tracker.find(body)
     body_tracker.remove_at(idx)
     # probe_tracker.remove_at(idx)
-  if body is CharacterBody3D and body.has_method("set_submerged"):
-    body.set_submerged(false, waterMeshInstance.global_position.y)
+  if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
+    body.submerge_handler.set_submerged(false, self)
     
 func _physics_process(delta: float):
   time += delta
@@ -126,4 +126,4 @@ func get_wave_height(world_position: Vector3) -> float:
   var uv_y = wrapf(world_position.z / noise_scale + time * wave_speed, 0, 1)
 
   var pixel_pos = Vector2(uv_x * noise.get_width(), uv_y * noise.get_height())
-  return waterMeshInstance.global_position.y + noise.get_pixelv(pixel_pos).r * height_scale;
+  return water_mesh_instance.global_position.y + noise.get_pixelv(pixel_pos).r * height_scale;

@@ -27,8 +27,8 @@
 [ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
-[ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="27_gxftb"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -116,7 +116,7 @@ head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
-submerge_speed_divider = null
+direction_movement_only = null
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
@@ -307,11 +307,11 @@ shape = SubResource("CapsuleShape3D_5gmd7")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_wgoe5")
 
-[node name="CharacterGravityPhysics" type="Node" parent="."]
-script = ExtResource("27_gxftb")
+[node name="FirstPersonSubmerged" type="Node" parent="."]
+script = ExtResource("30_i1ec3")
 
-[node name="SubmergeSound" type="Node" parent="."]
+[node name="SubmergeSound" type="Node" parent="FirstPersonSubmerged"]
 script = SubResource("GDScript_ewv7c")
 
-[node name="Ambience" type="AudioStreamPlayer" parent="SubmergeSound"]
+[node name="Ambience" type="AudioStreamPlayer" parent="FirstPersonSubmerged/SubmergeSound"]
 stream = ExtResource("29_fa7xe")

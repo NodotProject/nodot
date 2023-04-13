@@ -8,21 +8,15 @@ class_name FirstPersonCharacter extends CharacterBody3D
 @export var fov := 75.0
 ## The head position
 @export var head_position := Vector3.ZERO
-
-## Triggered when submerged underwater
-signal submerged
-## Triggered when out of water
-signal surfaced
-## Triggered when the head is submerged
-signal head_submerged
-## Triggered when the head is surfaced
-signal head_surfaced
+## Gravity strength
+@export var gravity : float = 9.8
+## Apply gravity even when the character is on the floor
+@export var always_apply_gravity: bool = false
 
 var head: Node3D
 var camera: Camera3D
-var is_submerged: bool = false
-var is_head_submerged: bool = false
-var water_y_position: float = 0.0
+var submerge_handler: FirstPersonSubmerged
+var keyboard_input: FirstPersonKeyboardInput
 
 func _enter_tree() -> void:
   head = Node3D.new()
@@ -31,6 +25,12 @@ func _enter_tree() -> void:
   camera.name = "Camera3D"
   head.add_child(camera)
   add_child(head)
+  
+  for child in get_children():
+    if child is FirstPersonSubmerged:
+      submerge_handler = child
+    if child is FirstPersonKeyboardInput:
+      keyboard_input = child
 
 func _ready() -> void:
   camera.fov = fov
@@ -47,7 +47,9 @@ func _ready() -> void:
     head.position = head_position
 
 func _physics_process(delta: float) -> void:
-  if is_submerged: check_head_submerged()
+  if always_apply_gravity or !is_on_floor():
+    velocity.y -= gravity * delta
+    
   move_and_slide()
 
 func _input(event: InputEvent) -> void:
@@ -70,24 +72,3 @@ func enable_input() -> void:
   for child in get_children():
     if child is FirstPersonKeyboardInput: child.enable()
     if child is FirstPersonMouseInput: child.enable()
-
-## Trigger submerge states
-func set_submerged(input_submerged: bool = false, input_water_y_position: float = 0.0):
-  is_submerged = input_submerged
-  water_y_position = input_water_y_position
-  
-  if is_submerged:
-    emit_signal("submerged")
-  else:
-    emit_signal("surfaced")
-
-## Check if the head is submerged
-func check_head_submerged():
-  if !is_head_submerged and camera.global_position.y < water_y_position:
-    is_head_submerged = true
-    emit_signal("head_submerged")
-  elif is_head_submerged and camera.global_position.y >= water_y_position:
-    is_head_submerged = false
-    emit_signal("head_surfaced")
-    
-  
