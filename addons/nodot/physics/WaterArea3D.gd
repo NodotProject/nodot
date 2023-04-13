@@ -71,7 +71,7 @@ func _on_body_exited(body: Node3D):
   if body is RigidBody3D and body_tracker.has(body):
     var idx = body_tracker.find(body)
     body_tracker.remove_at(idx)
-    probe_tracker.remove_at(idx)
+    # probe_tracker.remove_at(idx)
     
 func _physics_process(delta: float):
   time += delta

@@ -30,3 +30,4 @@ Example model asset credits:
 - https://quaternius.com (CC0)
 - https://www.kenney.nl (CC0)
 - https://loafbrr.itch.io (CC0)
+- https://pixabay.com (CC0)

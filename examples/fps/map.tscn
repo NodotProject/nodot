@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://yf3jwue0vvs0"]
+[gd_scene load_steps=33 format=3 uid="uid://yf3jwue0vvs0"]
 
 [ext_resource type="PackedScene" uid="uid://cvr3xfnhuhxn3" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 [ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
@@ -8,6 +8,13 @@
 [ext_resource type="Script" path="res://addons/nodot/physics/WaterArea3D.gd" id="6_myy8d"]
 [ext_resource type="Material" uid="uid://ck4ea8jnulenl" path="res://addons/nodot/shaders/clean_water.tres" id="7_5kl42"]
 [ext_resource type="ArrayMesh" uid="uid://c1o2udpxgarsf" path="res://examples/fps/models/pool.obj" id="7_qqemd"]
+[ext_resource type="AudioStream" uid="uid://d1moonipd5ko3" path="res://examples/fps/sfx/pool_ambience.mp3" id="8_jesnd"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="9_g21i7"]
+[ext_resource type="Texture2D" uid="uid://dnghpx7yqviuc" path="res://examples/fps/materials/skybox.jpg" id="9_qys48"]
+[ext_resource type="AudioStream" uid="uid://bqas22x5wpn6w" path="res://examples/fps/sfx/splash.mp3" id="10_f4kyv"]
+[ext_resource type="AudioStream" uid="uid://bddljpngewaim" path="res://examples/fps/sfx/splash2.mp3" id="11_o4gop"]
+[ext_resource type="AudioStream" uid="uid://cmtc7ntebm7y7" path="res://examples/fps/sfx/splash3.mp3" id="12_laggk"]
+[ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="13_5jm7h"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_0aav7"]
 
@@ -52,6 +59,17 @@ noise = SubResource("FastNoiseLite_t7s72")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hjqbr"]
 albedo_color = Color(0.741176, 0.741176, 0.741176, 1)
 albedo_texture = SubResource("NoiseTexture2D_8v8sc")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_djlvd"]
+panorama = ExtResource("9_qys48")
+
+[sub_resource type="Sky" id="Sky_0tw1l"]
+sky_material = SubResource("PanoramaSkyMaterial_djlvd")
+
+[sub_resource type="Environment" id="Environment_plaoa"]
+background_mode = 2
+sky = SubResource("Sky_0tw1l")
+sdfgi_enabled = true
 
 [node name="map" type="Node3D"]
 
@@ -152,6 +170,26 @@ tidal_force = 4.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WaterArea3D"]
 shape = SubResource("BoxShape3D_yk2u5")
 
+[node name="WaterAmbience" type="AudioStreamPlayer3D" parent="WaterArea3D"]
+stream = ExtResource("8_jesnd")
+volume_db = -8.84
+pitch_scale = 1.15
+autoplay = true
+max_distance = 30.0
+
+[node name="SFXPlayer3D" type="AudioStreamPlayer3D" parent="WaterArea3D" node_paths=PackedStringArray("trigger_node")]
+script = ExtResource("9_g21i7")
+sfx = Array[AudioStream]([ExtResource("10_f4kyv"), ExtResource("11_o4gop"), ExtResource("12_laggk")])
+trigger_node = NodePath("..")
+trigger_signal = "body_entered"
+
+[node name="SignalConnector" type="Node" parent="WaterArea3D" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("13_5jm7h")
+trigger_node = NodePath("..")
+trigger_signal = "body_exited"
+target_node = NodePath("../SFXPlayer3D")
+ignored_arguments = 1
+
 [node name="StaticBody3D2" type="StaticBody3D" parent="."]
 transform = Transform3D(0.048, 0, 0, 0, 0.048, 0, 0, 0, 0.048, -29.7693, -3.59143, 3.79334)
 
@@ -161,5 +199,9 @@ shape = SubResource("ConcavePolygonShape3D_a17bw")
 
 [node name="SwimmingPool" type="MeshInstance3D" parent="StaticBody3D2"]
 material_override = SubResource("StandardMaterial3D_hjqbr")
+ignore_occlusion_culling = true
 mesh = ExtResource("7_qqemd")
 skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_plaoa")
