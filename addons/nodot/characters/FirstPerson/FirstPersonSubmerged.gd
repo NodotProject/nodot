@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
     
     if keyboard_input:
       var jump_pressed: bool = Input.is_action_pressed("jump")
-      var speed = keyboard_input.speed / submerge_speed_divider
+      var speed = keyboard_input.speed
       if jump_pressed:
         parent.velocity.y = lerp(parent.velocity.y, speed, 1.0 * delta)
 

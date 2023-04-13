@@ -10,7 +10,7 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
-func _ready():
+func _ready() -> void:
   if trigger_node:
     trigger_node.connect(trigger_signal, action.unbind(1))
 

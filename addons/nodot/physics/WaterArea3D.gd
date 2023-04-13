@@ -19,8 +19,9 @@ var water_mesh_instance: MeshInstance3D = MeshInstance3D.new()
 
 # Used to track bodies
 var body_tracker: Array[RigidBody3D] = []
+
 # An array of vector3 arrays
-var probe_tracker = []
+# var probe_tracker = []
 
 # Used to simulate the waves in gdscript
 var water_drag: float = 0.05
@@ -32,11 +33,11 @@ var wave_speed: float
 var height_scale: float
 var time: float
 
-func _enter_tree():
+func _enter_tree() -> void:
   connect("body_entered", _on_body_entered)
   connect("body_exited", _on_body_exited)
 
-func _ready():
+func _ready() -> void:
   var collider_shape # TODO: Missing type
   for child in get_children():
     if child is CollisionShape3D:
@@ -61,7 +62,7 @@ func _ready():
   wave_speed = material.get_shader_parameter("wave_speed")
   height_scale = material.get_shader_parameter("height_scale")
   
-func _on_body_entered(body: Node3D):
+func _on_body_entered(body: Node3D) -> void:
   if body is RigidBody3D and !body_tracker.has(body):
     # TODO: Create better probe logic
     # create_probes(body)
@@ -69,7 +70,7 @@ func _on_body_entered(body: Node3D):
   if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
     body.submerge_handler.set_submerged(true, self)
   
-func _on_body_exited(body: Node3D):
+func _on_body_exited(body: Node3D) -> void:
   if body is RigidBody3D and body_tracker.has(body):
     var idx = body_tracker.find(body)
     body_tracker.remove_at(idx)
@@ -77,7 +78,7 @@ func _on_body_exited(body: Node3D):
   if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
     body.submerge_handler.set_submerged(false, self)
     
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
   time += delta
   material.set_shader_parameter("wave_time", time)
   

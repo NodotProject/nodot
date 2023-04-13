@@ -97,15 +97,15 @@ script/source = "extends Node
 
 var audio_bus_index = AudioServer.get_bus_index(\"Master\")
 
-func _ready():
+func _ready() -> void:
   get_parent().connect(\"head_submerged\", submerge)
   get_parent().connect(\"head_surfaced\", surface)
 
-func submerge():
+func submerge() -> void:
   AudioServer.set_bus_effect_enabled(audio_bus_index, 0, true)
   $Ambience.play()
   
-func surface():
+func surface() -> void:
   AudioServer.set_bus_effect_enabled(audio_bus_index, 0, false)
   $Ambience.stop()
 "
@@ -116,7 +116,6 @@ head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
-direction_movement_only = null
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
@@ -268,7 +267,6 @@ script = ExtResource("20_jlvx1")
 accuracy = 1.0
 
 [node name="Projectile3D" type="RigidBody3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D"]
-mass = 30.0
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("21_uyk2t")
@@ -309,6 +307,7 @@ mesh = SubResource("CapsuleMesh_wgoe5")
 
 [node name="FirstPersonSubmerged" type="Node" parent="."]
 script = ExtResource("30_i1ec3")
+submerge_speed_divider = 5.0
 
 [node name="SubmergeSound" type="Node" parent="FirstPersonSubmerged"]
 script = SubResource("GDScript_ewv7c")
