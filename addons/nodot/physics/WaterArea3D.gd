@@ -1,11 +1,16 @@
 ## An area with a water surface where the player can swim and objects can float
 class_name WaterArea3D extends Area3D
 
+## The shader to apply to the quad plane on top of the waterarea
 @export var water_shader: ShaderMaterial = load("res://addons/nodot/shaders/clean_water.tres")
+## The upward force to apply to submerged objects
 @export var float_force: float = 1.0
-@export var force_probes: int = 9
-@export var water_drag: float = 0.05
-@export var water_angular_drag: float = 0.05
+## A direction to push floating objects in
+@export var tidal_direction: Vector3 = Vector3.ZERO
+## How hard to push the objects
+@export var tidal_force: float = 0.0
+# TODO: Fix probes logic
+# @export var force_probes: int = 9
 
 @onready var default_gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -18,6 +23,8 @@ var body_tracker: Array[RigidBody3D] = []
 var probe_tracker = []
 
 # Used to simulate the waves in gdscript
+var water_drag: float = 0.05
+var water_angular_drag: float = 0.05
 var material: ShaderMaterial
 var noise: Image
 var noise_scale: float
@@ -87,25 +94,26 @@ func _physics_process(delta: float):
       if depth > 0:
         body.linear_velocity *= 1 - water_drag
         body.angular_velocity *= 1 - water_angular_drag
+        # This await allows other physics to apply first
         await get_tree().physics_frame
         if is_instance_valid(body):
-          # This await allows other physics to apply first
-          body.apply_force(Vector3.UP * float_force * gravity * depth)
+          var final_float_force = Vector3.UP * float_force * gravity * depth
+          body.apply_force(final_float_force + (tidal_direction * tidal_force))
     
 ## Create probe points (global position coordinates) at varying positions at the bottom of the body collider      
-func create_probes(body: RigidBody3D):
-  var probes: Array[Vector3] = []
-  for p in force_probes:
-    var body_mesh_instance
-    for child in body.get_children():
-      if child is MeshInstance3D:
-        body_mesh_instance = child
-    if body_mesh_instance:
-      var body_mesh_size: Vector3 = body_mesh_instance.mesh.get_aabb().size
-      # TODO: This math needs to be fixed as the objects just seem to spin
-      var probe = Vector3(rng.randf() * body_mesh_size.x, rng.randf() * body_mesh_size.y, rng.randf() * body_mesh_size.z)
-      probes.append(probe)
-  probe_tracker.append(probes)
+# func create_probes(body: RigidBody3D):
+#  var probes: Array[Vector3] = []
+#  for p in force_probes:
+#    var body_mesh_instance
+#    for child in body.get_children():
+#      if child is MeshInstance3D:
+#        body_mesh_instance = child
+#    if body_mesh_instance:
+#      var body_mesh_size: Vector3 = body_mesh_instance.mesh.get_aabb().size
+#      # TODO: This math needs to be fixed as the objects just seem to spin
+#      var probe = Vector3(rng.randf() * body_mesh_size.x, rng.randf() * body_mesh_size.y, rng.randf() * body_mesh_size.z)
+#      probes.append(probe)
+#  probe_tracker.append(probes)
 
 ## Used to get the wave height at a certain position
 func get_wave_height(world_position: Vector3) -> float:

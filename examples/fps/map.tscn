@@ -146,6 +146,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.2375, -2.01535, 7.25362)
 script = ExtResource("6_myy8d")
 water_shader = ExtResource("7_5kl42")
 float_force = 5.0
+tidal_direction = Vector3(1, 0, 0)
+tidal_force = 4.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WaterArea3D"]
 shape = SubResource("BoxShape3D_yk2u5")
