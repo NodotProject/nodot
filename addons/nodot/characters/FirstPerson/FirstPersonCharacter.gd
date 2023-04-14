@@ -14,14 +14,13 @@ class_name FirstPersonCharacter extends CharacterBody3D
 @export var always_apply_gravity: bool = false
 
 var head: Node3D
-var camera: Camera3D
+var camera: Camera3D = Camera3D.new()
 var submerge_handler: FirstPersonSubmerged
 var keyboard_input: FirstPersonKeyboardInput
 
 func _enter_tree() -> void:
   head = Node3D.new()
   head.name = "Head"
-  camera = Camera3D.new()
   camera.name = "Camera3D"
   head.add_child(camera)
   add_child(head)

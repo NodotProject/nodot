@@ -45,14 +45,23 @@ func _ready() -> void:
       
   var waterMesh = QuadMesh.new()
   waterMesh.orientation = QuadMesh.FACE_Y
-  waterMesh.size = Vector2(collider_shape.size.x, collider_shape.size.z)
+  
+  if collider_shape is BoxShape3D:
+    waterMesh.size = Vector2(collider_shape.size.x, collider_shape.size.z)
+  if collider_shape is CylinderShape3D:
+    waterMesh.size = Vector2(collider_shape.radius * 2, collider_shape.radius * 2)
+    
   waterMesh.subdivide_width = 200
   waterMesh.subdivide_depth = 200
   waterMesh.material = water_shader
   water_mesh_instance.mesh = waterMesh
   water_mesh_instance.transparency = 0.05
   water_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-  water_mesh_instance.position.y = collider_shape.size.y / 2
+  
+  if collider_shape is BoxShape3D:
+    water_mesh_instance.position.y = collider_shape.size.y / 2
+  if collider_shape is CylinderShape3D:
+    water_mesh_instance.position.y = collider_shape.height / 2
   
   add_child(water_mesh_instance)
   
