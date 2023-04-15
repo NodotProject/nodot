@@ -27,6 +27,21 @@ func _get_configuration_warnings() -> PackedStringArray:
     warnings.append("Parent should be a FirstPersonCharacter")
   return warnings
 
+func _init():
+  var action_names = [item_next_action, item_previous_action, action_action, zoom_action]
+  var default_keys = [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]
+  for i in action_names.size():
+    var action_name = action_names[i]
+    if not InputMap.has_action(action_name):
+      var default_key = default_keys[i]
+      add_action_to_input_map(action_name, default_key)
+
+func add_action_to_input_map(action_name, default_key):
+  var input_key = InputEventMouseButton.new()
+  input_key.button_index = default_key
+  InputMap.add_action(action_name)
+  InputMap.action_add_event(action_name, input_key)
+  
 func _ready() -> void:
   enable()
 

@@ -23,6 +23,10 @@ WindowManager="*res://addons/nodot/autoload/WindowManager.gd"
 
 window/size/initial_screen=1
 
+[editor]
+
+movie_writer/movie_file="C:/nodot.avi"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/nodot/plugin.cfg")
