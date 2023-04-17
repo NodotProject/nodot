@@ -115,12 +115,15 @@ points = PackedVector3Array(-0.414148, 0, -0.414147, -0.414148, 0, 0.414147, -0.
 [node name="Breakable_Crates" type="RigidBody3D" node_paths=PackedStringArray("replacement_node")]
 script = ExtResource("1_stcdg")
 replacement_node = NodePath("ReplaceWith")
+explosion_force = null
 
 [node name="Crate" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.333522, 0)
 mesh = SubResource("ArrayMesh_2kq7d")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.333522, 0)
 shape = SubResource("ConvexPolygonShape3D_84npc")
 
 [node name="ReplaceWith" type="Node3D" parent="."]
@@ -129,22 +132,24 @@ shape = SubResource("ConvexPolygonShape3D_84npc")
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0.818, 0)
 
 [node name="Crate_Broken_2" type="MeshInstance3D" parent="ReplaceWith/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.92568e-08, 0.334658, 0)
 mesh = SubResource("ArrayMesh_r55rx")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceWith/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.92568e-08, 0.334658, 0)
 shape = SubResource("ConvexPolygonShape3D_q1ax4")
 
 [node name="RigidBody3D2" type="RigidBody3D" parent="ReplaceWith"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="Crate_Broken_1" type="MeshInstance3D" parent="ReplaceWith/RigidBody3D2"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -0.334658, 0)
 mesh = SubResource("ArrayMesh_ywure")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceWith/RigidBody3D2"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -0.334658, 0)
 shape = SubResource("ConvexPolygonShape3D_jjay8")
 
 [node name="Health" type="Node" parent="."]

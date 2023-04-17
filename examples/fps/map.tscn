@@ -150,37 +150,40 @@ shape = SubResource("ConvexPolygonShape3D_h8o56")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.255405, -7.51625)
 
 [node name="Breakable_Jar" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.40389, 1.07737, -7.36922)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.40389, 1.41497, -7.36922)
 
 [node name="Breakable_Jar2" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8742, 0.25, -6.57374)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8742, 0.587597, -6.57374)
 
 [node name="Breakable_Jar3" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.62077, 0.25, -8.42955)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.62077, 0.587597, -8.42955)
 
 [node name="Breakable_Jar4" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.96097, 0.25, -8.29359)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.96097, 0.587597, -8.29359)
 
 [node name="Breakable_Jar5" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9634, 0.25, -7.46282)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9634, 0.587597, -7.46282)
 
 [node name="Breakable_Jar6" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.94384, 0.25, -6.54195)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.94384, 0.587597, -6.54195)
 
 [node name="Breakable_Jar8" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.6176, 4.12631, 9.24944)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.6176, 4.46391, 9.24944)
 
 [node name="Breakable_Jar9" parent="." instance=ExtResource("4_g2uxp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.89154, 0.855738, -6.56513)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.89154, 1.19333, -6.56513)
 
 [node name="Breakable_Crates" parent="." instance=ExtResource("4_nrhjp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.63489, 0.25, -7.51394)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.63489, 0.603516, -7.51394)
+explosion_force = 1.0
 
 [node name="Breakable_Crates2" parent="." instance=ExtResource("4_nrhjp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.60584, 0.25, -7.53931)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.60584, 0.603516, -7.53931)
+explosion_force = 1.0
 
 [node name="Breakable_Crates3" parent="." instance=ExtResource("4_nrhjp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58101, 1.07821, -7.5138)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58101, 1.43173, -7.5138)
+explosion_force = 1.0
 
 [node name="WaterArea3D" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.2375, -2.01535, 7.25362)

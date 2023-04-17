@@ -155,13 +155,19 @@ shadow_mesh = SubResource("ArrayMesh_4wo4n")
 points = PackedVector3Array(0.0164548, 0.144164, 0.234826, -0.0273305, 0.293643, -0.282041, -0.0274385, 0.302994, -0.283195, 0.280384, 0.275538, -0.0259222, 0.0774632, 0.00463769, -0.156381, -0.221262, 0.344403, 0.174848, -0.174757, 0.00496164, -0.00820568, 0.128518, 0.00622884, 0.121168, 0.212186, 0.329837, 0.195688, 0.219519, 0.353589, -0.192402, -0.210909, 0.318879, -0.192118, -0.0788552, 0.00552191, -0.15551, -0.0788547, 0.00552306, 0.156309, -0.0717716, 0.329493, 0.275007, -0.282281, 0.266811, -0.00830362, 0.164713, 0.00447812, -0.0606124, -0.182402, 0.178789, 0.17329, 0.113534, 0.284545, 0.264581, 0.200517, 0.266444, -0.201017, 0.23416, 0.178853, 0.0961369, -0.182401, 0.178789, -0.172489, 0.104917, 0.275919, -0.264171, -0.0967944, 0.25734, 0.26202, -0.253649, 0.239827, 0.104984, -0.106649, 0.275854, -0.264, 0.00777132, 0.161471, -0.243324, 0.182754, 0.353589, -0.219962, -0.166164, 0.0135717, 0.0699505, 0.0598793, 0.00512791, 0.16538, -0.265819, 0.293686, -0.105556, 0.263324, 0.310995, 0.114908, 0.200181, 0.26629, 0.201481)
 
 [node name="Breakable_Jar" type="RigidBody3D" node_paths=PackedStringArray("replacement_node")]
+max_contacts_reported = 1
+contact_monitor = true
 script = ExtResource("1_ogfh3")
 replacement_node = NodePath("ReplaceMe")
+explosion_force = 2.0
+environmental_damage = 2.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.318138, 0)
 shape = SubResource("ConvexPolygonShape3D_afj03")
 
 [node name="Jar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.318138, 0)
 mesh = SubResource("ArrayMesh_fhwsl")
 skeleton = NodePath("")
 
@@ -171,29 +177,35 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.306214, 0)
 
 [node name="Jar_Broken_2" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 mesh = SubResource("ArrayMesh_13g0o")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceMe/RigidBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_qmq4v")
 
 [node name="RigidBody3D3" type="RigidBody3D" parent="ReplaceMe"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.153607, 0.307928, -0.109738)
 
 [node name="Jar_Broken_3" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 mesh = SubResource("ArrayMesh_158wu")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceMe/RigidBody3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_v21ue")
 
 [node name="RigidBody3D4" type="RigidBody3D" parent="ReplaceMe"]
 
 [node name="Jar_Broken_4" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 mesh = SubResource("ArrayMesh_yi6b7")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceMe/RigidBody3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_wd1oq")
 
 [node name="Health" type="Node" parent="."]
