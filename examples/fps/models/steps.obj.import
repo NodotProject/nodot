@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://djcsawrhutin1"
+path="res://.godot/imported/steps.obj-0dc785e24c2bddc6b94e2bdae77fc72d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/steps.obj-0dc785e24c2bddc6b94e2bdae77fc72d.mesh"]
+
+source_file="res://examples/fps/models/steps.obj"
+dest_files=["res://.godot/imported/steps.obj-0dc785e24c2bddc6b94e2bdae77fc72d.mesh", "res://.godot/imported/steps.obj-0dc785e24c2bddc6b94e2bdae77fc72d.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
