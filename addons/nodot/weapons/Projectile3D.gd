@@ -27,8 +27,7 @@ func _enter_tree() -> void:
         remove_child(explosion)
 
 func _ready() -> void:
-  gravity_scale = 1.0 if !self_propelling else 0.0
-
+  
   if lifespan > 0.0:
     await get_tree().create_timer(lifespan).timeout
     emit_signal("timeout", position, rotation)
@@ -46,7 +45,7 @@ func _physics_process(delta: float) -> void:
 
 func propel() -> void:
   if !self_propelling:
-    apply_central_impulse(get_propulsion_force())
+    apply_central_force(get_propulsion_force())
 
 func get_propulsion_force() -> Vector3:
   # Get the angle between the rocket's current direction and the desired direction.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://cvr3xfnhuhxn3"]
+[gd_scene load_steps=43 format=3 uid="uid://dxgrw3vhbt65i"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -28,7 +28,7 @@
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
-[ext_resource type="Script" path="res://addons/nodot/physics/StepUp3D.gd" id="30_11fwe"]
+[ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
@@ -268,6 +268,7 @@ script = ExtResource("20_jlvx1")
 accuracy = 1.0
 
 [node name="Projectile3D" type="RigidBody3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D"]
+gravity_scale = 0.0
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("21_uyk2t")
