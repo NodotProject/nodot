@@ -57,7 +57,7 @@ func _ready() -> void:
       fps_viewport = child
 
 func _input(event: InputEvent) -> void:
-  if event.is_action_pressed("reload"):
+  if fps_viewport and event.is_action_pressed("reload"):
     fps_viewport.reload()
 
 func _physics_process(delta: float) -> void:
