@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://yf3jwue0vvs0"]
+[gd_scene load_steps=37 format=3 uid="uid://yf3jwue0vvs0"]
 
 [ext_resource type="PackedScene" uid="uid://cvr3xfnhuhxn3" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 [ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://bddljpngewaim" path="res://examples/fps/sfx/splash2.mp3" id="11_o4gop"]
 [ext_resource type="AudioStream" uid="uid://cmtc7ntebm7y7" path="res://examples/fps/sfx/splash3.mp3" id="12_laggk"]
 [ext_resource type="ArrayMesh" uid="uid://djcsawrhutin1" path="res://examples/fps/models/steps.obj" id="15_x2811"]
+[ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="16_yvdok"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_0aav7"]
 
@@ -189,6 +190,9 @@ material = SubResource("FogMaterial_67a4i")
 
 [node name="MilitaryTarget2" parent="." instance=ExtResource("2_x7gfq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.869, 1.27283, -3.51814)
+
+[node name="door1" parent="." instance=ExtResource("16_yvdok")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.10139, 0.25, -5.98568)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.165519, 0.428036, -0.888475, 0.0783927, 0.903762, 0.420796, 0.983086, 0, -0.183145, 9.56924, 2.22609, -3.7725)

@@ -104,7 +104,7 @@ shape = SubResource("BoxShape3D_gx14s")
 script = ExtResource("1_rnicg")
 target_node = NodePath("..")
 destination_rotation = Vector3(0, 90, 0)
-movement_speed = 5.0
+transition_type = 1
 
 [node name="open" type="AudioStreamPlayer3D" parent="." node_paths=PackedStringArray("trigger_node")]
 script = ExtResource("2_h0mo5")
