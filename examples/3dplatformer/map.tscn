@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://knhhpghrn0tv"]
 
 [ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
-[ext_resource type="PackedScene" uid="uid://tp6nqouc6vm1" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
+[ext_resource type="PackedScene" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="3_pj2b2"]
 [ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="4_ue8ae"]
 [ext_resource type="Script" path="res://addons/nodot/physics/WaterArea3D.gd" id="5_3sksf"]
@@ -100,7 +100,6 @@ trigger_node = NodePath("..")
 trigger_signal = "body_entered"
 target_node = NodePath("../../door1")
 target_method = "activate"
-ignored_arguments = 1
 
 [node name="BodyExited" type="Node" parent="Area3D" node_paths=PackedStringArray("trigger_node", "target_node")]
 script = ExtResource("4_ue8ae")
@@ -108,7 +107,6 @@ trigger_node = NodePath("..")
 trigger_signal = "body_exited"
 target_node = NodePath("../../door1")
 target_method = "deactivate"
-ignored_arguments = 1
 
 [node name="door1" parent="." instance=ExtResource("2_mlal5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44937, 0, 0.201943)
