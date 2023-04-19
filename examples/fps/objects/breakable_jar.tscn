@@ -1,7 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://hme8qon3s6fl"]
+[gd_scene load_steps=19 format=3 uid="uid://hme8qon3s6fl"]
 
 [ext_resource type="Script" path="res://addons/nodot/interaction/RigidBreakable3D.gd" id="1_ogfh3"]
 [ext_resource type="Texture2D" uid="uid://c6lm2qyokdijx" path="res://examples/fps/materials/Breakable_Jar_Base Color_Jar.png" id="2_2sejy"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="4_nsi2v"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_xh0w3"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_afj03"]
@@ -212,3 +213,8 @@ shape = SubResource("ConvexPolygonShape3D_wd1oq")
 script = ExtResource("5_xh0w3")
 max_health = 1.0
 current_health = 1.0
+
+[node name="Outline3D" type="Node" parent="." node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_nsi2v")
+outline_width = 2.0
+mesh = NodePath("../Jar")

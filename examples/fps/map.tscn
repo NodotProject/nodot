@@ -1,6 +1,6 @@
-[gd_scene load_steps=58 format=3 uid="uid://yf3jwue0vvs0"]
+[gd_scene load_steps=58 format=3 uid="uid://cuaeq8t4wxbwb"]
 
-[ext_resource type="PackedScene" uid="uid://dxgrw3vhbt65i" path="res://examples/fps/player.tscn" id="1_ry0a0"]
+[ext_resource type="PackedScene" uid="uid://dv6pyhevccscg" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 [ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
 [ext_resource type="PackedScene" uid="uid://b16yeyarw2ht2" path="res://examples/fps/objects/breakable_barrel.tscn" id="3_mk7d7"]
 [ext_resource type="PackedScene" uid="uid://hme8qon3s6fl" path="res://examples/fps/objects/breakable_jar.tscn" id="4_g2uxp"]
@@ -16,7 +16,7 @@
 [ext_resource type="AudioStream" uid="uid://cmtc7ntebm7y7" path="res://examples/fps/sfx/splash3.mp3" id="12_laggk"]
 [ext_resource type="ArrayMesh" uid="uid://djcsawrhutin1" path="res://examples/fps/models/steps.obj" id="15_x2811"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/DamageArea3D.gd" id="16_w6uk5"]
-[ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="16_yvdok"]
+[ext_resource type="PackedScene" uid="uid://tp6nqouc6vm1" path="res://examples/3dplatformer/models/door.tscn" id="16_yvdok"]
 [ext_resource type="Script" path="res://addons/nodot/detection/ViewCone3D.gd" id="18_nvwsb"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/ProjectileEmitter3D.gd" id="18_tatcl"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Projectile3D.gd" id="19_25mo5"]
@@ -102,7 +102,7 @@ func _on_view_cone_3d_body_entered(body):
     $ProjectileEmitter3D.action()
 "
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8cv7f"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_robnu"]
 points = PackedVector3Array(0, 0, 0, 10, 0, 20, 9.94522, 1.04528, 20, 9.78148, 2.07912, 20, 9.51056, 3.09017, 20, 9.13545, 4.06737, 20, 8.66025, 5, 20, 8.09017, 5.87785, 20, 7.43145, 6.69131, 20, 6.69131, 7.43145, 20, 5.87785, 8.09017, 20, 5, 8.66025, 20, 4.06737, 9.13545, 20, 3.09017, 9.51056, 20, 2.07912, 9.78148, 20, 1.04528, 9.94522, 20, 2.83275e-15, 10, 20, -1.04528, 9.94522, 20, -2.07912, 9.78148, 20, -3.09017, 9.51056, 20, -4.06737, 9.13545, 20, -5, 8.66025, 20, -5.87785, 8.09017, 20, -6.69131, 7.43145, 20, -7.43145, 6.69131, 20, -8.09017, 5.87785, 20, -8.66025, 5, 20, -9.13545, 4.06737, 20, -9.51056, 3.09017, 20, -9.78148, 2.07912, 20, -9.94522, 1.04528, 20, -10, 5.6655e-15, 20, -9.94522, -1.04528, 20, -9.78148, -2.07912, 20, -9.51056, -3.09017, 20, -9.13545, -4.06737, 20, -8.66025, -5, 20, -8.09017, -5.87785, 20, -7.43145, -6.69131, 20, -6.69131, -7.43145, 20, -5.87785, -8.09017, 20, -5, -8.66025, 20, -4.06737, -9.13545, 20, -3.09017, -9.51056, 20, -2.07912, -9.78148, 20, -1.04528, -9.94522, 20, -1.83691e-15, -10, 20, 1.04528, -9.94522, 20, 2.07912, -9.78148, 20, 3.09017, -9.51056, 20, 4.06737, -9.13545, 20, 5, -8.66025, 20, 5.87785, -8.09017, 20, 6.69131, -7.43145, 20, 7.43145, -6.69131, 20, 8.09017, -5.87785, 20, 8.66025, -5, 20, 9.13545, -4.06737, 20, 9.51056, -3.09017, 20, 9.78148, -2.07912, 20, 9.94522, -1.04528, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fyfr3"]
@@ -476,7 +476,7 @@ script = SubResource("GDScript_pauv7")
 
 [node name="ViewCone3D" type="ShapeCast3D" parent="Cannon_1"]
 transform = Transform3D(0.0241007, 0, -0.999709, 0, 1, 0, 0.999709, 0, 0.0241007, 0, 1.45287, 0)
-shape = SubResource("ConvexPolygonShape3D_8cv7f")
+shape = SubResource("ConvexPolygonShape3D_robnu")
 target_position = Vector3(0, 0, 0)
 script = ExtResource("18_nvwsb")
 distance = 20.0

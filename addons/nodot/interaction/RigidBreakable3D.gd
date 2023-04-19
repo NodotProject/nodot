@@ -1,6 +1,6 @@
 ## A RigidBody3D that will be replaced by it's selected children on death
 @tool
-class_name RigidBreakable3D extends RigidBody3D
+class_name RigidBreakable3D extends NodotRigidBody3D
 
 ## Triggered when the object is broken
 signal broken
