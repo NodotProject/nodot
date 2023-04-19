@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://dxgrw3vhbt65i"]
+[gd_scene load_steps=53 format=3 uid="uid://dv6pyhevccscg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -14,7 +14,7 @@
 [ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
 [ext_resource type="Material" uid="uid://cqqc5qihe1i76" path="res://examples/fps/materials/bullethole.tres" id="11_op62p"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
-[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="15_kxtrg"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="15_kxtrg"]
 [ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/sfx/fire.mp3" id="16_cuws3"]
 [ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/sfx/dryfire.mp3" id="17_qbvi5"]
 [ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/sfx/reload.mp3" id="17_x25oq"]
@@ -30,6 +30,16 @@
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
 [ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
+[ext_resource type="Script" path="res://addons/nodot/sound/FootStepSFX3D.gd" id="31_uugiq"]
+[ext_resource type="AudioStream" uid="uid://c8df3qhkj5rlm" path="res://examples/fps/sfx/footsteps/concrete1.mp3" id="32_6wbgj"]
+[ext_resource type="AudioStream" uid="uid://bxv35s54p7pyp" path="res://examples/fps/sfx/footsteps/concrete2.mp3" id="33_tvmg1"]
+[ext_resource type="AudioStream" uid="uid://cpmfwg6l3nhok" path="res://examples/fps/sfx/footsteps/concrete3.mp3" id="34_7c6pe"]
+[ext_resource type="AudioStream" uid="uid://qjiac3u5o816" path="res://examples/fps/sfx/footsteps/concrete4.mp3" id="35_we0gd"]
+[ext_resource type="AudioStream" uid="uid://sr7jij6555s4" path="res://examples/fps/sfx/footsteps/concrete5.mp3" id="36_v181c"]
+[ext_resource type="AudioStream" uid="uid://daoqcit24kmk1" path="res://examples/fps/sfx/footsteps/grass1.mp3" id="37_fra87"]
+[ext_resource type="AudioStream" uid="uid://bswv5741m427c" path="res://examples/fps/sfx/footsteps/grass2.mp3" id="38_latv8"]
+[ext_resource type="AudioStream" uid="uid://y8ls43o6k1ov" path="res://examples/fps/sfx/footsteps/grass3.mp3" id="39_gixma"]
+[ext_resource type="AudioStream" uid="uid://vxh7cxpcqgld" path="res://examples/fps/sfx/footsteps/grass4.mp3" id="40_dd2w8"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -323,3 +333,16 @@ script = ExtResource("30_11fwe")
 
 [node name="RayCast3D" type="RayCast3D" parent="StepUp3D"]
 target_position = Vector3(0, 0, -0.6)
+
+[node name="FootStepSFX" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.864601, 0)
+script = ExtResource("31_uugiq")
+frequency = null
+
+[node name="Concrete" type="AudioStreamPlayer3D" parent="FootStepSFX"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("32_6wbgj"), ExtResource("33_tvmg1"), ExtResource("34_7c6pe"), ExtResource("35_we0gd"), ExtResource("36_v181c")])
+
+[node name="Grass" type="AudioStreamPlayer3D" parent="FootStepSFX"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("37_fra87"), ExtResource("38_latv8"), ExtResource("39_gixma"), ExtResource("40_dd2w8")])

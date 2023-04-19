@@ -1,7 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://tp6nqouc6vm1"]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="1_rnicg"]
-[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="2_h0mo5"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="2_h0mo5"]
 [ext_resource type="AudioStream" uid="uid://cr23kh8ja3pr6" path="res://examples/3dplatformer/sfx/door_open.mp3" id="3_2k24l"]
 [ext_resource type="AudioStream" uid="uid://clphivcaourdf" path="res://examples/3dplatformer/sfx/door_close.mp3" id="4_0t4vh"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="5_t5o2p"]
