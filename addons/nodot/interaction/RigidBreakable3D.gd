@@ -82,7 +82,8 @@ func find_closest_child():
 func propel_outwards() -> void:
   if explosion_force > 0.0:
     for child in replacement_node.get_children():
-      child.apply_central_impulse(Vector3.ZERO.direction_to(child.position) * explosion_force)
+      if child is RigidBody3D or child is StaticBody3D:
+        child.apply_central_impulse(Vector3.ZERO.direction_to(child.position) * explosion_force)
 
 ## Used to save data from impact events
 func save_impulse(impulse_direction: Vector3, impulse_position: Vector3, origin_position: Vector3) -> void:

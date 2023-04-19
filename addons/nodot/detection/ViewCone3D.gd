@@ -21,8 +21,8 @@ func _enter_tree():
   var vertices: Array[Vector3] = [Vector3.ZERO]
 
   # Generate the vertices of the cone.
-  for i in range(0, 60):
-    var angle = i * PI / 30.0
+  for i in range(0, 240):
+    var angle = i * PI / 7.5
     var x = cos(angle) * radius
     var y = sin(angle) * radius
     var z = distance
