@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://addons/nodot/NodotRigidBody3D.gd" id="3_tcdf7"]
 [ext_resource type="AudioStream" uid="uid://d3e4lrgm5tx06" path="res://examples/fps/sfx/pot_break1.mp3" id="4_fh43x"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="4_nsi2v"]
-[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="5_e08cc"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="5_e08cc"]
 [ext_resource type="AudioStream" uid="uid://cky4qpqw0556m" path="res://examples/fps/sfx/pot_break2.mp3" id="5_m53ry"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_xh0w3"]
 
