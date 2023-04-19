@@ -36,11 +36,11 @@ func _enter_tree():
   add_child(raycast3d)
 
 func _physics_process(_delta):
-  if feet_raycast and knee_raycast and parent.is_on_floor():
+  if feet_raycast and knee_raycast:
     var feet_colliding = is_colliding_with_static_body(feet_raycast)
     var knee_colliding = is_colliding_with_static_body(knee_raycast)
-    if feet_colliding and !knee_colliding and parent.velocity != Vector3.ZERO:
-      parent.position.y += (knee_raycast.position.y - feet_raycast.position.y)
+    if feet_colliding and !knee_colliding and parent.is_on_floor() and parent.velocity != Vector3.ZERO:
+      parent.velocity.y = max_step_height * 5
 
 ## Check if a raycast is colliding with a static body
 func is_colliding_with_static_body(rc: RayCast3D):
