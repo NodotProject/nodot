@@ -25,6 +25,7 @@ signal interacted(interacted_node: Node3D)
 # RigidBody3D or null being carried
 var carried_body
 var label3d: Label3D
+var last_collider: Node3D
 
 func _enter_tree():
   label3d = Label3D.new()
@@ -60,7 +61,20 @@ func _physics_process(delta):
     carried_body.rotation = lerp(carried_body.rotation, Vector3.ZERO, 10.0 * delta)
   else:
     var collider = get_collider()
-    if is_instance_valid(collider) and collider.has_method("label"):
-      label3d.text = collider.label()
-    else:
-      label3d.text = ""
+    if is_instance_valid(last_collider) and last_collider != collider:
+      collide_ended(last_collider)
+    last_collider = collider
+    
+    if is_instance_valid(collider):
+      if collider.has_method("label"):
+        label3d.text = collider.label()
+      else:
+        label3d.text = ""
+      
+      if collider.has_method("focussed"):
+        collider.focussed()
+        
+func collide_ended(body: Node3D):
+  label3d.text = ""
+  if body.has_method("unfocussed"):
+    body.unfocussed()

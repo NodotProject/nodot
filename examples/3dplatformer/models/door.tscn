@@ -1,13 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://d6i6tqipdhuh"]
+[gd_scene load_steps=12 format=3 uid="uid://tp6nqouc6vm1"]
 
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="1_rnicg"]
 [ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="2_h0mo5"]
 [ext_resource type="AudioStream" uid="uid://cr23kh8ja3pr6" path="res://examples/3dplatformer/sfx/door_open.mp3" id="3_2k24l"]
 [ext_resource type="AudioStream" uid="uid://clphivcaourdf" path="res://examples/3dplatformer/sfx/door_close.mp3" id="4_0t4vh"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="5_t5o2p"]
 
 [sub_resource type="GDScript" id="GDScript_61xcl"]
 resource_name = "door"
-script/source = "extends StaticBody3D
+script/source = "extends NodotStaticBody3D
 
 func interact():
   $Mover3D.action()
@@ -117,3 +118,8 @@ script = ExtResource("2_h0mo5")
 sfx = Array[AudioStream]([ExtResource("4_0t4vh")])
 trigger_node = NodePath("../Mover3D")
 trigger_signal = "moving_to_origin"
+
+[node name="Outline3D" type="Node" parent="." node_paths=PackedStringArray("mesh")]
+script = ExtResource("5_t5o2p")
+outline_width = 2.0
+mesh = NodePath("../Door_4")

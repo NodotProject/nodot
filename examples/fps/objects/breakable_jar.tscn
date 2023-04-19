@@ -1,7 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://hme8qon3s6fl"]
+[gd_scene load_steps=23 format=3 uid="uid://hme8qon3s6fl"]
 
 [ext_resource type="Script" path="res://addons/nodot/interaction/RigidBreakable3D.gd" id="1_ogfh3"]
 [ext_resource type="Texture2D" uid="uid://c6lm2qyokdijx" path="res://examples/fps/materials/Breakable_Jar_Base Color_Jar.png" id="2_2sejy"]
+[ext_resource type="Script" path="res://addons/nodot/NodotRigidBody3D.gd" id="3_tcdf7"]
+[ext_resource type="AudioStream" uid="uid://d3e4lrgm5tx06" path="res://examples/fps/sfx/pot_break1.mp3" id="4_fh43x"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="4_nsi2v"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="5_e08cc"]
+[ext_resource type="AudioStream" uid="uid://cky4qpqw0556m" path="res://examples/fps/sfx/pot_break2.mp3" id="5_m53ry"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_xh0w3"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_afj03"]
@@ -175,6 +180,7 @@ skeleton = NodePath("")
 
 [node name="RigidBody3D2" type="RigidBody3D" parent="ReplaceMe"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.306214, 0)
+script = ExtResource("3_tcdf7")
 
 [node name="Jar_Broken_2" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
@@ -185,8 +191,14 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_qmq4v")
 
+[node name="Outline3D" type="Node" parent="ReplaceMe/RigidBody3D2" node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_nsi2v")
+outline_width = 2.0
+mesh = NodePath("../Jar_Broken_2")
+
 [node name="RigidBody3D3" type="RigidBody3D" parent="ReplaceMe"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.153607, 0.307928, -0.109738)
+script = ExtResource("3_tcdf7")
 
 [node name="Jar_Broken_3" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
@@ -197,7 +209,13 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_v21ue")
 
+[node name="Outline3D" type="Node" parent="ReplaceMe/RigidBody3D3" node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_nsi2v")
+outline_width = 2.0
+mesh = NodePath("../Jar_Broken_3")
+
 [node name="RigidBody3D4" type="RigidBody3D" parent="ReplaceMe"]
+script = ExtResource("3_tcdf7")
 
 [node name="Jar_Broken_4" type="MeshInstance3D" parent="ReplaceMe/RigidBody3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
@@ -208,7 +226,24 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.317043, 0)
 shape = SubResource("ConvexPolygonShape3D_wd1oq")
 
+[node name="Outline3D" type="Node" parent="ReplaceMe/RigidBody3D4" node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_nsi2v")
+outline_width = 2.0
+mesh = NodePath("../Jar_Broken_4")
+
+[node name="Break" type="AudioStreamPlayer3D" parent="ReplaceMe" node_paths=PackedStringArray("trigger_node")]
+volume_db = 46.851
+script = ExtResource("5_e08cc")
+sfx = Array[AudioStream]([ExtResource("4_fh43x"), ExtResource("5_m53ry")])
+trigger_node = NodePath("../..")
+trigger_signal = "broken"
+
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_xh0w3")
 max_health = 1.0
 current_health = 1.0
+
+[node name="Outline3D" type="Node" parent="." node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_nsi2v")
+outline_width = 2.0
+mesh = NodePath("../Jar")

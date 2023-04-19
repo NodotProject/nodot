@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://dgh8b72jwbv11"]
+[gd_scene load_steps=17 format=3 uid="uid://dgh8b72jwbv11"]
 
 [ext_resource type="Script" path="res://addons/nodot/interaction/RigidBreakable3D.gd" id="1_stcdg"]
 [ext_resource type="Texture2D" uid="uid://gpwjwbis7fcs" path="res://examples/fps/materials/Breakable_Crates_Base Color_Crates.png" id="2_wcqdd"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="4_35kxg"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_n0blm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ux1lo"]
@@ -115,7 +116,6 @@ points = PackedVector3Array(-0.414148, 0, -0.414147, -0.414148, 0, 0.414147, -0.
 [node name="Breakable_Crates" type="RigidBody3D" node_paths=PackedStringArray("replacement_node")]
 script = ExtResource("1_stcdg")
 replacement_node = NodePath("ReplaceWith")
-explosion_force = null
 
 [node name="Crate" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.333522, 0)
@@ -156,3 +156,8 @@ shape = SubResource("ConvexPolygonShape3D_jjay8")
 script = ExtResource("5_n0blm")
 max_health = 50.0
 current_health = 50.0
+
+[node name="Outline3D" type="Node" parent="." node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_35kxg")
+outline_width = 2.0
+mesh = NodePath("../Crate")

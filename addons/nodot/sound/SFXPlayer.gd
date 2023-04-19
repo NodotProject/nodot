@@ -12,7 +12,7 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 func _ready() -> void:
   if trigger_node:
-    trigger_node.connect(trigger_signal, action.unbind(1))
+    trigger_node.connect(trigger_signal, action)
 
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:
