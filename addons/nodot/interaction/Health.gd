@@ -34,3 +34,8 @@ func add_health(modifier: float) -> void:
     else:
       emit_signal("health_gained", old_health, new_health)
   emit_signal("health_changed", old_health, new_health)
+
+## Sets the current_health to a specific value
+func set_health(new_value: float) -> void:
+  var health_difference = new_value - current_health
+  add_health(health_difference)

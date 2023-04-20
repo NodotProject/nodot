@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3 uid="uid://dn5qsfqyxucpo"]
 
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="1_rnicg"]
 [ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="2_h0mo5"]
