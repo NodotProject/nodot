@@ -10,6 +10,9 @@ class_name Projection3D extends Nodot3D
 @export var billboard: bool = true
 ## Render in front of everything else
 @export var always_on_top: bool = false
+## No lighting or shading
+@export var disable_shading: bool = true
+## d
 
 ## Triggered when the Node is fully constructed
 signal construction_complete
@@ -35,6 +38,8 @@ func _ready():
     var viewport_container = SubViewportContainer.new()
     viewport_container.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
     viewport.size = resolution_size
+    # TODO: Figure out why the progressbar is slightly transparent.
+    # It may not be a material issue but a rendering one (cleared one frame but drawn the next)
     viewport.transparent_bg = true
     viewport.disable_3d = true
     viewport.handle_input_locally = false
@@ -50,7 +55,9 @@ func _ready():
     if billboard:
       material.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
       material.billboard_keep_scale = true
-      material.render_priority = 999
+    if disable_shading:
+      material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+      material.disable_ambient_light = true
     material.no_depth_test = always_on_top
     plane_mesh.material = material
     emit_signal("construction_complete")
