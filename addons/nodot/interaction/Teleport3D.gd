@@ -30,17 +30,40 @@ var can_teleport_area = false
 ##  Check variable, if "Player" wait a time
 var can_teleport_time = false
 
-func _enter_tree():
+func _ready():
 	##  add collision to scene
 	node_collision.name = "CollisioArea"
-	add_child(node_collision)
 	
-	##  Create a Shape for "CollisioArea"
-	var Shape = BoxShape3D.new()
+	##  Procces to select automatic or manully a shape
+	var shape
+	var check_num_collision = 0
 	
-	##  Add size to collision and add the shape to "CollisioArea"
-	Shape.size = size
-	node_collision.shape = Shape
+	##  Take first node and copy the shape, erase anothers nodes (automatic).
+	for child in get_children():
+		if child is CollisionShape3D:
+			check_num_collision += 1
+			if check_num_collision == 1:
+				##  check if "child" have "shape"
+				if child.shape != null:
+					child.name = "CollisioArea"
+					shape = child.shape
+					node_collision.shape = shape
+			else:
+				child.free()
+	
+	##  check if shape have a form, if not have, create one (manully)
+	if shape == null:
+		shape = BoxShape3D.new()
+		##  Add size to collision and add the shape to "CollisioArea"
+		shape.size = size
+		node_collision.shape = shape
+		
+		##  check if in the scene exist another collisionshape
+		for child in get_children():
+			if child is CollisionShape3D:
+				child.free()
+		
+		add_child(node_collision)
 	
 	##  optional process to create a node_timer
 	if time_teleport != 0:
