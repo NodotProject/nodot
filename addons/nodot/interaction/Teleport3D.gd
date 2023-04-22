@@ -1,6 +1,4 @@
-##  Teleport3D is an Area3D which, when touched,
-##  teleports the collider to another location either 
-##  instantly or after a defined time
+##  Teleport3D is an Area3D which, when touched, teleports the collider to another location either instantly or after a defined time
 class_name Teleport3D extends Area3D
 
 @export_category("Nodes")
@@ -31,14 +29,14 @@ var can_teleport_area = false
 var can_teleport_time = false
 
 func _ready():
-	##  add collision to scene
+	#  add collision to scene
 	node_collision.name = "CollisioArea"
 	
-	##  Procces to select automatic or manully a shape
+	#  Procces to select automatic or manully a shape
 	var shape
 	var check_num_collision = 0
 	
-	##  Take first node and copy the shape, erase anothers nodes (automatic).
+	#  Take first node and copy the shape, erase anothers nodes (automatic).
 	for child in get_children():
 		if child is CollisionShape3D:
 			check_num_collision += 1
@@ -51,21 +49,21 @@ func _ready():
 			else:
 				child.free()
 	
-	##  check if shape have a form, if not have, create one (manully)
+	#  check if shape have a form, if not have, create one (manully)
 	if shape == null:
 		shape = BoxShape3D.new()
-		##  Add size to collision and add the shape to "CollisioArea"
+		#  Add size to collision and add the shape to "CollisioArea"
 		shape.size = size
 		node_collision.shape = shape
 		
-		##  check if in the scene exist another collisionshape
+		#  check if in the scene exist another collisionshape
 		for child in get_children():
 			if child is CollisionShape3D:
 				child.free()
 		
 		add_child(node_collision)
 	
-	##  optional process to create a node_timer
+	#  optional process to create a node_timer
 	if time_teleport != 0:
 		node_time.name = "TimerFreeze"
 		add_child(node_time)
@@ -73,7 +71,7 @@ func _ready():
 		$TimerFreeze.one_shot = true
 		$TimerFreeze.connect("timeout", timer_out)
 
-	##  Connect signal of "Area3D" to "Teleport3D"
+	#  Connect signal of "Area3D" to "Teleport3D"
 	connect("body_entered", body_entered)
 	connect("body_exited", body_exited)
 
@@ -92,8 +90,6 @@ func body_entered(body):
 			can_teleport_time = true
 		else:
 			$TimerFreeze.start()
-		
-		##  Get position of target to teleport
 
 ##  When "player" exited to "Teleport3D"
 func body_exited(_body):
