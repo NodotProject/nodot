@@ -22,14 +22,15 @@ Nodot is a video game oriented collection of nodes, autoload scripts and scenes 
 
 ## Docs
 
-https://krazyjakee.github.io/nodot
+https://nodotproject.github.io/nodot
 
 ## Examples
 
-https://github.com/krazyjakee/nodot/tree/main/examples
+https://github.com/nodotproject/nodot/tree/main/examples
 
 Example model asset credits:
 - https://quaternius.com (CC0)
 - https://www.kenney.nl (CC0)
 - https://loafbrr.itch.io (CC0)
 - https://pixabay.com (CC0)
+- https://www.sharetextures.com/ (CC0)
