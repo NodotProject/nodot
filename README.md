@@ -4,7 +4,9 @@
 
 **A node composition library for Godot 4**
 
-[![](https://dcbadge.vercel.app/api/server/PaWBWqU8zQ)](https://discord.gg/PaWBWqU8zQ)
+[![](https://dcbadge.vercel.app/api/server/Rx9CZX4sjG)](https://discord.gg/Rx9CZX4sjG)
+[![](https://img.shields.io/mastodon/follow/110106863700290562?domain=https%3A%2F%2Fmastodon.gamedev.place&label=MASTODON&style=for-the-badge)](https://mastodon.gamedev.place/@krazyjakee)
+[![](https://img.shields.io/youtube/channel/subscribers/UColWkNMgHseKyU7D1QGeoyQ?label=YOUTUBE&style=for-the-badge)](https://www.youtube.com/@GodotNodot)
 
 ## What is Nodot?
 

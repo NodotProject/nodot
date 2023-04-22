@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://cqiv8ggtyxtpf"]
+
+[ext_resource type="Script" path="res://addons/nodot/effects/HealthBar3D.gd" id="1_liqqq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umw7t"]
+bg_color = Color(0.764706, 0, 0.109804, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_66bsc"]
+bg_color = Color(0.356863, 0.705882, 0.113725, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.537255)
+
+[node name="HealthBar3D" type="Node3D"]
+script = ExtResource("1_liqqq")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_right = 320.0
+offset_bottom = 32.0
+theme_override_styles/background = SubResource("StyleBoxFlat_umw7t")
+theme_override_styles/fill = SubResource("StyleBoxFlat_66bsc")
+value = 50.0

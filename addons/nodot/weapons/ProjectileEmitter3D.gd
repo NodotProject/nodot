@@ -14,8 +14,12 @@ var is_editor: bool = Engine.is_editor_hint()
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
-  if !(get_parent() is FirstPersonItem):
-    warnings.append("Parent should be a FirstPersonItem")
+  var has_projectile_child = false
+  for child in get_children():
+    if child is Projectile3D:
+      has_projectile_child = true
+  if has_projectile_child == false:
+    warnings.append("Should have a Projectile3D as a child")
   return warnings
 
 func _enter_tree() -> void:

@@ -25,7 +25,8 @@ func _enter_tree() -> void:
       var node3d = Node3D.new()
       node3d.name = "ThirdPersonCameraContainer"
       add_child(node3d)
-      child.reparent(node3d, true)
+      remove_child(child)
+      node3d.add_child(child)
       camera = child
 
 func _input(event: InputEvent) -> void:
