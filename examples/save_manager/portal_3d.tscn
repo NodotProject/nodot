@@ -1,0 +1,87 @@
+[gd_scene load_steps=11 format=3 uid="uid://b0bqevkssoj41"]
+
+[ext_resource type="Script" path="res://portal_3d.gd" id="1_ag0j0"]
+[ext_resource type="PackedScene" uid="uid://ij7qmwih0ho3" path="res://character_body_3d.tscn" id="1_cpl3p"]
+[ext_resource type="Script" path="res://SaveManager.gd" id="2_rob7v"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_e87ip"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_p3rta"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mse2g"]
+albedo_color = Color(1, 18.34, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_gchri"]
+material = SubResource("StandardMaterial3D_mse2g")
+
+[sub_resource type="Environment" id="Environment_t2mqi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3teqq"]
+albedo_color = Color(1, 0.317647, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_b2wec"]
+material = SubResource("StandardMaterial3D_3teqq")
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_ag0j0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(51.8035, 0, 0, 0, 1, 0, 0, 0, 50.7825, 0, 0, 0)
+mesh = SubResource("BoxMesh_e87ip")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_p3rta")
+
+[node name="scene" type="Node" parent="."]
+
+[node name="pillar" type="MeshInstance3D" parent="scene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26225, 9.59618)
+mesh = SubResource("CapsuleMesh_gchri")
+skeleton = NodePath("../..")
+
+[node name="pillar2" type="MeshInstance3D" parent="scene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26225, -6.90946)
+mesh = SubResource("CapsuleMesh_gchri")
+skeleton = NodePath("../..")
+
+[node name="pillar3" type="MeshInstance3D" parent="scene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.1185, 1.26225, -6.90946)
+mesh = SubResource("CapsuleMesh_gchri")
+skeleton = NodePath("../..")
+
+[node name="pillar4" type="MeshInstance3D" parent="scene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.1185, 1.26225, 10.3834)
+mesh = SubResource("CapsuleMesh_gchri")
+skeleton = NodePath("../..")
+
+[node name="pillar5" type="MeshInstance3D" parent="scene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9596, 1.26225, 10.3834)
+mesh = SubResource("CapsuleMesh_gchri")
+skeleton = NodePath("../..")
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_cpl3p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.79517, 1.99281, 4.99902)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.68026, 0.732971, 0, -0.732971, 0.68026, 0, 8.12787, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_t2mqi")
+
+[node name="points" type="Node" parent="."]
+
+[node name="Node3D" type="Node3D" parent="points"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03321, 16.5641)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="points/Node3D"]
+mesh = SubResource("BoxMesh_b2wec")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="SaveManager" type="Node3D" parent="."]
+script = ExtResource("2_rob7v")
+save_node_load = NodePath("../points/Node3D")
+character_scene = ExtResource("1_cpl3p")
