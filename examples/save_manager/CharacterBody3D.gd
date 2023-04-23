@@ -34,8 +34,9 @@ func to_save_json():
 	return {
 		"pos_x" : position.x, 
 		"pos_y" : position.y,
-		"pos_z" : position.z
+		"pos_z" : position.z,
 	}
 
 func init_load(data:Dictionary) -> void:
 	position = Vector3(data.pos_x, data.pos_y, data.pos_z)
+

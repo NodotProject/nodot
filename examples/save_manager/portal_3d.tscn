@@ -79,9 +79,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03321, 16.5641)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="points/Node3D"]
 mesh = SubResource("BoxMesh_b2wec")
 
-[node name="Timer" type="Timer" parent="."]
-
 [node name="SaveManager" type="Node3D" parent="."]
 script = ExtResource("2_rob7v")
-save_node_load = NodePath("../points/Node3D")
-character_scene = ExtResource("1_cpl3p")
+dir_save = Array[NodePath]([NodePath("../points/Node3D")])
+dir_load_scene = Array[PackedScene]([ExtResource("1_cpl3p")])
