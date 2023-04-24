@@ -12,10 +12,10 @@ var knee_raycast: RayCast3D
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
-    
-  for child in get_children():
-    if not child is RayCast3D:
-      warnings.append("Should have a RayCast3D node as a child (on the soles of the feet of the character but above the floor)")
+  
+  var child_raycast = Nodot.get_first_child_of_type(self, RayCast3D)
+  if !child_raycast:
+    warnings.append("Should have a RayCast3D node as a child (on the soles of the feet of the character but above the floor)")
       
   if not get_parent() is CharacterBody3D:
     warnings.append("The parent should be a CharacterBody3D")
@@ -23,9 +23,7 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _enter_tree():
-  for child in get_children():
-    if child is RayCast3D:
-      feet_raycast = child
+  feet_raycast = Nodot.get_first_child_of_type(self, RayCast3D)
       
   var raycast3d = RayCast3D.new()
   raycast3d.target_position = feet_raycast.target_position

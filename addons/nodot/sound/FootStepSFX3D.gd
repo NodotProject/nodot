@@ -14,13 +14,8 @@ func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
   if !(get_parent() is FirstPersonCharacter):
     warnings.append("Parent should be a FirstPersonCharacter")
-    
-  var has_sfx_player = false
-  for child in get_children():
-    if child is SFXPlayer3D:
-      has_sfx_player = true
       
-  if !has_sfx_player: warnings.append("Should contain at least one SFXPlayer3D")
+  if !Nodot.get_first_child_of_type(self, SFXPlayer3D): warnings.append("Should contain at least one SFXPlayer3D")
   return warnings
 
 func _physics_process(delta: float) -> void:

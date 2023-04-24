@@ -51,10 +51,7 @@ func add_action_to_input_map(action_name, default_key):
   InputMap.action_add_event(action_name, input_key)
 
 func _ready() -> void:
-  # If there is a viewport, set it
-  for child in parent.get_children():
-    if child is FirstPersonViewport:
-      fps_viewport = child
+  fps_viewport = Nodot.get_first_child_of_type(self, FirstPersonViewport)
 
 func _input(event: InputEvent) -> void:
   if enabled and fps_viewport and event.is_action_pressed(reload_action):

@@ -25,11 +25,8 @@ func _enter_tree() -> void:
   head.add_child(camera)
   add_child(head)
   
-  for child in get_children():
-    if child is FirstPersonSubmerged:
-      submerge_handler = child
-    if child is FirstPersonKeyboardInput:
-      keyboard_input = child
+  submerge_handler = Nodot.get_first_child_of_type(self, FirstPersonSubmerged)
+  keyboard_input = Nodot.get_first_child_of_type(self, FirstPersonKeyboardInput)
 
 func _ready() -> void:
   camera.fov = fov

@@ -37,7 +37,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
   # Move existing children to be a child of the camera
   for child in get_children():
-    if child.get_class() != "SubViewport":
+    if not child is SubViewport:
       var saved_transform: Transform3D = child.transform
       child.reparent(viewport_camera, true)
 
@@ -63,23 +63,20 @@ func previous_item() -> void:
 ## Get the active item if there is one
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func get_active_item():
-  for item in viewport_camera.get_children():
-    if item is FirstPersonItem and item.active:
+  var items = Nodot.get_children_of_type(viewport_camera, FirstPersonItem)
+  for item in items:
+    if item.active:
       return item
 
 ## Get all FirstPersonItems
-func get_all_items() -> Array[FirstPersonItem]:
-  var items: Array[FirstPersonItem] = []
-  for item in viewport_camera.get_children():
-    if item is FirstPersonItem:
-      items.append(item)
-  return items
+func get_all_items() -> Array:
+  return Nodot.get_children_of_type(viewport_camera, FirstPersonItem)
 
 ## Change which item is active.
 func change_item(new_index: int) -> void:
   if item_changing == false:
     item_changing = true
-    var items: Array[FirstPersonItem] = get_all_items()
+    var items: Array = get_all_items()
     var item_count: int = items.size()
     if new_index >= item_count - 1:
       active_item_index = item_count - 1

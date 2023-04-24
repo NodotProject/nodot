@@ -14,20 +14,16 @@ var is_editor: bool = Engine.is_editor_hint()
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
-  var has_projectile_child = false
-  for child in get_children():
-    if child is Projectile3D:
-      has_projectile_child = true
-  if has_projectile_child == false:
+  if !Nodot.get_first_child_of_type(self, Projectile3D):
     warnings.append("Should have a Projectile3D as a child")
   return warnings
 
 func _enter_tree() -> void:
   if !is_editor:
-    for child in get_children():
-      if child is Projectile3D:
-        projectiles.append(child)
-        remove_child(child)
+    var projectile_nodes = Nodot.get_children_of_type(self, Projectile3D)
+    for item in projectile_nodes:
+      projectiles.append(item)
+      remove_child(item)
 
 ## Apply the accuracy to the emitter
 func aim_emitter() -> void:
