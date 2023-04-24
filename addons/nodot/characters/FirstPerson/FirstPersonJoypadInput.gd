@@ -1,8 +1,7 @@
 @tool
 @icon("../../icons/mouse.svg")
+## A preconfigured set of inputs for first person joypad control
 class_name FirstPersonJoypadInput extends Nodot
-
-## A preconfigured set of inputs for first person mouse control
 
 @export var item_next_action : String = "item_next"
 @export var item_previous_action : String = "item_previous"

@@ -30,7 +30,8 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _ready() -> void:
-  enable()
+  if enabled:
+    enable()
   camera = parent.camera
   camera_container = camera.get_parent()
 

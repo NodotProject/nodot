@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://knhhpghrn0tv"]
 
 [ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
-[ext_resource type="PackedScene" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
+[ext_resource type="PackedScene" uid="uid://dn5qsfqyxucpo" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="3_pj2b2"]
 [ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="4_ue8ae"]
 [ext_resource type="Script" path="res://addons/nodot/physics/WaterArea3D.gd" id="5_3sksf"]
