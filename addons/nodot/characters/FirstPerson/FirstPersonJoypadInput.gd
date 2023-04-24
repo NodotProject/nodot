@@ -45,13 +45,14 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _init():
-  var action_names = [item_next_action, item_previous_action, action_action, zoom_action]
-  var default_keys = [JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
-  for i in action_names.size():
-    var action_name = action_names[i]
-    if not InputMap.has_action(action_name):
-      var default_key = default_keys[i]
-      add_action_to_input_map(action_name, default_key)
+  if enabled:
+    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, "escape", item_next_action, item_previous_action, action_action, zoom_action]
+    var default_keys = [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_LEFT_Y, JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK, JOY_BUTTON_START, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
+    for i in action_names.size():
+      var action_name = action_names[i]
+      if not InputMap.has_action(action_name):
+        var default_key = default_keys[i]
+        add_action_to_input_map(action_name, default_key)
 
 func add_action_to_input_map(action_name, default_key):
   var input_key = InputEventMouseButton.new()
@@ -60,7 +61,8 @@ func add_action_to_input_map(action_name, default_key):
   InputMap.action_add_event(action_name, input_key)
   
 func _ready() -> void:
-  enable()
+  if enabled:
+    enable()
 
   # If there is a viewport, set it
   for child in parent.get_children():
@@ -73,9 +75,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
   if enabled:
       
-    look_rotation.x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y) * look_sensitivity
-    look_rotation.y = Input.get_joy_axis(0, JOY_AXIS_LEFT_Y)
-    print(Input.get_joy_axis(0, JOY_AXIS_LEFT_Y), Input.get_joy_axis(0, JOY_AXIS_RIGHT_X))
+    look_rotation.x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X) * look_sensitivity
+    look_rotation.y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y) * look_sensitivity
 
     if fps_viewport:
       if event.is_action_pressed(item_next_action):
@@ -128,7 +129,7 @@ func _physics_process(delta: float) -> void:
     parent.rotate_object_local(Vector3(0, 1, 0), -look_angle.x)
 
     # Handle look up and down
-    head.rotate_object_local(Vector3(1, 0, 0), look_angle.y)
+    head.rotate_object_local(Vector3(1, 0, 0), -look_angle.y)
 
     head.rotation.x = clamp(head.rotation.x, -1.36, 1.4)
     head.rotation.z = 0

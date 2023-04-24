@@ -43,7 +43,8 @@ func add_action_to_input_map(action_name, default_key):
   InputMap.action_add_event(action_name, input_key)
   
 func _ready() -> void:
-  enable()
+  if enabled:
+    enable()
 
   # If there is a viewport, set it
   for child in parent.get_children():

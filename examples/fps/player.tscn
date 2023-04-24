@@ -128,10 +128,10 @@ head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
-enabled = false
 
 [node name="FirstPersonJoypadInput" type="Node" parent="."]
 script = ExtResource("3_fkja4")
+enabled = false
 look_sensitivity = 4.3
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
