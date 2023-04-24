@@ -1,8 +1,12 @@
 @tool
-@icon("../../icons/keyboard.svg")
-## A preconfigured set of inputs for first person keyboard control
-class_name FirstPersonKeyboardInput extends Nodot
+@icon("../../icons/mouse.svg")
+## A preconfigured set of inputs for first person joypad control
+class_name FirstPersonJoypadInput extends Nodot
 
+@export var item_next_action : String = "item_next"
+@export var item_previous_action : String = "item_previous"
+@export var action_action : String = "action"
+@export var zoom_action : String = "zoom"
 @export var left_action : String = "left"
 @export var right_action : String = "right"
 @export var up_action : String = "up"
@@ -21,11 +25,15 @@ class_name FirstPersonKeyboardInput extends Nodot
 @export var sprint_speed_multiplier := 3.0
 ## How high the character can jump
 @export var jump_velocity := 4.5
+## Sensitivity of joystick movement
+@export var look_sensitivity := 0.1
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
 
+var head: Node3D
 var is_editor: bool = Engine.is_editor_hint()
+var look_rotation: Vector2 = Vector2.ZERO
 var is_jumping: bool = false
 var accelerated_jump: bool = false
 
@@ -36,29 +44,44 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _init():
-  var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, "escape"]
-  var default_keys = [KEY_A, KEY_D, KEY_W, KEY_S, KEY_R, KEY_SPACE, KEY_SHIFT, KEY_ESCAPE]
-  for i in action_names.size():
-    var action_name = action_names[i]
-    if not InputMap.has_action(action_name):
-      var default_key = default_keys[i]
-      add_action_to_input_map(action_name, default_key)
+  if enabled:
+    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, "escape", item_next_action, item_previous_action, action_action, zoom_action]
+    var default_keys = [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_LEFT_Y, JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK, JOY_BUTTON_START, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
+    for i in action_names.size():
+      var action_name = action_names[i]
+      if not InputMap.has_action(action_name):
+        var default_key = default_keys[i]
+        add_action_to_input_map(action_name, default_key)
 
 func add_action_to_input_map(action_name, default_key):
-  var input_key = InputEventKey.new()
-  input_key.keycode = default_key
+  var input_key = InputEventMouseButton.new()
+  input_key.button_index = default_key
   InputMap.add_action(action_name)
   InputMap.action_add_event(action_name, input_key)
-
+  
 func _ready() -> void:
+  if enabled:
+    enable()
+
   # If there is a viewport, set it
   for child in parent.get_children():
     if child is FirstPersonViewport:
       fps_viewport = child
 
+  if parent.has_node("Head"):
+    head = parent.get_node("Head")
+
 func _input(event: InputEvent) -> void:
-  if enabled and fps_viewport and event.is_action_pressed(reload_action):
-    fps_viewport.reload()
+  if enabled:
+      
+    look_rotation.x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X) * look_sensitivity
+    look_rotation.y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y) * look_sensitivity
+
+    if fps_viewport:
+      if event.is_action_pressed(item_next_action):
+        fps_viewport.next_item()
+      elif event.is_action_pressed(item_previous_action):
+        fps_viewport.previous_item()
 
 func _physics_process(delta: float) -> void:
   if enabled and !is_editor:
@@ -96,11 +119,36 @@ func _physics_process(delta: float) -> void:
     else:
       parent.velocity.x = move_toward(parent.velocity.x, 0, final_speed)
       parent.velocity.z = move_toward(parent.velocity.z, 0, final_speed)
+    
+    # Handle Look
+    
+    var look_angle: Vector2 = Vector2(look_rotation.x * delta, look_rotation.y * delta)
 
-## Disable input
+    # Handle look left and right
+    parent.rotate_object_local(Vector3(0, 1, 0), -look_angle.x)
+
+    # Handle look up and down
+    head.rotate_object_local(Vector3(1, 0, 0), -look_angle.y)
+
+    head.rotation.x = clamp(head.rotation.x, -1.36, 1.4)
+    head.rotation.z = 0
+    head.rotation.y = 0
+
+    if fps_viewport:
+      if Input.is_action_pressed(action_action):
+        fps_viewport.action()
+      elif Input.is_action_just_pressed(zoom_action):
+        fps_viewport.zoom()
+      elif Input.is_action_just_released(zoom_action):
+        fps_viewport.zoomout()
+
+## Disable input and release mouse
 func disable() -> void:
+  Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
   enabled = false
 
-## Enable input
+## Enable input and capture mouse
 func enable() -> void:
+  if !Engine.is_editor_hint():
+    Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
   enabled = true

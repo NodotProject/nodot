@@ -1,7 +1,8 @@
-[gd_scene load_steps=53 format=3 uid="uid://dv6pyhevccscg"]
+[gd_scene load_steps=54 format=3 uid="uid://dv6pyhevccscg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonJoypadInput.gd" id="3_fkja4"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="5_0d045"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
@@ -127,6 +128,11 @@ head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
+
+[node name="FirstPersonJoypadInput" type="Node" parent="."]
+script = ExtResource("3_fkja4")
+enabled = false
+look_sensitivity = 4.3
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
@@ -337,7 +343,6 @@ target_position = Vector3(0, 0, -0.6)
 [node name="FootStepSFX" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.864601, 0)
 script = ExtResource("31_uugiq")
-frequency = null
 
 [node name="Concrete" type="AudioStreamPlayer3D" parent="FootStepSFX"]
 script = ExtResource("15_kxtrg")
