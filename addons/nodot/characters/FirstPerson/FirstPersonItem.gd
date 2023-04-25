@@ -30,19 +30,12 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _ready() -> void:
-  for child in get_children():
-    if child is FirstPersonIronSight:
-      ironsight_node = child
-    if child is Magazine:
-      magazine_node = child
-    if child is HitScan3D:
-      hitscan_node = child
-    if child is ProjectileEmitter3D:
-      projectile_emitter_node = child
-    if child is BulletHole:
-      bullethole_node = child
-    if child is CrossHair:
-      crosshair_node = child
+  ironsight_node = Nodot.get_first_child_of_type(self, FirstPersonIronSight)
+  magazine_node = Nodot.get_first_child_of_type(self, Magazine)
+  hitscan_node = Nodot.get_first_child_of_type(self, HitScan3D)
+  projectile_emitter_node = Nodot.get_first_child_of_type(self, ProjectileEmitter3D)
+  bullethole_node = Nodot.get_first_child_of_type(self, BulletHole)
+  crosshair_node = Nodot.get_first_child_of_type(self, CrossHair)
 
   connect_magazine()
 

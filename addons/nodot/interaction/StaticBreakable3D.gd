@@ -21,11 +21,7 @@ func _get_configuration_warnings() -> PackedStringArray:
   if !replacement_node:
     warnings.append("Should have a replacement node value set")
     
-  var has_health = false
-  for child in get_children():
-    if child is Health:
-      has_health = true
-  if !has_health:
+  if !Nodot.get_first_child_of_type(self, Health):
     warnings.append("Should have a Health node as a child")
     
   return warnings

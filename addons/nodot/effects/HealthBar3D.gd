@@ -11,12 +11,8 @@ var progress_bar: ProgressBar
 
 func _get_configuration_warnings() -> PackedStringArray:
   var warnings: PackedStringArray = []
-  
-  var has_progress_bar = false
-  for child in get_children():
-    if child is ProgressBar:
-      has_progress_bar = true
-  if !has_progress_bar:
+
+  if !Nodot.get_first_child_of_type(self, ProgressBar):
     warnings.append("Should have a ProgressBar as a child")
   
   if !health_node:
