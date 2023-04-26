@@ -1,3 +1,4 @@
+## A node to manage health
 class_name Health extends Nodot
 
 ## The maximum health

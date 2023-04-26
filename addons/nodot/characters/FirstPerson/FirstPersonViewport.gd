@@ -1,9 +1,12 @@
 ## Creates a viewport that can be used for first person items. For example hands and guns.
 class_name FirstPersonViewport extends SubViewportContainer
 
-@export_flags_3d_render var camera_cull_mask_layer: int = 2 ## Which cull mask layers to give the camera
-@export var fov : float = 75.0 ## The viewport cameras field of view
-@export var viewport_camera: Camera3D ## (optional) The first person viewport camera
+## Which cull mask layers to give the camera
+@export_flags_3d_render var camera_cull_mask_layer: int = 2
+## The viewport cameras field of view
+@export var fov : float = 75.0
+## (optional) The first person viewport camera
+@export var viewport_camera: Camera3D
 
 var character_camera: Camera3D
 var viewport: SubViewport

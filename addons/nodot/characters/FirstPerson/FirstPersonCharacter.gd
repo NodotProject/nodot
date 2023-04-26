@@ -1,7 +1,6 @@
 ## A CharacterBody3D for first person games
 class_name FirstPersonCharacter extends CharacterBody3D
 
-@export var escape_action : String = "escape"
 ## Allow player input
 @export var input_enabled := true
 ## The camera field of view
@@ -13,7 +12,13 @@ class_name FirstPersonCharacter extends CharacterBody3D
 ## Apply gravity even when the character is on the floor
 @export var always_apply_gravity: bool = false
 
+@export_category("Input Actions")
+## The input action name for pausing the game
+@export var escape_action : String = "escape"
+
+## Triggered when the game is paused
 signal paused
+## Triggered when the game is unpaused
 signal unpaused
 
 var head: Node3D
@@ -52,7 +57,7 @@ func _physics_process(delta: float) -> void:
   move_and_slide()
 
 func _input(event: InputEvent) -> void:
-  if event.is_action_pressed("escape"):
+  if event.is_action_pressed(escape_action):
     if input_enabled:
       pause()
     else:

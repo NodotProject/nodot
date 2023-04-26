@@ -1,9 +1,9 @@
 @icon("../icons/menu_manager.svg")
+## Contains MenuContainer nodes and can be used to show, hide or transition between them as needed
 class_name MenuManager extends Nodot2D
 
-## Contains MenuContainer nodes and can be used to show, hide or transition between them as needed
-
-signal menu_changed ## Triggered when the active menu index changes
+## Triggered when the active menu index changes
+signal menu_changed
 
 var active_menu : String = "" ## The active menu node name (empty string if none active)
 var active_menu_index : int = -1 ## The active menu node index (-1 if none active)

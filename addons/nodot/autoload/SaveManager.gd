@@ -1,9 +1,9 @@
 ## Manages saving game data to the file system
 extends Node
 
-## On a successful file save
+## Triggered on a successful file save
 signal saved
-## On a successful file load
+## Triggered on a successful file load
 signal loaded
 
 var savers: Array[Saver] = []

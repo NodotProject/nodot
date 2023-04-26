@@ -1,5 +1,5 @@
-## A RigidBody3D that will be replaced by it's selected children on death
 @tool
+## A RigidBody3D that will be replaced by it's selected children on death
 class_name RigidBreakable3D extends NodotRigidBody3D
 
 ## Triggered when the object is broken

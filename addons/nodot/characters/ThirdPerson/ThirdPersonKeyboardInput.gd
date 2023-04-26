@@ -3,13 +3,6 @@
 ## A preconfigured set of inputs for third person keyboard control
 class_name ThirdPersonKeyboardInput extends Nodot
 
-@export var left_action : String = "left"
-@export var right_action : String = "right"
-@export var up_action : String = "up"
-@export var down_action : String = "down"
-@export var jump_action : String = "jump"
-@export var sprint_action : String = "sprint"
-
 ## Is input enabled
 @export var enabled: bool = true
 ## How fast the character can move
@@ -20,6 +13,20 @@ class_name ThirdPersonKeyboardInput extends Nodot
 @export var jump_velocity: float = 4.5
 ## Instead of turning the character, the character will strafe on left and right input action
 @export var strafing: bool = false
+
+@export_category("Input Actions")
+## The input action name for moving left
+@export var left_action : String = "left"
+## The input action name for moving right
+@export var right_action : String = "right"
+## The input action name for moving forward
+@export var up_action : String = "up"
+## The input action name for moving backwards
+@export var down_action : String = "down"
+## The input action name for jumping
+@export var jump_action : String = "jump"
+## The input action name for sprinting
+@export var sprint_action : String = "sprint"
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 

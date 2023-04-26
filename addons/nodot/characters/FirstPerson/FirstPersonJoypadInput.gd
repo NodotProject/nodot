@@ -3,18 +3,6 @@
 ## A preconfigured set of inputs for first person joypad control
 class_name FirstPersonJoypadInput extends Nodot
 
-@export var item_next_action : String = "item_next"
-@export var item_previous_action : String = "item_previous"
-@export var action_action : String = "action"
-@export var zoom_action : String = "zoom"
-@export var left_action : String = "left"
-@export var right_action : String = "right"
-@export var up_action : String = "up"
-@export var down_action : String = "down"
-@export var reload_action : String = "reload"
-@export var jump_action : String = "jump"
-@export var sprint_action : String = "sprint"
-
 ## Is input enabled
 @export var enabled := true
 ## Only allow WASD movement
@@ -27,6 +15,30 @@ class_name FirstPersonJoypadInput extends Nodot
 @export var jump_velocity := 4.5
 ## Sensitivity of joystick movement
 @export var look_sensitivity := 0.1
+
+@export_category("Input Actions")
+## The input action name for selecting the next item
+@export var item_next_action : String = "item_next"
+## The input action name for selecting the previous item
+@export var item_previous_action : String = "item_previous"
+## The input action name for performing an action
+@export var action_action : String = "action"
+## The input action name for zooming in
+@export var zoom_action : String = "zoom"
+## The input action name for strafing left
+@export var left_action : String = "left"
+## The input action name for strafing right
+@export var right_action : String = "right"
+## The input action name for walking forward
+@export var up_action : String = "up"
+## The input action name for walking backwards
+@export var down_action : String = "down"
+## The input action name for reloading the current active weapon
+@export var reload_action : String = "reload"
+## The input action name for jumping
+@export var jump_action : String = "jump"
+## The input action name for sprinting
+@export var sprint_action : String = "sprint"
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
@@ -45,7 +57,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _init():
   if enabled:
-    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, "escape", item_next_action, item_previous_action, action_action, zoom_action]
+    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, parent.escape_action, item_next_action, item_previous_action, action_action, zoom_action]
     var default_keys = [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_LEFT_Y, JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK, JOY_BUTTON_START, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
     for i in action_names.size():
       var action_name = action_names[i]

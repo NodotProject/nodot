@@ -1,5 +1,4 @@
 @tool
-
 ## A cone shaped ShapeCast3D
 class_name ViewCone3D extends ShapeCast3D
 

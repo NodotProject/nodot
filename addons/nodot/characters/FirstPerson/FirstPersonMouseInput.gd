@@ -1,18 +1,22 @@
 @tool
 @icon("../../icons/mouse.svg")
+## Adds mouse support to the first person character
 class_name FirstPersonMouseInput extends Nodot
-
-## A preconfigured set of inputs for first person mouse control
-
-@export var item_next_action : String = "item_next"
-@export var item_previous_action : String = "item_previous"
-@export var action_action : String = "action"
-@export var zoom_action : String = "zoom"
 
 ## Is input enabled
 @export var enabled := true
 ## Sensitivity of mouse movement
 @export var mouse_sensitivity := 0.1
+
+@export_category("Input Actions")
+## The input action name for selecting the next item
+@export var item_next_action : String = "item_next"
+## The input action name for selecting the previous item
+@export var item_previous_action : String = "item_previous"
+## The input action name for performing an action
+@export var action_action : String = "action"
+## The input action name for zooming in
+@export var zoom_action : String = "zoom"
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport

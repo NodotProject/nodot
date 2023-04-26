@@ -3,8 +3,6 @@
 ## Takes mouse input for a third person character
 class_name ThirdPersonMouseInput extends Nodot
 
-## Input action for enabling camera rotation
-@export var camera_rotate_action : String = "camera_rotate"
 ## Is input enabled
 @export var enabled := true
 ## Sensitivity of mouse movement
@@ -15,6 +13,10 @@ class_name ThirdPersonMouseInput extends Nodot
 @export var lock_character_rotation := false
 ## Restrict vertical look angle
 @export var vertical_clamp := Vector2(-1.36, 1.4)
+
+@export_category("Input Actions")
+## Input action for enabling camera rotation
+@export var camera_rotate_action : String = "camera_rotate"
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 

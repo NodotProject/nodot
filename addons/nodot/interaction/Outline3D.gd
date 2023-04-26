@@ -1,3 +1,4 @@
+## Adds an outline to the parent mesh
 class_name Outline3D extends Nodot
 
 ## Outline color

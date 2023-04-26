@@ -21,8 +21,10 @@ func _enter_tree() -> void:
 func _on_window_resized(new_size: Vector2) -> void:
   $Sprite2D.position = new_size / 2
 
+## Deactivate the crosshair
 func deactivate() -> void:
   visible = false
 
+## Activate the crosshair
 func activate() -> void:
   visible = true

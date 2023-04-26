@@ -1,14 +1,16 @@
 ## A CharacterBody3D for third person games
 class_name ThirdPersonCharacter extends CharacterBody3D
 
-## The input action to pause input
-@export var escape_action : String = "escape"
 ## Allow player input
 @export var input_enabled: bool = true
 ## Gravity strength
 @export var gravity : float = 9.8
 ## Apply gravity even when the character is on the floor
 @export var always_apply_gravity: bool = false
+
+@export_category("Input Actions")
+## The input action name for pausing the game
+@export var escape_action : String = "escape"
 
 var camera: ThirdPersonCamera
   

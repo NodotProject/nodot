@@ -1,5 +1,5 @@
-## A StaticBody3D that will be replaced by it's selected children on death
 @tool
+## A StaticBody3D that will be replaced by it's selected children on death
 class_name StaticBreakable3D extends StaticBody3D
 
 ## Triggered when the object is broken

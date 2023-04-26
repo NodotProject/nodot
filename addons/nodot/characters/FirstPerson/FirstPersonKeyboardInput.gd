@@ -3,14 +3,6 @@
 ## A preconfigured set of inputs for first person keyboard control
 class_name FirstPersonKeyboardInput extends Nodot
 
-@export var left_action : String = "left"
-@export var right_action : String = "right"
-@export var up_action : String = "up"
-@export var down_action : String = "down"
-@export var reload_action : String = "reload"
-@export var jump_action : String = "jump"
-@export var sprint_action : String = "sprint"
-
 ## Is input enabled
 @export var enabled := true
 ## Only allow WASD movement
@@ -21,6 +13,22 @@ class_name FirstPersonKeyboardInput extends Nodot
 @export var sprint_speed_multiplier := 3.0
 ## How high the character can jump
 @export var jump_velocity := 4.5
+
+@export_category("Input Actions")
+## The input action name for strafing left
+@export var left_action : String = "left"
+## The input action name for strafing right
+@export var right_action : String = "right"
+## The input action name for moving forward
+@export var up_action : String = "up"
+## The input action name for moving backwards
+@export var down_action : String = "down"
+## The input action name for reloading the current active weapon
+@export var reload_action : String = "reload"
+## The input action name for jumping
+@export var jump_action : String = "jump"
+## The input action name for sprinting
+@export var sprint_action : String = "sprint"
 
 @onready var parent: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
@@ -35,8 +43,8 @@ func _get_configuration_warnings() -> PackedStringArray:
     warnings.append("Parent should be a FirstPersonCharacter")
   return warnings
 
-func _init():
-  var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, "escape"]
+func _init() -> void:
+  var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, parent.escape_action]
   var default_keys = [KEY_A, KEY_D, KEY_W, KEY_S, KEY_R, KEY_SPACE, KEY_SHIFT, KEY_ESCAPE]
   for i in action_names.size():
     var action_name = action_names[i]

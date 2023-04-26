@@ -3,15 +3,6 @@
 ## Takes joypad input for a third person character
 class_name ThirdPersonJoypadInput extends Nodot
 
-@export var left_action : String = "left"
-@export var right_action : String = "right"
-@export var up_action : String = "up"
-@export var down_action : String = "down"
-@export var jump_action : String = "jump"
-@export var sprint_action : String = "sprint"
-## Input action for enabling camera rotation
-@export var camera_rotate_action : String = "camera_rotate"
-
 ## Is input enabled
 @export var enabled: bool = true
 ## How fast the character can move
@@ -22,7 +13,6 @@ class_name ThirdPersonJoypadInput extends Nodot
 @export var jump_velocity: float = 4.5
 ## Instead of turning the character, the character will strafe on left and right input action
 @export var strafing: bool = false
-
 ## Sensitivity of look movement
 @export var look_sensitivity := 1.0
 ## Enable camera movement only while camera_rotate_action input action is pressed
@@ -31,6 +21,22 @@ class_name ThirdPersonJoypadInput extends Nodot
 @export var lock_character_rotation := false
 ## Restrict vertical look angle
 @export var vertical_clamp := Vector2(-0.5, 0.5)
+
+@export_category("Input Actions")
+## The input action name for moving left
+@export var left_action : String = "left"
+## The input action name for moving right
+@export var right_action : String = "right"
+## The input action name for moving forward
+@export var up_action : String = "up"
+## The input action name for moving backwards
+@export var down_action : String = "down"
+## The input action name for jumping
+@export var jump_action : String = "jump"
+## The input action name for sprinting
+@export var sprint_action : String = "sprint"
+## Input action for enabling camera rotation
+@export var camera_rotate_action : String = "camera_rotate"
 
 @onready var parent: ThirdPersonCharacter = get_parent()
 

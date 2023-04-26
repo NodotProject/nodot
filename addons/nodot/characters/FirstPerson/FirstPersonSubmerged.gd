@@ -2,14 +2,16 @@
 ## Assists with character water submersion controls and effects
 class_name FirstPersonSubmerged extends Nodot
 
-## The input action name for swimming upwards
-@export var ascend_action : String = "submerge_ascend"
-## The input action name for swimming downwards
-@export var descend_action : String = "submerge_descend"
 ## The gravity to apply to the character while submerged
 @export var submerged_gravity: float = 0.3
 ## How slow the character can move while underwater (higher = slower)
 @export var submerge_speed_divider := 2.0
+
+@export_category("Input Actions")
+## The input action name for swimming upwards
+@export var ascend_action : String = "submerge_ascend"
+## The input action name for swimming downwards
+@export var descend_action : String = "submerge_descend"
 
 ## Triggered when submerged underwater
 signal submerged
