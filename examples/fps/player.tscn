@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://dv6pyhevccscg"]
+[gd_scene load_steps=56 format=3 uid="uid://dv6pyhevccscg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -41,6 +41,7 @@
 [ext_resource type="AudioStream" uid="uid://bswv5741m427c" path="res://examples/fps/sfx/footsteps/grass2.mp3" id="38_latv8"]
 [ext_resource type="AudioStream" uid="uid://y8ls43o6k1ov" path="res://examples/fps/sfx/footsteps/grass3.mp3" id="39_gixma"]
 [ext_resource type="AudioStream" uid="uid://vxh7cxpcqgld" path="res://examples/fps/sfx/footsteps/grass4.mp3" id="40_dd2w8"]
+[ext_resource type="Script" path="res://addons/nodot/utility/Saver.gd" id="42_nxq1b"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -120,6 +121,17 @@ func submerge() -> void:
 func surface() -> void:
   AudioServer.set_bus_effect_enabled(audio_bus_index, 0, false)
   $Ambience.stop()
+"
+
+[sub_resource type="GDScript" id="GDScript_x1pdd"]
+resource_name = "savecontrols"
+script/source = "extends Node
+
+func _input(event: InputEvent):
+  if event.is_action_pressed(\"save\"):
+    SaveManager.save()
+  if event.is_action_pressed(\"load\"):
+    SaveManager.load()
 "
 
 [node name="FirstPersonCharacterBody3D" type="CharacterBody3D"]
@@ -351,3 +363,10 @@ sfx = Array[AudioStream]([ExtResource("32_6wbgj"), ExtResource("33_tvmg1"), ExtR
 [node name="Grass" type="AudioStreamPlayer3D" parent="FootStepSFX"]
 script = ExtResource("15_kxtrg")
 sfx = Array[AudioStream]([ExtResource("37_fra87"), ExtResource("38_latv8"), ExtResource("39_gixma"), ExtResource("40_dd2w8")])
+
+[node name="Saver" type="Node" parent="."]
+script = ExtResource("42_nxq1b")
+fields = Array[String](["position", "rotation"])
+
+[node name="SaveControls" type="Node" parent="Saver"]
+script = SubResource("GDScript_x1pdd")
