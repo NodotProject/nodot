@@ -58,6 +58,7 @@ func load(slot: int = 0, reload_scene: bool = false) -> void:
 func get_special_id(input_node: Node):
   var id_raw = "%s_%s" % [input_node.get_path(), input_node.name]
   return id_raw.sha256_text()
-  
+
+## Set a custom value to be stored in the save file
 func set_value(key: String, value: Variant):
   custom_values[key] = value
