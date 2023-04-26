@@ -17,8 +17,6 @@ signal movement_ended
 
 ## The node to move
 @export var target_node: Node
-## Only move once
-@export var one_shot: bool = false
 ## Automatically start movement
 @export var auto_start: bool = false
 ## The destination position
@@ -32,7 +30,7 @@ signal movement_ended
 ## Transition type (https://docs.godotengine.org/en/4.0/classes/class_tween.html)
 @export_enum("TRANS_LINEAR", "TRANS_SINE", "TRANS_QUINT", "TRANS_QUART", "TRANS_QUAD", "TRANS_EXPO", "TRANS_ELASTIC", "TRANS_CUBIC", "TRANS_CIRC", "TRANS_BOUNCE", "TRANS_BACK") var transition_type: int = 0
 
-@onready var original_position = target_node.position
+@onready var original_position = target_node.global_position
 @onready var original_rotation = target_node.rotation
 
 var activated = false
@@ -62,7 +60,7 @@ func move_to_destination():
   var destination_tween = _create_tween(_on_destination_reached)
   var destination_rotation_radians = Vector3(deg_to_rad(destination_rotation.x), deg_to_rad(destination_rotation.y), deg_to_rad(destination_rotation.z))
   if destination_position:
-    destination_tween.parallel().tween_property(target_node, "position", destination_position, time_to_destination).set_trans(transition_type)
+    destination_tween.parallel().tween_property(target_node, "global_position", destination_position, time_to_destination).set_trans(transition_type)
   destination_tween.parallel().tween_property(target_node, "rotation", destination_rotation_radians, time_to_destination).set_trans(transition_type)
   destination_tween.play()
   emit_signal("moving_to_destination")
@@ -72,7 +70,7 @@ func move_to_origin():
   activated = false
   var origin_tween = _create_tween(_on_origin_reached)
   if original_position:
-    origin_tween.parallel().tween_property(target_node, "position", original_position, time_to_origin).set_trans(transition_type)
+    origin_tween.parallel().tween_property(target_node, "global_position", original_position, time_to_origin).set_trans(transition_type)
   origin_tween.parallel().tween_property(target_node, "rotation", original_rotation, time_to_origin).set_trans(transition_type)
   origin_tween.play()
   emit_signal("moving_to_origin")

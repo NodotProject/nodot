@@ -76,6 +76,8 @@ func _on_body_entered(body: Node3D) -> void:
     # TODO: Create better probe logic
     # create_probes(body)
     body_tracker.append(body)
+    if body.has_method("set_submerged"):
+      body.set_submerged(true, self)
   if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
     body.submerge_handler.set_submerged(true, self)
   
@@ -83,6 +85,8 @@ func _on_body_exited(body: Node3D) -> void:
   if body is RigidBody3D and body_tracker.has(body):
     var idx = body_tracker.find(body)
     body_tracker.remove_at(idx)
+    if body.has_method("set_submerged"):
+      body.set_submerged(false, self)
     # probe_tracker.remove_at(idx)
   if body is CharacterBody3D and body.submerge_handler and body.submerge_handler.has_method("set_submerged"):
     body.submerge_handler.set_submerged(false, self)

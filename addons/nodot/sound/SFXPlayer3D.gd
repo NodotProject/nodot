@@ -7,12 +7,17 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 @export var trigger_node: Node
 ## (optional) The signal name fired from the "trigger_node"
 @export var trigger_signal: String = ""
+## Arguments to unbind from signal
+@export var unbind_count: int = 0
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 func _ready() -> void:
   if trigger_node:
-    trigger_node.connect(trigger_signal, action)
+    if unbind_count > 0:
+      trigger_node.connect(trigger_signal, action.unbind(unbind_count))
+    else:
+      trigger_node.connect(trigger_signal, action)
 
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:
