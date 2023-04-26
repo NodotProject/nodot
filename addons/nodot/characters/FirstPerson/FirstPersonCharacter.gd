@@ -13,6 +13,9 @@ class_name FirstPersonCharacter extends CharacterBody3D
 ## Apply gravity even when the character is on the floor
 @export var always_apply_gravity: bool = false
 
+signal paused
+signal unpaused
+
 var head: Node3D
 var camera: Camera3D = Camera3D.new()
 var submerge_handler: FirstPersonSubmerged
@@ -51,11 +54,21 @@ func _physics_process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
   if event.is_action_pressed("escape"):
     if input_enabled:
-      disable_input()
-      input_enabled = false
+      pause()
     else:
-      enable_input()
-      input_enabled = true
+      unpause()
+
+## Pause the game
+func pause():
+  disable_input()
+  input_enabled = false
+  emit_signal("paused")
+
+## Unpause the game
+func unpause():
+  enable_input()
+  input_enabled = true
+  emit_signal("unpaused")
 
 ## Disable player input
 func disable_input() -> void:

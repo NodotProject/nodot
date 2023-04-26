@@ -18,6 +18,7 @@ func unregister_saver(saver_node: Saver):
   var index = savers.find(saver_node)
   savers.remove_at(index)
 
+## Saves the data in the current scene
 func save(slot: int = 0) -> void:
   var file_path = "user://save%s.sav" % slot
   var file = FileAccess.open(file_path, FileAccess.WRITE)
@@ -25,13 +26,18 @@ func save(slot: int = 0) -> void:
   
   for saver in savers:
     var saver_data = saver.save()
-    save_data[saver.get_instance_id()] = saver_data
+    save_data[get_special_id(saver)] = saver_data
     
   file.store_var(save_data)
   file.close()
   emit_signal("saved")
 
-func load(slot: int = 0) -> void:
+## Loads a save file and applies it to the nodes in the current scene
+func load(slot: int = 0, reload_scene: bool = false) -> void:
+  if reload_scene:
+    get_tree().reload_current_scene()
+    await get_tree().process_frame
+    
   var file_path = "user://save%s.sav" % slot
   if FileAccess.file_exists(file_path):
     var file := FileAccess.open(file_path, FileAccess.READ)
@@ -39,7 +45,12 @@ func load(slot: int = 0) -> void:
     
     for saver_id in save_data:
       for saver in savers:
-        if saver.get_instance_id() == saver_id:
+        if get_special_id(saver) == saver_id:
           saver.load(save_data[saver_id])
     file.close()
     emit_signal("loaded")
+
+func get_special_id(input_node: Node):
+  var id_raw = "%s_%s" % [input_node.get_path(), input_node.name]
+  return id_raw.sha256_text()
+  

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://hme8qon3s6fl"]
+[gd_scene load_steps=24 format=3 uid="uid://hme8qon3s6fl"]
 
 [ext_resource type="Script" path="res://addons/nodot/interaction/RigidBreakable3D.gd" id="1_ogfh3"]
 [ext_resource type="Texture2D" uid="uid://c6lm2qyokdijx" path="res://examples/fps/materials/Breakable_Jar_Base Color_Jar.png" id="2_2sejy"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="5_e08cc"]
 [ext_resource type="AudioStream" uid="uid://cky4qpqw0556m" path="res://examples/fps/sfx/pot_break2.mp3" id="5_m53ry"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_xh0w3"]
+[ext_resource type="Script" path="res://addons/nodot/utility/Saver.gd" id="9_6naj5"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_afj03"]
 points = PackedVector3Array(-0.188374, 0.0355623, -0.00893364, 0.13488, 0.583489, 0.0269257, 0.133695, 0.01044, 0.115857, 0.107749, 0.259859, -0.260404, -0.25089, 0.430099, 0.116468, -0.197064, 0.43007, -0.197026, -0.00898927, 0.313735, 0.288731, 0.289292, 0.358974, 0.0270716, 0.0719204, 0.00779303, -0.161902, -0.115974, 0.0102081, 0.133777, -0.0269327, 0.583508, -0.134863, 0.116483, 0.430091, 0.250825, -0.089155, 0.581041, 0.106954, 0.1165, 0.43011, -0.25086, -0.107743, 0.259861, -0.260389, 0.260398, 0.259866, -0.107705, -0.260392, 0.25986, -0.107725, -0.260392, 0.25986, 0.107725, -0.116817, 0.358584, 0.269555, -0.115975, 0.0102052, -0.133779, 0.196789, 0.250973, 0.19675, 0.25089, 0.430099, -0.116468, -0.269484, 0.439447, -0.00894728, 0.179013, 0.0182073, 0.0178305, -0.0179987, 0.412776, -0.279122, 0.0446578, 0.00948655, 0.169857, 0.250855, 0.43008, 0.116451, -0.13488, 0.583489, -0.0269257, 0.106993, 0.58109, -0.0890971, -0.0988184, 0.439507, 0.251586, 0.0269327, 0.583508, 0.134863, 0.260398, 0.259866, 0.107705)
@@ -247,3 +248,7 @@ current_health = 1.0
 script = ExtResource("4_nsi2v")
 outline_width = 2.0
 mesh = NodePath("../Jar")
+
+[node name="Saver" type="Node" parent="."]
+script = ExtResource("9_6naj5")
+fields = Array[String](["position"])
