@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 WindowManager="*res://addons/nodot/autoload/WindowManager.gd"
+SaveManager="*res://addons/nodot/autoload/SaveManager.gd"
 
 [display]
 
