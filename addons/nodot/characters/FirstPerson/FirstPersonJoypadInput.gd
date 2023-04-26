@@ -57,8 +57,8 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _init():
   if enabled:
-    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, parent.escape_action, item_next_action, item_previous_action, action_action, zoom_action]
-    var default_keys = [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_LEFT_Y, JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK, JOY_BUTTON_START, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
+    var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, item_next_action, item_previous_action, action_action, zoom_action]
+    var default_keys = [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_LEFT_Y, JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_AXIS_TRIGGER_RIGHT, JOY_AXIS_TRIGGER_LEFT]
     for i in action_names.size():
       var action_name = action_names[i]
       if not InputMap.has_action(action_name):

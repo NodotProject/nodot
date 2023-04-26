@@ -44,8 +44,8 @@ func _get_configuration_warnings() -> PackedStringArray:
   return warnings
 
 func _init() -> void:
-  var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action, parent.escape_action]
-  var default_keys = [KEY_A, KEY_D, KEY_W, KEY_S, KEY_R, KEY_SPACE, KEY_SHIFT, KEY_ESCAPE]
+  var action_names = [left_action, right_action, up_action, down_action, reload_action, jump_action, sprint_action]
+  var default_keys = [KEY_A, KEY_D, KEY_W, KEY_S, KEY_R, KEY_SPACE, KEY_SHIFT]
   for i in action_names.size():
     var action_name = action_names[i]
     if not InputMap.has_action(action_name):
