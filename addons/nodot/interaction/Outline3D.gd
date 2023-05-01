@@ -13,21 +13,25 @@ class_name Outline3D extends Nodot
 var shader: Shader = load("res://addons/nodot/shaders/outline3d.gdshader")
 var shader_material: ShaderMaterial = ShaderMaterial.new()
 
+
 func _get_configuration_warnings() -> PackedStringArray:
-  var warnings: PackedStringArray = []
-  if not get_parent() is RigidBody3D and not get_parent() is StaticBody3D:
-    warnings.append("The parent should be a RigidBody3D or StaticBody3D")
-  return warnings
-  
+	var warnings: PackedStringArray = []
+	if not get_parent() is RigidBody3D and not get_parent() is StaticBody3D:
+		warnings.append("The parent should be a RigidBody3D or StaticBody3D")
+	return warnings
+
+
 func _ready():
-  shader_material.shader = shader
-  shader_material.set_shader_parameter("outline_color", outline_color)
-  shader_material.set_shader_parameter("outline_width", outline_width)
+	shader_material.shader = shader
+	shader_material.set_shader_parameter("outline_color", outline_color)
+	shader_material.set_shader_parameter("outline_width", outline_width)
+
 
 ## Adds the outline to the mesh material overlay
 func focussed():
-  mesh.material_overlay = shader_material
+	mesh.material_overlay = shader_material
+
 
 ## Remove the outline from the mesh material overlay
 func unfocussed():
-  mesh.material_overlay = null
+	mesh.material_overlay = null
