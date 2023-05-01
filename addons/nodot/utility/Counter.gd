@@ -18,35 +18,40 @@ signal value_increased(value: float)
 ## Triggered when the value decreases
 signal value_decreased(value: float)
 
+
 ## Set the value to a specific amount.
 func set(new_value: float) -> void:
-  var old_value = value
+	var old_value = value
 
-  if limit_values:
-    value = clamp(new_value, min_value, max_value)
-  else:
-    value = new_value
+	if limit_values:
+		value = clamp(new_value, min_value, max_value)
+	else:
+		value = new_value
 
-  if value > old_value:
-    emit_signal("value_increased", value)
-  elif value < old_value:
-    emit_signal("value_decreased", value)
-  
-  if value != old_value:
-    emit_signal("value_changed", value)
+	if value > old_value:
+		emit_signal("value_increased", value)
+	elif value < old_value:
+		emit_signal("value_decreased", value)
+
+	if value != old_value:
+		emit_signal("value_changed", value)
+
 
 ## Add an amount to the value.
 func add(amount: float) -> void:
-  set(value + amount)
+	set(value + amount)
+
 
 ## Remove an amount from the value.
 func remove(amount: float) -> void:
-  set(value - amount)
+	set(value - amount)
+
 
 ## Increase the value by the step value
 func step_up() -> void:
-  add(step)
+	add(step)
+
 
 ## Decrease the value by the step value
 func step_down() -> void:
-  remove(step)
+	remove(step)
