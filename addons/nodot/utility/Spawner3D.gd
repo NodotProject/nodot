@@ -7,7 +7,7 @@ class_name Spawner3D extends Nodot3D
 ## Set a maximum amount of spawns (0 for infinite)
 @export var spawn_limit: int = 0
 ## Number of spawns left
-@export var spawns_left: int = = 0
+@export var spawns_left: int = 0
 ## The delay before spawning an item
 @export var spawn_delay: float = 0.0
 ## Whether to spawn on start
@@ -25,58 +25,72 @@ class_name Spawner3D extends Nodot3D
 signal spawned
 ## Triggered when the spawn limit is reached
 signal spawn_limit_reached
+## Triggered when the spawns_left is updated
+signal spawns_left_updated(spawns_left: int)
 
 var is_editor: bool = Engine.is_editor_hint()
-var spawns_left = spawn_limit
 var saved_children: Array = []
 
+
 func _get_configuration_warnings() -> PackedStringArray:
-  var warnings: PackedStringArray = []
-  if !Nodot.get_first_child_of_type(self, Node3D):
-    warnings.append("Should have a child of Node3D type")
-  return warnings
+	var warnings: PackedStringArray = []
+	if !Nodot.get_first_child_of_type(self, Node3D):
+		warnings.append("Should have a child of Node3D type")
+	return warnings
+
 
 func _enter_tree() -> void:
-  if !is_editor:
-    var node3d_children = Nodot.get_children_of_type(self, Node3D)
-    for item in node3d_children:
-      saved_children.append(item)
-      remove_child(item)
+	if !is_editor:
+		var node3d_children = Nodot.get_children_of_type(self, Node3D)
+		for item in node3d_children:
+			saved_children.append(item)
+			remove_child(item)
 
-  if monitor_deletions or auto_spawn_all:
-    var timer = Timer.new()
-    timer.set_wait_time(deletion_check_interval)
-    timer.connect("timeout", check)
-    add_child(timer)
+	if monitor_deletions or auto_spawn_all:
+		var timer = Timer.new()
+		timer.set_wait_time(deletion_check_interval)
+		timer.autostart = true
+		timer.connect("timeout", check)
+		add_child(timer)
 
-  if spawn_all_on_start or auto_spawn_all:
-    for i in spawn_limit:
-      action()
-  elif spawn_one_on_start:
-    action()
+	if spawn_all_on_start or auto_spawn_all:
+		for i in spawn_limit:
+			action()
+	elif spawn_one_on_start:
+		action()
+
 
 ## Spawn all children of Node3D type
 func action() -> void:
-  if enabled and (spawn_limit == 0 or spawns_left > 0):
-    if spawn_delay > 0:
-      await get_tree().create_timer(spawn_delay).timeout
-      
-    for child in saved_children:
-      var new_child = child.duplicate(15)
-      add_child(new_child)
-      new_child.global_position = global_position
-      new_child.global_rotation = global_rotation
-    spawns_left -= 1
+	if enabled and (spawn_limit == 0 or spawns_left > 0):
+		if spawn_delay > 0:
+			await get_tree().create_timer(spawn_delay).timeout
+
+		for child in saved_children:
+			var new_child = child.duplicate(15)
+			add_child(new_child)
+			new_child.global_position = global_position
+			new_child.global_rotation = global_rotation
+		spawns_left -= 1
+		emit_signal("spawned")
+		emit_signal("spawns_left_updated", spawns_left)
+
 
 ## Reset the spawn limit
 func reset() -> void:
-  spawns_left = spawn_limit
+	spawns_left = spawn_limit
+	emit_signal("spawns_left_updated", spawns_left)
+
 
 ## Check the current number of spawned objects
 func check() -> void:
-  var current_spawns = floor(Nodot.get_children_of_type(self, Node3D).size() / saved_children.size())
-  if current_spawns < spawn_limit:
-    spawns_left = spawn_limit - current_spawns
-    action()
-  else:
-    spawns_left = 0
+	var current_spawns = floor(
+		Nodot.get_children_of_type(self, Node3D).size() / saved_children.size()
+	)
+	if current_spawns < spawn_limit:
+		spawns_left = spawn_limit - current_spawns
+		if auto_spawn_all:
+			action()
+	else:
+		spawns_left = 0
+	emit_signal("spawns_left_updated", spawns_left)
