@@ -22,20 +22,20 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _physics_process(delta: float) -> void:
-	if parent:
-		var total_velocity = parent.position.distance_to(last_position)
-		last_position = parent.position
-		distance_traveled += total_velocity
-		if (
-			distance_traveled > frequency
-			and parent.is_on_floor()
-			and parent.velocity != Vector3.ZERO
-			and parent.get_slide_collision_count() > 0
-		):
-			var collider = parent.get_slide_collision(0).get_collider()
-			var material = NodePath(get_child(0).name)
-			if collider.has_meta("floor_material"):
-				material = NodePath(collider.get_meta("floor_material"))
-			if has_node(material):
-				distance_traveled = 0.0
-				get_node(material).action()
+	if !parent: return
+	var total_velocity = parent.position.distance_to(last_position)
+	last_position = parent.position
+	distance_traveled += total_velocity
+	if (
+		distance_traveled > frequency
+		and parent.is_on_floor()
+		and parent.velocity != Vector3.ZERO
+		and parent.get_slide_collision_count() > 0
+	):
+		var collider = parent.get_slide_collision(0).get_collider()
+		var material = NodePath(get_child(0).name)
+		if collider.has_meta("floor_material"):
+			material = NodePath(collider.get_meta("floor_material"))
+		if has_node(material):
+			distance_traveled = 0.0
+			get_node(material).action()

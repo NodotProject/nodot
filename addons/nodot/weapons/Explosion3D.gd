@@ -41,9 +41,9 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	if effect_time > 0:
-		await get_tree().create_timer(effect_time).timeout
-		queue_free()
+	if effect_time <= 0: return
+	await get_tree().create_timer(effect_time).timeout
+	queue_free()
 
 
 func action() -> void:

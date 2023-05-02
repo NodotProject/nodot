@@ -40,20 +40,20 @@ func _enter_tree():
 
 
 func _input(event: InputEvent):
-	if event.is_action_pressed(interact_action):
-		if is_instance_valid(carried_body):
-			carried_body.gravity_scale = 1.0
-			emit_signal("carry_ended", carried_body)
-			carried_body = null
-		else:
-			var collider = get_collider()
-			if is_instance_valid(collider) and collider.has_method("interact"):
-				collider.interact()
-				emit_signal("interacted", collider)
-			elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
-				carried_body = collider
-				carried_body.gravity_scale = 0.0
-				emit_signal("carry_started", carried_body)
+	if !event.is_action_pressed(interact_action): return
+	if is_instance_valid(carried_body):
+		carried_body.gravity_scale = 1.0
+		emit_signal("carry_ended", carried_body)
+		carried_body = null
+	else:
+		var collider = get_collider()
+		if is_instance_valid(collider) and collider.has_method("interact"):
+			collider.interact()
+			emit_signal("interacted", collider)
+		elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
+			carried_body = collider
+			carried_body.gravity_scale = 0.0
+			emit_signal("carry_started", carried_body)
 
 
 func _physics_process(delta):
