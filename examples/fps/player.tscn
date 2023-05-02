@@ -192,6 +192,7 @@ target_position = Vector3(0, 0, -50)
 [node name="Interaction3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -2)
 script = ExtResource("5_0d045")
+carry_distance = 1.0
 
 [node name="Pistol" type="Node3D" parent="FirstPersonViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)
