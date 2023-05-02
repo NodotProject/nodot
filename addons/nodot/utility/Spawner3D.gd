@@ -40,11 +40,13 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _enter_tree() -> void:
-	if !is_editor:
-		var node3d_children = Nodot.get_children_of_type(self, Node3D)
-		for item in node3d_children:
-			saved_children.append(item)
-			remove_child(item)
+	if is_editor:
+		return
+
+	var node3d_children = Nodot.get_children_of_type(self, Node3D)
+	for item in node3d_children:
+		saved_children.append(item)
+		remove_child(item)
 
 	if monitor_deletions or auto_spawn_all:
 		var timer = Timer.new()
@@ -62,18 +64,20 @@ func _enter_tree() -> void:
 
 ## Spawn all children of Node3D type
 func action() -> void:
-	if enabled and (spawn_limit == 0 or spawns_left > 0):
-		if spawn_delay > 0:
-			await get_tree().create_timer(spawn_delay).timeout
+	if !enabled or (spawn_limit > 0 and spawns_left == 0):
+		return
 
-		for child in saved_children:
-			var new_child = child.duplicate(15)
-			add_child(new_child)
-			new_child.global_position = global_position
-			new_child.global_rotation = global_rotation
-		spawns_left -= 1
-		emit_signal("spawned")
-		emit_signal("spawns_left_updated", spawns_left)
+	if spawn_delay > 0:
+		await get_tree().create_timer(spawn_delay).timeout
+
+	for child in saved_children:
+		var new_child = child.duplicate(15)
+		add_child(new_child)
+		new_child.global_position = global_position
+		new_child.global_rotation = global_rotation
+	spawns_left -= 1
+	emit_signal("spawned")
+	emit_signal("spawns_left_updated", spawns_left)
 
 
 ## Reset the spawn limit
