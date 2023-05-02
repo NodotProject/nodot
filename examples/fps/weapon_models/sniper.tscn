@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://khy2ymqep0my"]
+[gd_scene load_steps=15 format=3 uid="uid://dcyhhyagobp1v"]
 
 [sub_resource type="Animation" id="Animation_l7gqr"]
 resource_name = "SniperRifle |FireWOBullet"
@@ -420,6 +420,7 @@ bones/8/rotation = Quaternion(-1.05879e-22, -4.46678e-23, 2.73751e-17, 1)
 bones/8/scale = Vector3(1, 1, 1)
 
 [node name="Rifle001" type="MeshInstance3D" parent="RootNode/SniperRifle /Skeleton3D"]
+layers = 2
 lod_bias = 17.495
 mesh = SubResource("ArrayMesh_faxk4")
 skin = SubResource("Skin_3o7jh")
