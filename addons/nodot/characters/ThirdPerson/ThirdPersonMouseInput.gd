@@ -3,8 +3,6 @@
 ## Takes mouse input for a third person character
 class_name ThirdPersonMouseInput extends Nodot
 
-## Input action for enabling camera rotation
-@export var camera_rotate_action : String = "camera_rotate"
 ## Is input enabled
 @export var enabled := true
 ## Sensitivity of mouse movement
@@ -16,6 +14,10 @@ class_name ThirdPersonMouseInput extends Nodot
 ## Restrict vertical look angle
 @export var vertical_clamp := Vector2(-1.36, 1.4)
 
+@export_category("Input Actions")
+## Input action for enabling camera rotation
+@export var camera_rotate_action: String = "camera_rotate"
+
 @onready var parent: ThirdPersonCharacter = get_parent()
 
 var is_editor: bool = Engine.is_editor_hint()
@@ -23,47 +25,58 @@ var mouse_rotation: Vector2 = Vector2.ZERO
 var camera: ThirdPersonCamera
 var camera_container: Node3D
 
+
 func _get_configuration_warnings() -> PackedStringArray:
-  var warnings: PackedStringArray = []
-  if !(get_parent() is ThirdPersonCharacter):
-    warnings.append("Parent should be a ThirdPersonCharacter")
-  return warnings
+	var warnings: PackedStringArray = []
+	if !(get_parent() is ThirdPersonCharacter):
+		warnings.append("Parent should be a ThirdPersonCharacter")
+	return warnings
+
 
 func _ready() -> void:
-  enable()
-  camera = parent.camera
-  camera_container = camera.get_parent()
+	if enabled:
+		enable()
+	camera = parent.camera
+	camera_container = camera.get_parent()
+
 
 func _input(event: InputEvent) -> void:
-  if enabled:
-    if event is InputEventMouseMotion:
-      mouse_rotation.y = event.relative.x * mouse_sensitivity
-      mouse_rotation.x = event.relative.y * mouse_sensitivity
-      camera.time_since_last_move = 0.0
+	if enabled:
+		if event is InputEventMouseMotion:
+			mouse_rotation.y = event.relative.x * mouse_sensitivity
+			mouse_rotation.x = event.relative.y * mouse_sensitivity
+			camera.time_since_last_move = 0.0
+
 
 func _physics_process(delta: float) -> void:
-  if enabled and !is_editor and (!lock_camera_rotation or Input.is_action_pressed(camera_rotate_action)):
-    var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
+	if (
+		enabled
+		and !is_editor
+		and (!lock_camera_rotation or Input.is_action_pressed(camera_rotate_action))
+	):
+		var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 
-    # Handle look left and right
-    if lock_character_rotation:
-      parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
-    else:
-      camera_container.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+		# Handle look left and right
+		if lock_character_rotation:
+			parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+		else:
+			camera_container.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
 
-    # Handle look up and down
-    camera.rotate_object_local(Vector3(1, 0, 0), look_angle.x)
+		# Handle look up and down
+		camera.rotate_object_local(Vector3(1, 0, 0), look_angle.x)
 
-    camera.rotation.x = clamp(camera.rotation.x, vertical_clamp.x, vertical_clamp.y)
-    mouse_rotation = Vector2.ZERO
+		camera.rotation.x = clamp(camera.rotation.x, vertical_clamp.x, vertical_clamp.y)
+		mouse_rotation = Vector2.ZERO
+
 
 ## Disable input and release mouse
 func disable() -> void:
-  Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-  enabled = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	enabled = false
+
 
 ## Enable input and capture mouse
 func enable() -> void:
-  if !Engine.is_editor_hint():
-    Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-  enabled = true
+	if !Engine.is_editor_hint():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	enabled = true

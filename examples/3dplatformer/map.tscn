@@ -1,11 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://knhhpghrn0tv"]
+[gd_scene load_steps=19 format=3 uid="uid://knhhpghrn0tv"]
 
 [ext_resource type="PackedScene" uid="uid://osaskyd3chgg" path="res://examples/3dplatformer/player.tscn" id="1_soi8n"]
-[ext_resource type="PackedScene" uid="uid://d6i6tqipdhuh" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
+[ext_resource type="PackedScene" uid="uid://dn5qsfqyxucpo" path="res://examples/3dplatformer/models/door.tscn" id="2_mlal5"]
 [ext_resource type="Script" path="res://addons/nodot/physics/Mover3D.gd" id="3_pj2b2"]
 [ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="4_ue8ae"]
 [ext_resource type="Script" path="res://addons/nodot/physics/WaterArea3D.gd" id="5_3sksf"]
-[ext_resource type="Material" uid="uid://ck4ea8jnulenl" path="res://addons/nodot/shaders/clean_water.tres" id="5_8uaec"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qi556"]
 size = Vector3(50, 1, 50)
@@ -35,13 +34,6 @@ points = PackedVector3Array(0.954305, 0.5, 0.954305, -0.985089, -0.5, -0.985089,
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_msk4j"]
 size = Vector3(4, 4, 4)
-
-[sub_resource type="QuadMesh" id="QuadMesh_ipwbj"]
-material = ExtResource("5_8uaec")
-size = Vector2(4, 4)
-subdivide_width = 200
-subdivide_depth = 200
-orientation = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y1132"]
 albedo_color = Color(0.596078, 0.596078, 0.596078, 1)
@@ -108,7 +100,6 @@ trigger_node = NodePath("..")
 trigger_signal = "body_entered"
 target_node = NodePath("../../door1")
 target_method = "activate"
-ignored_arguments = 1
 
 [node name="BodyExited" type="Node" parent="Area3D" node_paths=PackedStringArray("trigger_node", "target_node")]
 script = ExtResource("4_ue8ae")
@@ -116,7 +107,6 @@ trigger_node = NodePath("..")
 trigger_signal = "body_exited"
 target_node = NodePath("../../door1")
 target_method = "deactivate"
-ignored_arguments = 1
 
 [node name="door1" parent="." instance=ExtResource("2_mlal5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44937, 0, 0.201943)
@@ -138,7 +128,9 @@ target_node = NodePath("..")
 auto_start = true
 destination_position = Vector3(-2.732, 10, -6.572)
 destination_rotation = Vector3(0, 180, 0)
-movement_speed = 1.0
+time_to_destination = 10.0
+time_to_origin = 10.0
+transition_type = 4
 
 [node name="SignalConnector" type="Node" parent="floating_platform" node_paths=PackedStringArray("trigger_node", "target_node")]
 script = ExtResource("4_ue8ae")
@@ -150,18 +142,10 @@ target_node = NodePath("../Mover3D")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3, 1, -2)
 script = ExtResource("5_3sksf")
 float_force = null
-force_probes = null
-water_drag = null
-water_angular_drag = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WaterArea3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3, 2.03577, -2)
 shape = SubResource("BoxShape3D_msk4j")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WaterArea3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
-transparency = 0.05
-mesh = SubResource("QuadMesh_ipwbj")
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
 

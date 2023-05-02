@@ -1,7 +1,8 @@
-[gd_scene load_steps=42 format=3 uid="uid://cvr3xfnhuhxn3"]
+[gd_scene load_steps=60 format=3 uid="uid://dv6pyhevccscg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
+[ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonJoypadInput.gd" id="3_fkja4"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonMouseInput.gd" id="3_p64oa"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="5_0d045"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonViewport.gd" id="5_2jvx4"]
@@ -14,7 +15,7 @@
 [ext_resource type="Script" path="res://addons/nodot/weapons/BulletHole.gd" id="11_lo0jv"]
 [ext_resource type="Material" uid="uid://cqqc5qihe1i76" path="res://examples/fps/materials/bullethole.tres" id="11_op62p"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Magazine.gd" id="12_hk1bj"]
-[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer.gd" id="15_kxtrg"]
+[ext_resource type="Script" path="res://addons/nodot/sound/SFXPlayer3D.gd" id="15_kxtrg"]
 [ext_resource type="AudioStream" uid="uid://bwfk4u8pcgxb" path="res://examples/fps/sfx/fire.mp3" id="16_cuws3"]
 [ext_resource type="AudioStream" uid="uid://0dsw5hfhysth" path="res://examples/fps/sfx/dryfire.mp3" id="17_qbvi5"]
 [ext_resource type="AudioStream" uid="uid://d34ui0t3lbb6s" path="res://examples/fps/sfx/reload.mp3" id="17_x25oq"]
@@ -27,8 +28,23 @@
 [ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
+[ext_resource type="PackedScene" uid="uid://khy2ymqep0my" path="res://examples/fps/weapon_models/sniper.tscn" id="29_46cf6"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
+[ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
+[ext_resource type="Texture2D" uid="uid://bdovxhkrf72x1" path="res://examples/fps/materials/scope1.png" id="30_brnig"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
+[ext_resource type="Script" path="res://addons/nodot/sound/FootStepSFX3D.gd" id="31_uugiq"]
+[ext_resource type="AudioStream" uid="uid://c8df3qhkj5rlm" path="res://examples/fps/sfx/footsteps/concrete1.mp3" id="32_6wbgj"]
+[ext_resource type="AudioStream" uid="uid://bxv35s54p7pyp" path="res://examples/fps/sfx/footsteps/concrete2.mp3" id="33_tvmg1"]
+[ext_resource type="AudioStream" uid="uid://cpmfwg6l3nhok" path="res://examples/fps/sfx/footsteps/concrete3.mp3" id="34_7c6pe"]
+[ext_resource type="AudioStream" uid="uid://qjiac3u5o816" path="res://examples/fps/sfx/footsteps/concrete4.mp3" id="35_we0gd"]
+[ext_resource type="AudioStream" uid="uid://sr7jij6555s4" path="res://examples/fps/sfx/footsteps/concrete5.mp3" id="36_v181c"]
+[ext_resource type="AudioStream" uid="uid://daoqcit24kmk1" path="res://examples/fps/sfx/footsteps/grass1.mp3" id="37_fra87"]
+[ext_resource type="AudioStream" uid="uid://bswv5741m427c" path="res://examples/fps/sfx/footsteps/grass2.mp3" id="38_latv8"]
+[ext_resource type="AudioStream" uid="uid://y8ls43o6k1ov" path="res://examples/fps/sfx/footsteps/grass3.mp3" id="39_gixma"]
+[ext_resource type="AudioStream" uid="uid://vxh7cxpcqgld" path="res://examples/fps/sfx/footsteps/grass4.mp3" id="40_dd2w8"]
+[ext_resource type="Script" path="res://addons/nodot/utility/Saver.gd" id="42_nxq1b"]
+[ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="43_l48ag"]
 
 [sub_resource type="GDScript" id="GDScript_fhr4g"]
 resource_name = "pistol"
@@ -87,6 +103,27 @@ albedo_texture = SubResource("NoiseTexture2D_chcbn")
 [sub_resource type="SphereMesh" id="SphereMesh_1xoyl"]
 material = SubResource("StandardMaterial3D_k3wjv")
 
+[sub_resource type="GDScript" id="GDScript_n1gxd"]
+resource_name = "sniper"
+script/source = "extends Node3D
+
+@export var magazine_node: Magazine
+
+func _ready():
+	magazine_node.connect(\"discharged\", action)
+	magazine_node.connect(\"reloading\", reload)
+	magazine_node.connect(\"magazine_depleted\", dryfire)
+  
+func action():
+	$AnimationPlayer.play(\"fire\")
+
+func reload():
+	$AnimationPlayer.play(\"reload\")
+
+func dryfire():
+	$AnimationPlayer.play(\"dryfire\")
+"
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
@@ -110,12 +147,36 @@ func surface() -> void:
   $Ambience.stop()
 "
 
+[sub_resource type="GDScript" id="GDScript_cyoi1"]
+resource_name = "button_logic"
+script/source = "extends VBoxContainer
+
+func _on_resume_button_pressed():
+  find_parent(\"FirstPersonCharacterBody3D\").unpause()
+
+func _on_save_button_pressed():
+  SaveManager.save()
+  find_parent(\"FirstPersonCharacterBody3D\").unpause()
+
+func _on_load_button_pressed():
+  SaveManager.load(0, true)
+  find_parent(\"FirstPersonCharacterBody3D\").unpause()
+
+func _on_quit_button_pressed():
+  get_tree().quit()
+"
+
 [node name="FirstPersonCharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_4h8r1")
 head_position = Vector3(0, 0.542, 0)
 
 [node name="FirstPersonKeyboardInput" type="Node" parent="."]
 script = ExtResource("2_yyfta")
+
+[node name="FirstPersonJoypadInput" type="Node" parent="."]
+script = ExtResource("3_fkja4")
+enabled = false
+look_sensitivity = 4.3
 
 [node name="FirstPersonMouseInput" type="Node" parent="."]
 script = ExtResource("3_p64oa")
@@ -131,6 +192,7 @@ target_position = Vector3(0, 0, -50)
 [node name="Interaction3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -2)
 script = ExtResource("5_0d045")
+carry_distance = 1.0
 
 [node name="Pistol" type="Node3D" parent="FirstPersonViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)
@@ -267,6 +329,7 @@ script = ExtResource("20_jlvx1")
 accuracy = 1.0
 
 [node name="Projectile3D" type="RigidBody3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D"]
+gravity_scale = 0.0
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("21_uyk2t")
@@ -299,6 +362,42 @@ draw_pass_1 = SubResource("SphereMesh_1xoyl")
 stream = ExtResource("26_63hhn")
 autoplay = true
 
+[node name="Sniper" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.766029, -0.39696, -1.35582)
+script = ExtResource("8_15eoi")
+magazine_node = NodePath("Magazine")
+hitscan_node = NodePath("HitScan3D")
+bullethole_node = NodePath("../P90/BulletHole")
+
+[node name="sniper" parent="FirstPersonViewport/Sniper" node_paths=PackedStringArray("magazine_node") instance=ExtResource("29_46cf6")]
+transform = Transform3D(0.232, 0, 0, 0, 0.232, 0, 0, 0, 0.232, 0, 0, 0)
+script = SubResource("GDScript_n1gxd")
+magazine_node = NodePath("../Magazine")
+
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/Sniper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.149472, 0.750226)
+script = ExtResource("9_mhfuw")
+enable_scope = true
+scope_texture = ExtResource("30_brnig")
+
+[node name="Magazine" type="Node" parent="FirstPersonViewport/Sniper"]
+script = ExtResource("12_hk1bj")
+fire_rate = 2.0
+reload_time = 3.0
+rounds_left = 10
+
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/Sniper" node_paths=PackedStringArray("raycast")]
+script = ExtResource("10_apqjf")
+enabled = true
+raycast = NodePath("../../RayCast3D")
+accuracy = 1.0
+damage = 100.0
+applied_force = 5.0
+
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/Sniper"]
+script = ExtResource("11_lo0jv")
+textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")
 
@@ -314,3 +413,74 @@ script = SubResource("GDScript_ewv7c")
 
 [node name="Ambience" type="AudioStreamPlayer" parent="FirstPersonSubmerged/SubmergeSound"]
 stream = ExtResource("29_fa7xe")
+
+[node name="StepUp3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.991578, 0)
+script = ExtResource("30_11fwe")
+
+[node name="RayCast3D" type="RayCast3D" parent="StepUp3D"]
+target_position = Vector3(0, 0, -0.6)
+
+[node name="FootStepSFX" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.864601, 0)
+script = ExtResource("31_uugiq")
+
+[node name="Concrete" type="AudioStreamPlayer3D" parent="FootStepSFX"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("32_6wbgj"), ExtResource("33_tvmg1"), ExtResource("34_7c6pe"), ExtResource("35_we0gd"), ExtResource("36_v181c")])
+
+[node name="Grass" type="AudioStreamPlayer3D" parent="FootStepSFX"]
+script = ExtResource("15_kxtrg")
+sfx = Array[AudioStream]([ExtResource("37_fra87"), ExtResource("38_latv8"), ExtResource("39_gixma"), ExtResource("40_dd2w8")])
+
+[node name="Saver" type="Node" parent="."]
+script = ExtResource("42_nxq1b")
+fields = Array[String](["position", "rotation"])
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+visible = false
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasGroup"]
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasGroup/CenterContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+alignment = 1
+script = SubResource("GDScript_cyoi1")
+
+[node name="ResumeButton" type="Button" parent="CanvasGroup/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "RESUME"
+
+[node name="SaveButton" type="Button" parent="CanvasGroup/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "SAVE"
+
+[node name="LoadButton" type="Button" parent="CanvasGroup/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "LOAD"
+
+[node name="QuitButton" type="Button" parent="CanvasGroup/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "QUIT"
+
+[node name="SignalConnectorShow" type="Node" parent="CanvasGroup" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("43_l48ag")
+trigger_node = NodePath("../..")
+trigger_signal = "paused"
+target_node = NodePath("..")
+target_method = "show"
+
+[node name="SignalConnectorHide" type="Node" parent="CanvasGroup" node_paths=PackedStringArray("trigger_node", "target_node")]
+script = ExtResource("43_l48ag")
+trigger_node = NodePath("../..")
+trigger_signal = "unpaused"
+target_node = NodePath("..")
+target_method = "hide"
+
+[connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/ResumeButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/SaveButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_save_button_pressed"]
+[connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/LoadButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_load_button_pressed"]
+[connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/QuitButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_quit_button_pressed"]

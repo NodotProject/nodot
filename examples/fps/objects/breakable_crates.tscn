@@ -1,7 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://dgh8b72jwbv11"]
+[gd_scene load_steps=18 format=3 uid="uid://dgh8b72jwbv11"]
 
 [ext_resource type="Script" path="res://addons/nodot/interaction/RigidBreakable3D.gd" id="1_stcdg"]
 [ext_resource type="Texture2D" uid="uid://gpwjwbis7fcs" path="res://examples/fps/materials/Breakable_Crates_Base Color_Crates.png" id="2_wcqdd"]
+[ext_resource type="Script" path="res://addons/nodot/interaction/Outline3D.gd" id="4_35kxg"]
+[ext_resource type="PackedScene" uid="uid://cqiv8ggtyxtpf" path="res://examples/general/HealthBar3D.tscn" id="5_axv8j"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Health.gd" id="5_n0blm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ux1lo"]
@@ -117,16 +119,18 @@ script = ExtResource("1_stcdg")
 replacement_node = NodePath("ReplaceWith")
 
 [node name="Crate" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.333522, 0)
 mesh = SubResource("ArrayMesh_2kq7d")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.333522, 0)
 shape = SubResource("ConvexPolygonShape3D_84npc")
 
 [node name="ReplaceWith" type="Node3D" parent="."]
 
 [node name="RigidBody3D" type="RigidBody3D" parent="ReplaceWith"]
-transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0.818, 0)
+transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0.48941, 0)
 
 [node name="Crate_Broken_2" type="MeshInstance3D" parent="ReplaceWith/RigidBody3D"]
 mesh = SubResource("ArrayMesh_r55rx")
@@ -139,15 +143,24 @@ shape = SubResource("ConvexPolygonShape3D_q1ax4")
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="Crate_Broken_1" type="MeshInstance3D" parent="ReplaceWith/RigidBody3D2"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -0.334658, 0)
 mesh = SubResource("ArrayMesh_ywure")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReplaceWith/RigidBody3D2"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -0.334658, 0)
 shape = SubResource("ConvexPolygonShape3D_jjay8")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_n0blm")
 max_health = 50.0
 current_health = 50.0
+
+[node name="Outline3D" type="Node" parent="." node_paths=PackedStringArray("mesh")]
+script = ExtResource("4_35kxg")
+outline_width = 2.0
+mesh = NodePath("../Crate")
+
+[node name="HealthBar3D" parent="." node_paths=PackedStringArray("health_node") instance=ExtResource("5_axv8j")]
+health_node = NodePath("../Health")
+always_on_top = true

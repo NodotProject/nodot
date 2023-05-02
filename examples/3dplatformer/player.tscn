@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonCamera.gd" id="2_oac3o"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonKeyboardInput.gd" id="3_j23gj"]
 [ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonMouseInput.gd" id="4_hvhp3"]
-[ext_resource type="Script" path="res://addons/nodot/physics/CharacterGravityPhysics.gd" id="5_7yi3r"]
+[ext_resource type="Script" path="res://addons/nodot/characters/ThirdPerson/ThirdPersonJoypadInput.gd" id="5_rbngk"]
 [ext_resource type="PackedScene" uid="uid://bq2uerkxo6ojl" path="res://examples/3dplatformer/models/pirate_male.tscn" id="6_e8xeq"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Interaction3D.gd" id="7_1llft"]
 
@@ -19,7 +19,7 @@ script/source = "extends Node3D
 
 var animation_busy = false
 
-func _physics_process(delta) -> void:
+func _physics_process(_delta) -> void:
   if !animation_busy:
     if parent.is_on_floor():
       if parent.velocity != Vector3.ZERO:
@@ -61,8 +61,9 @@ script = ExtResource("3_j23gj")
 script = ExtResource("4_hvhp3")
 vertical_clamp = Vector2(-0.379, 0.062)
 
-[node name="GravityPhysics" type="Node" parent="."]
-script = ExtResource("5_7yi3r")
+[node name="ThirdPersonJoypadInput" type="Node" parent="."]
+script = ExtResource("5_rbngk")
+enabled = false
 
 [node name="Pirate_Male" parent="." instance=ExtResource("6_e8xeq")]
 transform = Transform3D(-0.517, 0, -4.51976e-08, 0, 0.517, 0, 4.51976e-08, 0, -0.517, 0, -0.985823, 0)

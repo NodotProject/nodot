@@ -23,85 +23,87 @@ signal deactivated
 var ironsight_node: FirstPersonIronSight
 var crosshair_node: CrossHair
 
+
 func _get_configuration_warnings() -> PackedStringArray:
-  var warnings: PackedStringArray = []
-  if !(get_parent() is FirstPersonViewport):
-    warnings.append("Parent should be a FirstPersonViewport")
-  return warnings
+	var warnings: PackedStringArray = []
+	if !(get_parent() is FirstPersonViewport):
+		warnings.append("Parent should be a FirstPersonViewport")
+	return warnings
+
 
 func _ready() -> void:
-  for child in get_children():
-    if child is FirstPersonIronSight:
-      ironsight_node = child
-    if child is Magazine:
-      magazine_node = child
-    if child is HitScan3D:
-      hitscan_node = child
-    if child is ProjectileEmitter3D:
-      projectile_emitter_node = child
-    if child is BulletHole:
-      bullethole_node = child
-    if child is CrossHair:
-      crosshair_node = child
+	ironsight_node = Nodot.get_first_child_of_type(self, FirstPersonIronSight)
+	magazine_node = Nodot.get_first_child_of_type(self, Magazine)
+	hitscan_node = Nodot.get_first_child_of_type(self, HitScan3D)
+	projectile_emitter_node = Nodot.get_first_child_of_type(self, ProjectileEmitter3D)
+	bullethole_node = Nodot.get_first_child_of_type(self, BulletHole)
+	crosshair_node = Nodot.get_first_child_of_type(self, CrossHair)
 
-  connect_magazine()
+	connect_magazine()
 
-  if mesh:
-    var camera_cull_mask_layer: int = get_parent().camera_cull_mask_layer
-    var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-    mesh_instance.layers = camera_cull_mask_layer
-    mesh_instance.mesh = mesh
-    add_child(mesh_instance)
+	if mesh:
+		var camera_cull_mask_layer: int = get_parent().camera_cull_mask_layer
+		var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+		mesh_instance.layers = camera_cull_mask_layer
+		mesh_instance.mesh = mesh
+		add_child(mesh_instance)
 
-  if active:
-    activate()
-  else:
-    deactivate()
+	if active:
+		activate()
+	else:
+		deactivate()
+
 
 ## Async function to activate the weapon. i.e animate it onto the screen.
 func activate() -> void:
-  active = true
-  visible = true
-  for child in get_children():
-    if child.has_method("activate"):
-      child.activate()
-  emit_signal("activated")
+	active = true
+	visible = true
+	for child in get_children():
+		if child.has_method("activate"):
+			child.activate()
+	emit_signal("activated")
+
 
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
 func deactivate() -> void:
-  active = false
-  visible = false
-  for child in get_children():
-    if child.has_method("deactivate"):
-      child.deactivate()
-  emit_signal("deactivated")
+	active = false
+	visible = false
+	for child in get_children():
+		if child.has_method("deactivate"):
+			child.deactivate()
+	emit_signal("deactivated")
+
 
 ## Triggered when the item is fired (i.e on left click to fire weapon)
 func action() -> void:
-  if magazine_node:
-    magazine_node.action()
+	if magazine_node:
+		magazine_node.action()
+
 
 ## Triggered when the zoom/ironsight button is pressed
 func zoom() -> void:
-  if ironsight_node:
-    ironsight_node.zoom()
+	if ironsight_node:
+		ironsight_node.zoom()
+
 
 ## Triggered when the zoom/ironsight button is released
 func zoomout() -> void:
-  if ironsight_node:
-    ironsight_node.zoomout()
+	if ironsight_node:
+		ironsight_node.zoomout()
+
 
 ## Triggered when the player requests that the item be reloaded
 func reload():
-  if magazine_node:
-    magazine_node.reload()
+	if magazine_node:
+		magazine_node.reload()
+
 
 ## Connect the magazine events to the hitscan node
 func connect_magazine() -> void:
-  if magazine_node:
-    if hitscan_node:
-      magazine_node.connect("discharged", hitscan_node.action)
-    if projectile_emitter_node:
-      magazine_node.connect("discharged", projectile_emitter_node.action)
-  if hitscan_node and bullethole_node:
-    hitscan_node.connect("target_hit", bullethole_node.action)
+	if magazine_node:
+		if hitscan_node:
+			magazine_node.connect("discharged", hitscan_node.action)
+		if projectile_emitter_node:
+			magazine_node.connect("discharged", projectile_emitter_node.action)
+	if hitscan_node and bullethole_node:
+		hitscan_node.connect("target_hit", bullethole_node.action)
