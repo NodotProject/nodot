@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://dp3q4rmvdwfwh" path="res://addons/nodot/textures/spark.png" id="2_1fifh"]
 
 [sub_resource type="Gradient" id="Gradient_deeix"]
-offsets = PackedFloat32Array(0, 0.178914, 0.239617, 0.345048, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.862635, 0.190479, 0, 1, 0.856223, 0.770147, 0.328772, 1, 0.877064, 0.314125, 0, 1, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.166134, 0.239617, 0.345048, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.862635, 0.190479, 0, 1, 0.854902, 0.768627, 0.329412, 1, 0.877064, 0.314125, 0, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_q5y7q"]
 gradient = SubResource("Gradient_deeix")
 
 [sub_resource type="Curve" id="Curve_iord6"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.267442, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.109091), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.244186, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.109091), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_5jijw"]
@@ -27,8 +27,8 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.1
 initial_velocity_max = 5.0
 angular_velocity_max = 1.0
-linear_accel_min = 2.0
-linear_accel_max = 4.0
+linear_accel_min = 1.0
+linear_accel_max = 2.0
 angle_min = 1.0
 angle_max = 360.0
 scale_min = 0.8
@@ -123,7 +123,6 @@ point_count = 3
 curve = SubResource("Curve_oepyb")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dhh3j"]
-lifetime_randomness = 0.1
 emission_shape = 1
 emission_sphere_radius = 0.6
 direction = Vector3(0, 1, 0)
@@ -180,9 +179,8 @@ process_material = SubResource("ParticleProcessMaterial_miv31")
 draw_pass_1 = SubResource("QuadMesh_uu7ds")
 
 [node name="Sparks" type="GPUParticles3D" parent="Fire"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.813055, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.559929, 0)
 amount = 80
-lifetime = 3.0
 randomness = 1.0
 draw_order = 3
 process_material = SubResource("ParticleProcessMaterial_dhh3j")
