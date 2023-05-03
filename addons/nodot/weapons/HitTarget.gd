@@ -1,4 +1,4 @@
-class_name HitTarget extends Nodot
+class_name HitTarget
 
 @export var distance: int = 0
 @export var collision_point: Vector3 = Vector3.ZERO

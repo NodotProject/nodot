@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://dv6pyhevccscg"]
+[gd_scene load_steps=60 format=3 uid="uid://dv6pyhevccscg"]
 
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonCharacter.gd" id="1_4h8r1"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonKeyboardInput.gd" id="2_yyfta"]
@@ -28,8 +28,10 @@
 [ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
+[ext_resource type="PackedScene" uid="uid://khy2ymqep0my" path="res://examples/fps/weapon_models/sniper.tscn" id="29_46cf6"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
 [ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
+[ext_resource type="Texture2D" uid="uid://bdovxhkrf72x1" path="res://examples/fps/materials/scope1.png" id="30_brnig"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
 [ext_resource type="Script" path="res://addons/nodot/sound/FootStepSFX3D.gd" id="31_uugiq"]
 [ext_resource type="AudioStream" uid="uid://c8df3qhkj5rlm" path="res://examples/fps/sfx/footsteps/concrete1.mp3" id="32_6wbgj"]
@@ -101,6 +103,27 @@ albedo_texture = SubResource("NoiseTexture2D_chcbn")
 [sub_resource type="SphereMesh" id="SphereMesh_1xoyl"]
 material = SubResource("StandardMaterial3D_k3wjv")
 
+[sub_resource type="GDScript" id="GDScript_n1gxd"]
+resource_name = "sniper"
+script/source = "extends Node3D
+
+@export var magazine_node: Magazine
+
+func _ready():
+	magazine_node.connect(\"discharged\", action)
+	magazine_node.connect(\"reloading\", reload)
+	magazine_node.connect(\"magazine_depleted\", dryfire)
+  
+func action():
+	$AnimationPlayer.play(\"fire\")
+
+func reload():
+	$AnimationPlayer.play(\"reload\")
+
+func dryfire():
+	$AnimationPlayer.play(\"dryfire\")
+"
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
@@ -169,6 +192,7 @@ target_position = Vector3(0, 0, -50)
 [node name="Interaction3D" type="RayCast3D" parent="FirstPersonViewport"]
 target_position = Vector3(0, 0, -2)
 script = ExtResource("5_0d045")
+carry_distance = 1.0
 
 [node name="Pistol" type="Node3D" parent="FirstPersonViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, -0.652, -1.212)
@@ -337,6 +361,42 @@ draw_pass_1 = SubResource("SphereMesh_1xoyl")
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="FirstPersonViewport/RPG/ProjectileEmitter3D/Projectile3D/Explosion3D"]
 stream = ExtResource("26_63hhn")
 autoplay = true
+
+[node name="Sniper" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.766029, -0.39696, -1.35582)
+script = ExtResource("8_15eoi")
+magazine_node = NodePath("Magazine")
+hitscan_node = NodePath("HitScan3D")
+bullethole_node = NodePath("../P90/BulletHole")
+
+[node name="sniper" parent="FirstPersonViewport/Sniper" node_paths=PackedStringArray("magazine_node") instance=ExtResource("29_46cf6")]
+transform = Transform3D(0.232, 0, 0, 0, 0.232, 0, 0, 0, 0.232, 0, 0, 0)
+script = SubResource("GDScript_n1gxd")
+magazine_node = NodePath("../Magazine")
+
+[node name="FirstPersonIronSight" type="Node3D" parent="FirstPersonViewport/Sniper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.149472, 0.750226)
+script = ExtResource("9_mhfuw")
+enable_scope = true
+scope_texture = ExtResource("30_brnig")
+
+[node name="Magazine" type="Node" parent="FirstPersonViewport/Sniper"]
+script = ExtResource("12_hk1bj")
+fire_rate = 2.0
+reload_time = 3.0
+rounds_left = 10
+
+[node name="HitScan3D" type="Node3D" parent="FirstPersonViewport/Sniper" node_paths=PackedStringArray("raycast")]
+script = ExtResource("10_apqjf")
+enabled = true
+raycast = NodePath("../../RayCast3D")
+accuracy = 1.0
+damage = 100.0
+applied_force = 5.0
+
+[node name="BulletHole" type="Node3D" parent="FirstPersonViewport/Sniper"]
+script = ExtResource("11_lo0jv")
+textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_5gmd7")

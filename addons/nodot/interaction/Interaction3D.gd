@@ -23,7 +23,8 @@ signal interacted(interacted_node: Node3D)
 @export var carry_distance: float = 2.0
 
 # RigidBody3D or null being carried
-var carried_body
+var carried_body: RigidBody3D
+var carried_body_width: float = 0.0
 var label3d: Label3D
 var last_collider: Node3D
 
@@ -40,6 +41,7 @@ func _enter_tree():
 
 
 func _input(event: InputEvent):
+<<<<<<< HEAD
 	if !event.is_action_pressed(interact_action): return
 	if is_instance_valid(carried_body):
 		carried_body.gravity_scale = 1.0
@@ -54,12 +56,32 @@ func _input(event: InputEvent):
 			carried_body = collider
 			carried_body.gravity_scale = 0.0
 			emit_signal("carry_started", carried_body)
+=======
+	if event.is_action_pressed(interact_action):
+		if is_instance_valid(carried_body):
+			carried_body.gravity_scale = 1.0
+			emit_signal("carry_ended", carried_body)
+			carried_body = null
+		else:
+			var collider = get_collider()
+			if is_instance_valid(collider) and collider.has_method("interact"):
+				collider.interact()
+				emit_signal("interacted", collider)
+			elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
+				carried_body = collider
+				var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
+				if carried_body_mesh:
+					var mesh_size = carried_body_mesh.get_aabb().size
+					carried_body_width = max(mesh_size.x, mesh_size.y, mesh_size.z)
+				carried_body.gravity_scale = 0.0
+				emit_signal("carry_started", carried_body)
+>>>>>>> upstream/main
 
 
 func _physics_process(delta):
 	if is_instance_valid(carried_body):
 		var carry_position = global_transform.origin
-		carry_position -= global_transform.basis.z.normalized() * carry_distance
+		carry_position -= global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
 		carried_body.global_transform.origin = lerp(
 			carried_body.global_transform.origin, carry_position, 10.0 * delta
 		)
