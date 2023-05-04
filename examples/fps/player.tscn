@@ -28,7 +28,7 @@
 [ext_resource type="AudioStream" uid="uid://ld41plf7jnph" path="res://examples/fps/sfx/rpg_fire.mp3" id="24_g828x"]
 [ext_resource type="Script" path="res://addons/nodot/weapons/Explosion3D.gd" id="25_fupwb"]
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
-[ext_resource type="PackedScene" uid="uid://khy2ymqep0my" path="res://examples/fps/weapon_models/sniper.tscn" id="29_46cf6"]
+[ext_resource type="PackedScene" uid="uid://dcyhhyagobp1v" path="res://examples/fps/weapon_models/sniper.tscn" id="29_46cf6"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
 [ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
 [ext_resource type="Texture2D" uid="uid://bdovxhkrf72x1" path="res://examples/fps/materials/scope1.png" id="30_brnig"]
@@ -364,6 +364,7 @@ autoplay = true
 
 [node name="Sniper" type="Node3D" parent="FirstPersonViewport" node_paths=PackedStringArray("magazine_node", "hitscan_node", "bullethole_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.766029, -0.39696, -1.35582)
+visible = false
 script = ExtResource("8_15eoi")
 magazine_node = NodePath("Magazine")
 hitscan_node = NodePath("HitScan3D")

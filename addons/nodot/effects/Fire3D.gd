@@ -1,19 +1,29 @@
-
+@tool
 ## Creates customizable fire, smoke and spark effects
 class_name Fire3D extends Node3D
 
 @export var enabled: bool = true
 @export var emission_shape: Shape3D: set = _emission_shape_set
-@export var fire_color: Color = Color.ORANGE
-@export var smoke_color: Color = Color.LIGHT_GRAY
-@export var sparks_color: Color = Color.YELLOW
+@export var effect_scale: float = 1.0: set = _effect_scale_set
+@export var fire_color: Color = Color.ORANGE: set = _fire_color_set
+@export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
+@export var sparks_color: Color = Color.YELLOW: set = _spark_color_set
 
-var is_editor: bool = Engine.is_editor_hint()
 var fire_texture: CompressedTexture2D = preload("res://addons/nodot/textures/fire_spritesheet.png")
 var spark_texture: CompressedTexture2D = preload("res://addons/nodot/textures/spark.png")
 var fire_particle = GPUParticles3D.new()
 var smoke_particle = GPUParticles3D.new()
 var spark_particle = GPUParticles3D.new()
+
+var fire_life_time = 0.5
+var fire_scale_min = 0.8
+var fire_scale_max = 1.0
+var smoke_life_time = 1.5
+var smoke_scale_min = 1.0
+var smoke_scale_max = 2.0
+var spark_life_time = 0.5
+var spark_scale_min = 0.05
+var spark_scale_max = 0.1
 
 func _enter_tree() -> void:
 	if !enabled: return
@@ -23,15 +33,32 @@ func _enter_tree() -> void:
 	_setup_sparks_particle()
 	if emission_shape:
 		build_emission_shape(emission_shape)
+		emission_shape.connect("changed", _emission_shape_set)
 
-func _emission_shape_set(new_shape: Shape3D):
+func _emission_shape_set(new_shape: Shape3D = emission_shape):
 	build_emission_shape(new_shape)
 	emission_shape = new_shape
+	
+func _effect_scale_set(new_effect_scale: float = effect_scale):
+	effect_scale = new_effect_scale
+	set_effect_scale()
+	
+func _fire_color_set(new_value: Color):
+	fire_color = new_value
+	set_colors()
+	
+func _smoke_color_set(new_value: Color):
+	smoke_color = new_value
+	set_colors()
+	
+func _spark_color_set(new_value: Color):
+	sparks_color = new_value
+	set_colors()
 
 func _setup_fire_particle():
 	fire_particle.emitting = enabled
 	fire_particle.amount = 200
-	fire_particle.lifetime = 0.5
+	fire_particle.lifetime = fire_life_time * effect_scale
 	fire_particle.randomness = 1.0
 	fire_particle.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
 	fire_particle.sorting_offset = 1.0
@@ -49,7 +76,8 @@ func _setup_fire_particle():
 	particle_material.linear_accel_max = 2.0
 	particle_material.angle_min = 1.0
 	particle_material.angle_max = 360.0
-	particle_material.scale_min = 0.8
+	particle_material.scale_min = fire_scale_min * effect_scale
+	particle_material.scale_max = fire_scale_max * effect_scale
 	particle_material.hue_variation_min = -0.05
 	particle_material.hue_variation_max = 0.04
 	particle_material.anim_speed_max = 1.0
@@ -95,7 +123,7 @@ func _setup_fire_particle():
 func _setup_smoke_particle():
 	smoke_particle.emitting = enabled
 	smoke_particle.amount = 80
-	smoke_particle.lifetime = 1.5
+	smoke_particle.lifetime = smoke_life_time
 	smoke_particle.randomness = 1.0
 	smoke_particle.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
 	
@@ -114,7 +142,8 @@ func _setup_smoke_particle():
 	particle_material.radial_accel_max = 1.0
 	particle_material.angle_min = 1.0
 	particle_material.angle_max = 360.0
-	particle_material.scale_max = 2.0
+	particle_material.scale_min = smoke_scale_min * effect_scale
+	particle_material.scale_max = smoke_scale_max * effect_scale
 	particle_material.hue_variation_min = -0.05
 	particle_material.hue_variation_max = 0.04
 	particle_material.anim_speed_max = 1.0
@@ -159,7 +188,7 @@ func _setup_smoke_particle():
 func _setup_sparks_particle():
 	spark_particle.emitting = enabled
 	spark_particle.amount = 80
-	spark_particle.lifetime = 0.5
+	spark_particle.lifetime = spark_life_time * effect_scale
 	spark_particle.randomness = 1.0
 	spark_particle.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
 	
@@ -178,11 +207,8 @@ func _setup_sparks_particle():
 	particle_material.tangential_accel_min = 5.0
 	particle_material.damping_min = 1.0
 	particle_material.damping_min = 2.0
-	particle_material.scale_min = 0.05
-	particle_material.scale_max = 0.1
-	
-	if emission_shape:
-		build_emission_shape(emission_shape)
+	particle_material.scale_min = spark_scale_min * effect_scale
+	particle_material.scale_max = spark_scale_max * effect_scale
 	
 	var curve = Curve.new()
 	curve.add_point(Vector2(0, 0.5))
@@ -213,13 +239,20 @@ func _setup_sparks_particle():
 	spark_particle.draw_pass_1 = quadmesh
 	
 	add_child(spark_particle)
+		
 
 ## Converts the emission shape into particle material values
-func build_emission_shape(shape: Shape3D) -> void:
+func build_emission_shape(shape: Shape3D = emission_shape) -> void:
 	if !fire_particle.process_material or !smoke_particle.process_material or !spark_particle.process_material: return
 	
+	if !shape:
+		fire_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
+		smoke_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
+		spark_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
+		smoke_particle.position.y = 0
+		spark_particle.position.y = 0
+	
 	if shape is SphereShape3D:
-		smoke_particle
 		fire_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
 		fire_particle.process_material.emission_sphere_radius = shape.radius
 		smoke_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
@@ -228,7 +261,7 @@ func build_emission_shape(shape: Shape3D) -> void:
 		spark_particle.process_material.emission_sphere_radius = shape.radius
 		smoke_particle.position.y = shape.radius
 		spark_particle.position.y = shape.radius
-	if shape is BoxShape3D:
+	elif shape is BoxShape3D:
 		fire_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 		fire_particle.process_material.emission_box_extents = shape.size
 		smoke_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
@@ -238,7 +271,42 @@ func build_emission_shape(shape: Shape3D) -> void:
 		smoke_particle.position.y = shape.size.y
 		spark_particle.position.y = shape.size.y
 
-
-## Converts the input color into a color ramp
-func build_color_ramp(color: Color):
-	pass
+func set_effect_scale():
+	if !fire_particle.process_material or !smoke_particle.process_material or !spark_particle.process_material: return
+	
+	fire_particle.lifetime = fire_life_time * effect_scale
+	fire_particle.process_material.scale_min = fire_scale_min * effect_scale
+	fire_particle.process_material.scale_max = fire_scale_max * effect_scale
+	smoke_particle.process_material.scale_min = smoke_scale_min * effect_scale
+	smoke_particle.process_material.scale_max = smoke_scale_max * effect_scale
+	spark_particle.lifetime = spark_life_time * effect_scale
+	spark_particle.process_material.scale_min = spark_scale_min * effect_scale
+	spark_particle.process_material.scale_max = spark_scale_max * effect_scale
+	
+func set_colors():
+	if !fire_particle.process_material or !smoke_particle.process_material or !spark_particle.process_material: return
+	
+	var fire_gradient_texture = GradientTexture1D.new()
+	var fire_gradient = Gradient.new()
+	var fire_next_hue = fire_color.darkened(0.6)
+	fire_gradient.offsets = [0, 0.15, 0.25, 0.35, 1]
+	fire_gradient.colors = [Color.BLACK, fire_next_hue, fire_color, fire_next_hue, Color.BLACK]
+	fire_gradient_texture.gradient = fire_gradient
+	fire_particle.process_material.color_ramp = fire_gradient_texture
+	
+	var smoke_gradient_texture = GradientTexture1D.new()
+	var smoke_gradient = Gradient.new()
+	var smoke_color_alpha = smoke_color.a
+	var smoke_next_hue = smoke_color.darkened(0.6)
+	smoke_gradient.offsets = [0, 0.15, 0.25, 0.35, 1]
+	smoke_gradient.colors = [Color(Color.BLACK, smoke_color_alpha), smoke_next_hue, smoke_color, smoke_next_hue, Color(Color.BLACK, smoke_color_alpha)]
+	smoke_gradient_texture.gradient = smoke_gradient
+	smoke_particle.process_material.color_ramp = smoke_gradient_texture
+	
+	var spark_gradient_texture = GradientTexture1D.new()
+	var spark_gradient = Gradient.new()
+	var spark_next_hue = sparks_color.lightened(0.6)
+	spark_gradient.offsets = [0, 1]
+	spark_gradient.colors = [sparks_color, spark_next_hue]
+	spark_gradient_texture.gradient = spark_gradient
+	spark_particle.process_material.color_ramp = spark_gradient_texture

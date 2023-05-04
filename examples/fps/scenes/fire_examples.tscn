@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://bh1e2cjcoowao"]
+
+[ext_resource type="PackedScene" uid="uid://cxujpumlgx6cy" path="res://examples/fps/models/fire3d/WoodenTorch.fbx" id="1_hu0j6"]
+[ext_resource type="PackedScene" uid="uid://bg8jhon3ilef4" path="res://examples/fps/models/fire3d/Bonfire.fbx" id="2_03lcu"]
+[ext_resource type="Script" path="res://addons/nodot/effects/Fire3D.gd" id="2_wlt7j"]
+[ext_resource type="PackedScene" uid="uid://bb6y7mqcjyerl" path="res://examples/fps/models/fire3d/WoodLog.fbx" id="3_otlny"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_g0m1u"]
+radius = 0.694
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kb8sd"]
+size = Vector3(2.031, 0.56, 0.215)
+
+[node name="FireExamples" type="Node3D"]
+
+[node name="WoodenTorch" parent="." instance=ExtResource("1_hu0j6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.6421, 0.25, 18.3776)
+
+[node name="Fire3D" type="Node3D" parent="WoodenTorch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64052, 0)
+script = ExtResource("2_wlt7j")
+smoke_color = Color(0.827451, 0.827451, 0.827451, 0.172549)
+
+[node name="Bonfire" parent="." instance=ExtResource("2_03lcu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7489, 0.25, 16.1257)
+
+[node name="Fire3D" type="Node3D" parent="Bonfire"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.490931, 0)
+script = ExtResource("2_wlt7j")
+emission_shape = SubResource("SphereShape3D_g0m1u")
+fire_color = Color(0, 0.886275, 0.2, 1)
+sparks_color = Color(1, 1, 1, 1)
+
+[node name="WoodLog" parent="." instance=ExtResource("3_otlny")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.806, 0.25, 13.0259)
+
+[node name="Fire3D" type="Node3D" parent="WoodLog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62658, 0)
+script = ExtResource("2_wlt7j")
+emission_shape = SubResource("BoxShape3D_kb8sd")
+effect_scale = 1.358
