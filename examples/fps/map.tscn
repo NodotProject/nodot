@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://cuaeq8t4wxbwb"]
+[gd_scene load_steps=76 format=3 uid="uid://cuaeq8t4wxbwb"]
 
 [ext_resource type="PackedScene" uid="uid://dv6pyhevccscg" path="res://examples/fps/player.tscn" id="1_ry0a0"]
 [ext_resource type="PackedScene" uid="uid://dqsar57406ve3" path="res://examples/fps/objects/military_target.tscn" id="2_x7gfq"]
@@ -24,8 +24,10 @@
 [ext_resource type="PackedScene" uid="uid://b4hbh1cwxw3x" path="res://examples/fps/objects/spawner_machine.tscn" id="21_0dqmf"]
 [ext_resource type="PackedScene" uid="uid://ckp46itcon1iw" path="res://examples/fps/objects/teleport_pod.tscn" id="21_ghw1a"]
 [ext_resource type="Script" path="res://addons/nodot/interaction/Teleport3D.gd" id="22_yieqg"]
-[ext_resource type="PackedScene" uid="uid://dwrc18vpygt1n" path="res://examples/fps/objects/fire3d.tscn" id="25_k13vc"]
+[ext_resource type="PackedScene" uid="uid://bg8jhon3ilef4" path="res://examples/fps/models/fire3d/Bonfire.fbx" id="24_2nnbo"]
 [ext_resource type="Script" path="res://addons/nodot/effects/Fire3D.gd" id="26_l7pnw"]
+[ext_resource type="PackedScene" uid="uid://cxujpumlgx6cy" path="res://examples/fps/models/fire3d/WoodenTorch.fbx" id="26_ua33q"]
+[ext_resource type="PackedScene" uid="uid://bb6y7mqcjyerl" path="res://examples/fps/models/fire3d/WoodLog.fbx" id="27_xhaeo"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_0aav7"]
 
@@ -130,7 +132,7 @@ func _on_view_cone_3d_body_entered(body):
     $ProjectileEmitter3D.action()
 "
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6wrf0"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_qxiam"]
 points = PackedVector3Array(0, 0, 0, 10, 0, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.1331e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -2.2662e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -7.34764e-15, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -4.5324e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.22461e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.46953e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.71445e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -9.0648e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -2.20429e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -2.44921e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -9.79956e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -2.93906e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.02894e-13, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -3.4289e-14, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20, 10, -1.07792e-13, 20, 9.13545, 4.06737, 20, 6.69131, 7.43145, 20, 3.09017, 9.51056, 20, -1.04528, 9.94522, 20, -5, 8.66025, 20, -8.09017, 5.87785, 20, -9.78148, 2.07912, 20, -9.78148, -2.07912, 20, -8.09017, -5.87785, 20, -5, -8.66025, 20, -1.04528, -9.94522, 20, 3.09017, -9.51056, 20, 6.69131, -7.43145, 20, 9.13545, -4.06737, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fyfr3"]
@@ -321,8 +323,14 @@ radius = 0.164
 [sub_resource type="BoxShape3D" id="BoxShape3D_qm3sr"]
 size = Vector3(100, 1, 60)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_hke5f"]
+radius = 0.7
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_ij4v7"]
 radius = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dxbwj"]
+size = Vector3(2, 1, 0.572)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_djlvd"]
 panorama = ExtResource("9_qys48")
@@ -342,7 +350,7 @@ volumetric_fog_sky_affect = 0.0
 [node name="map" type="Node3D"]
 
 [node name="FirstPersonCharacterBody3D" parent="." instance=ExtResource("1_ry0a0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.275538, 2.34141, 0)
+transform = Transform3D(-0.0906325, 0, -0.995884, 0, 1, 0, 0.995884, 0, -0.0906325, 10.077, 2.34141, 15.3625)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.72446, 0.763721, 0)
@@ -536,7 +544,7 @@ script = SubResource("GDScript_pauv7")
 
 [node name="ViewCone3D" type="ShapeCast3D" parent="Cannon_1"]
 transform = Transform3D(0.0241007, 0, -0.999709, 0, 1, 0, 0.999709, 0, 0.0241007, 0, 1.45287, 0)
-shape = SubResource("ConvexPolygonShape3D_6wrf0")
+shape = SubResource("ConvexPolygonShape3D_qxiam")
 target_position = Vector3(0, 0, 0)
 script = ExtResource("18_nvwsb")
 distance = 20.0
@@ -617,14 +625,33 @@ target_position = Vector3(0, 2, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Teleport3D"]
 shape = SubResource("BoxShape3D_qm3sr")
 
-[node name="fire3d" parent="." instance=ExtResource("25_k13vc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.8836, 0.765141, 15.9703)
+[node name="FireExamples" type="Node3D" parent="."]
 
-[node name="Fire3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.884, 0.765, 17.9753)
+[node name="Bonfire" parent="FireExamples" instance=ExtResource("24_2nnbo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7489, 0.25, 16.1257)
+
+[node name="Fire3D2" type="Node3D" parent="FireExamples/Bonfire"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4191, -0.079073)
+script = ExtResource("26_l7pnw")
+emission_shape = SubResource("SphereShape3D_hke5f")
+
+[node name="WoodenTorch" parent="FireExamples" instance=ExtResource("26_ua33q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.6421, 0.25, 18.3776)
+
+[node name="Fire3D" type="Node3D" parent="FireExamples/WoodenTorch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66656, 0)
 script = ExtResource("26_l7pnw")
 emission_shape = SubResource("SphereShape3D_ij4v7")
-fire_color = Color(0.788235, 0.505882, 0, 1)
+fire_color = Color(0.0705882, 0.627451, 0.831373, 1)
+sparks_color = Color(0.290196, 1, 1, 1)
+
+[node name="WoodLog" parent="FireExamples" instance=ExtResource("27_xhaeo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.806, 0.25, 13.0259)
+
+[node name="Fire3D" type="Node3D" parent="FireExamples/WoodLog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.516881, 0)
+script = ExtResource("26_l7pnw")
+emission_shape = SubResource("BoxShape3D_dxbwj")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_plaoa")

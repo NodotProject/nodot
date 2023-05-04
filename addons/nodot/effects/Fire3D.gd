@@ -1,3 +1,4 @@
+
 ## Creates customizable fire, smoke and spark effects
 class_name Fire3D extends Node3D
 
@@ -7,6 +8,7 @@ class_name Fire3D extends Node3D
 @export var smoke_color: Color = Color.LIGHT_GRAY
 @export var sparks_color: Color = Color.YELLOW
 
+var is_editor: bool = Engine.is_editor_hint()
 var fire_texture: CompressedTexture2D = preload("res://addons/nodot/textures/fire_spritesheet.png")
 var spark_texture: CompressedTexture2D = preload("res://addons/nodot/textures/spark.png")
 var fire_particle = GPUParticles3D.new()
