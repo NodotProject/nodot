@@ -2,11 +2,17 @@
 ## Creates customizable fire, smoke and spark effects
 class_name Fire3D extends Node3D
 
+## Enable or disable the fire
 @export var enabled: bool = true
+## The shape the fire will emit from
 @export var emission_shape: Shape3D: set = _emission_shape_set
+## The scale (size) of each particle
 @export var effect_scale: float = 1.0: set = _effect_scale_set
+## The color of the fire
 @export var fire_color: Color = Color.ORANGE: set = _fire_color_set
+## The color of the smoke
 @export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
+## The color of the sparks
 @export var sparks_color: Color = Color.YELLOW: set = _spark_color_set
 
 var fire_texture: CompressedTexture2D = preload("res://addons/nodot/textures/fire_spritesheet.png")
