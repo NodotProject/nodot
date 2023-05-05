@@ -24,11 +24,6 @@ signal target_hit(hit_target: HitTarget)
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 
-func _enter_tree() -> void:
-	if raycast and raycast.enabled:
-		raycast.target_position = Vector3(0, 0, -distance)
-
-
 ## Execute the hitscan
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func action():
@@ -93,3 +88,8 @@ func get_hit_target():
 ## Returns the distance from the raycast origin to the target
 func get_distance(object: Variant) -> float:
 	return object.position.distance_to(raycast.get_global_transform().origin)
+
+## When the parent item is activated
+func activate():
+	if raycast and raycast.enabled:
+		raycast.target_position = Vector3(0, 0, -distance)
