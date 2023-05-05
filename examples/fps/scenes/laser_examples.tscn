@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3 uid="uid://clug010iwwdyb"]
+
+[ext_resource type="Script" path="res://addons/nodot/effects/Laser3D.gd" id="1_idslm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_o3gd3"]
+size = Vector3(1, 4, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_782tf"]
+points = PackedVector3Array(0.5, 1.85247, 0.5, -0.5, -1.91223, -0.5, -0.484127, -1.85247, 0.5, -0.5, 1.91223, -0.5, 0.5, -1.85247, -0.484127, -0.484127, 1.85247, 0.5, 0.5, 1.85247, -0.484127, 0.5, -1.85247, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pq160"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_5kviv"]
+points = PackedVector3Array(-0.499921, -0.985089, -0.5, 0.499978, 0.954305, 0.5, 0.5, 0.954347, -0.484149, -0.499921, 0.985089, -0.5, -0.484049, -0.954305, 0.5, 0.5, -0.954347, -0.484149, -0.484049, 0.954305, 0.5, 0.499978, -0.954305, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g0ht2"]
+transparency = 1
+albedo_color = Color(0.890196, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 1.83
+rim_enabled = true
+rim = 0.31
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_nfmey"]
+material = SubResource("StandardMaterial3D_g0ht2")
+top_radius = 0.02
+bottom_radius = 0.02
+height = 6.0
+
+[node name="LaserExamples" type="Node3D"]
+
+[node name="BigBlock" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BigBlock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("BoxMesh_o3gd3")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="BigBlock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_782tf")
+
+[node name="SmallBlock" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="SmallBlock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+mesh = SubResource("BoxMesh_pq160")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBlock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+shape = SubResource("ConvexPolygonShape3D_5kviv")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, 0)
+visible = false
+target_position = Vector3(6, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RayCast3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 3, 0, 0)
+transparency = 0.2
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("CylinderMesh_nfmey")
+
+[node name="TopLaser" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, 0)
+target_position = Vector3(5.541, -1.301, 0.302)
+script = ExtResource("1_idslm")
+laser_intensity = 2.0
+
+[node name="BottomLaser" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, -1, 0)
+target_position = Vector3(6, 0, 0)
+script = ExtResource("1_idslm")
