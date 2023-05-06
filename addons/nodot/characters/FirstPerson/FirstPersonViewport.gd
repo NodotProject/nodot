@@ -87,7 +87,7 @@ func get_all_items() -> Array:
 
 ## Change which item is active.
 func change_item(new_index: int) -> void:
-	if item_changing != false: return
+	if item_changing == true: return
 	item_changing = true
 	var items: Array = get_all_items()
 	var item_count: int = items.size()

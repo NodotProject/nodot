@@ -74,13 +74,14 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !enabled and is_editor: return
+	if !enabled or is_editor: return
 	var final_speed: float = speed
 
-	if !direction_movement_only and parent.is_on_floor():
+	if !direction_movement_only and parent._is_on_floor():
 		var jump_pressed: bool = Input.is_action_just_pressed(jump_action)
 		var sprint_pressed: bool = Input.is_action_pressed(sprint_action)
-
+		#prints("Sprint Pressed: ", sprint_pressed)
+		#prints("Is sprinting: ", sprint_pressed)
 		# Handle Jump.
 		if jump_pressed:
 			parent.velocity.y = jump_velocity
@@ -88,7 +89,6 @@ func _physics_process(delta: float) -> void:
 		# Handle Sprint.
 		if sprint_pressed:
 			final_speed *= sprint_speed_multiplier
-
 		# Handle a sprint jump
 		if sprint_pressed and jump_pressed:
 			accelerated_jump = true
@@ -109,7 +109,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		parent.velocity.x = move_toward(parent.velocity.x, 0, final_speed)
 		parent.velocity.z = move_toward(parent.velocity.z, 0, final_speed)
-
 
 ## Disable input
 func disable() -> void:

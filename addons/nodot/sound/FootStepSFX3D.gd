@@ -10,6 +10,8 @@ class_name FootStepSFX extends RayCast3D
 var distance_traveled: float = 0.0
 var last_position: Vector3 = Vector3.ZERO
 
+func _ready():
+	if Engine.is_editor_hint(): set_physics_process(false)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -28,11 +30,13 @@ func _physics_process(delta: float) -> void:
 	distance_traveled += total_velocity
 	if (
 		distance_traveled > frequency
-		and parent.is_on_floor()
+		and parent._is_on_floor()
 		and parent.velocity != Vector3.ZERO
-		and parent.get_slide_collision_count() > 0
+		#and parent.get_slide_collision_count() > 0
 	):
-		var collider = parent.get_slide_collision(0).get_collider()
+		force_raycast_update()
+		var collider = get_collider()
+		if !collider: return
 		var material = NodePath(get_child(0).name)
 		if collider.has_meta("floor_material"):
 			material = NodePath(collider.get_meta("floor_material"))

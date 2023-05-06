@@ -79,7 +79,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !enabled and is_editor: return
+	if !enabled or is_editor: return
 	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 	
 	# Handle look left and right
