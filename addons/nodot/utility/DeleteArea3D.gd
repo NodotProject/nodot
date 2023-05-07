@@ -4,9 +4,9 @@ class_name DeleteArea3D extends Area3D
 ## Enable the functionality of the delete node
 @export var enabled: bool = true
 ## Allow deleting of static bodies
-@export var delete_static_bodies: bool = true
+@export var delete_static_bodies: bool = false
 ## Allow deleting of rigid bodies
-@export var delete_rigid_bodies: bool = false
+@export var delete_rigid_bodies: bool = true
 ## Delete on contact
 @export var automatic: bool = true
 ## The time in seconds between contact or action and the actual deletion
@@ -45,7 +45,7 @@ func delete(body: Node3D) -> void:
 	
 	if !is_allowed: return
 	
-  var last_position = body.global_position
-  queue_free(body)
-  emit_signal("deleted", last_position)
+	var last_position = body.global_position
+	body.queue_free()
+	emit_signal("deleted", last_position)
 			
