@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cjoh57sttdkef" path="res://examples/fps/models/spawner/metal_(2695919696)_Metallic.png" id="10_0dnv0"]
 [ext_resource type="Texture2D" uid="uid://ga4tdwxoab0o" path="res://examples/fps/models/spawner/metal_(2695919696)_Normal.png" id="11_yw0p7"]
 [ext_resource type="Texture2D" uid="uid://dpboe17qfrjtn" path="res://examples/fps/models/spawner/metal_(2695919696)_Roughness.png" id="12_kwjp7"]
+[ext_resource type="Script" path="res://addons/nodot/utility/DeleteArea3D.gd" id="13_olioy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7yq5r"]
 albedo_texture = ExtResource("1_iym7l")
@@ -73,26 +74,21 @@ albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1x0gg"]
 material = SubResource("StandardMaterial3D_gwr8n")
-size = Vector2(0.571, 0.602)
+size = Vector2(0.595, 0.584)
 
-[sub_resource type="BoxMesh" id="BoxMesh_wkius"]
-size = Vector3(0.571, 0.2, 0.571)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8c5cf"]
-points = PackedVector3Array(-0.277386, -0.1, -0.277422, 0.279101, 0.1, 0.2791, 0.277422, -0.1, 0.277422, 0.279101, 0.1, -0.2791, -0.279064, 0.1, 0.2791, -0.279064, 0.1, -0.2791, 0.277422, -0.1, -0.277422, -0.277386, -0.1, 0.277422)
+[sub_resource type="BoxShape3D" id="BoxShape3D_vxoik"]
+size = Vector3(0.712, 0.118, 0.647)
 
 [sub_resource type="GDScript" id="GDScript_t0maj"]
 resource_name = "spawner"
 script/source = "extends StaticBody3D
 
 @onready var spawner: Spawner3D = get_parent().get_node(\"Spawner3D\")
-@onready var deleter: Area3D = get_parent().get_node(\"Deleter\")
 @onready var label_limit: Label3D = get_parent().get_node(\"SpawnLimit\")
 @onready var label_current: Label3D = get_parent().get_node(\"SpawnCurrent\")
 
 func _ready():
 	spawner.connect(\"spawns_left_updated\", spawned)
-	deleter.connect(\"body_entered\", delete)
 	spawned()
 
 func interact():
@@ -104,9 +100,6 @@ func label():
 func spawned(spawns_left: int = 0):
 	label_current.text = \"Current: %s\" % (spawner.spawn_limit - spawner.spawns_left)
 	label_limit.text = \"Limit: %s\" % spawner.spawn_limit
-
-func delete(body: Node3D):
-	body.queue_free()
 "
 
 [sub_resource type="BoxMesh" id="BoxMesh_c1x7t"]
@@ -136,20 +129,20 @@ skeleton = NodePath("../../..")
 transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_8rka6")
 
-[node name="Deleter" type="Area3D" parent="."]
+[node name="Deleter" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401928, 0, -0.407739)
 
 [node name="Blackhole" type="MeshInstance3D" parent="Deleter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.414244, -0.0345818, -0.399318)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000902265, 0, 0.00844824)
 mesh = SubResource("PlaneMesh_1x0gg")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Deleter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.395418, -0.158365, -0.405463)
-mesh = SubResource("BoxMesh_wkius")
+[node name="DeleteArea3D" type="Area3D" parent="Deleter"]
+script = ExtResource("13_olioy")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Deleter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.395418, -0.220855, -0.405463)
-shape = SubResource("ConvexPolygonShape3D_8c5cf")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Deleter/DeleteArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.202682, 0)
+shape = SubResource("BoxShape3D_vxoik")
 
 [node name="StaticBody3D2" type="StaticBody3D" parent="."]
 script = SubResource("GDScript_t0maj")
@@ -183,5 +176,5 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.035
 text = "Limit: 0"
 
 [node name="SpawnCurrent" type="Label3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.00876427, 0.794309, 1.03411)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.00876426, 0.780517, 0.967398)
 text = "Current: 0"
