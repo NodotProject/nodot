@@ -9,8 +9,12 @@ class_name Laser3D extends RayCast3D
 ## The thickness of the laser (and raycast)
 @export_range(1, 5, 1) var thickness: int = 2: set = set_laser_thickness
 
+signal body_entered(body: Node3D)
+signal all_bodies_exited
+
 var laser_mesh_instance = MeshInstance3D.new()
 var previous_target_position = target_position
+var active_collider: Node3D
 
 func _enter_tree() -> void:
 	var laser_mesh = CylinderMesh.new()
@@ -42,9 +46,16 @@ func _physics_process(delta) -> void:
 		var target_position_distance: float = Vector3.ZERO.distance_to(target_position)
 		laser_mesh_instance.position = target_position * (collision_point_distance / target_position_distance) * 0.5
 		laser_mesh_instance.mesh.height = collision_point_distance
+		var collider = get_collider()
+		if collider != active_collider:
+			active_collider = collider
+			emit_signal("body_entered", active_collider)
 	else:
 		laser_mesh_instance.position = target_position * 0.5
 		laser_mesh_instance.mesh.height = Vector3.ZERO.distance_to(target_position)
+		if active_collider:
+			active_collider = null
+			emit_signal("all_bodies_exited")
 
 func _realign_laser_mesh() -> void:
 	laser_mesh_instance.mesh.top_radius = (1.0 / 100.0) * float(thickness)
