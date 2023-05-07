@@ -1,21 +1,21 @@
 ## A simple signal class for global signals
-class_name GlobalSignal
+extends Node
 
 var signals: Dictionary = {}
 
-func connect(signal_name: String, callable: Callable, binds = []):
-    if not signals.has(signal_name):
-        signals[signal_name] = [{
-			callable: callable,
-			binds: binds
-        }]
+func add_listener(signal_name: String, node: Node, method: StringName):
+	if not signals.has(signal_name):
+		signals[signal_name] = [{
+			"node": node,
+			"method": method
+		}]
 	else:
 		signals[signal_name].append({
-			callable: callable,
-			binds: binds
+			"node": node,
+			"method": method
 		})
 
-func disconnect(signal_name: String, callable: Callable):
+func remove_listener(signal_name: String, callable: Callable):
 	if not signals.has(signal_name):
 		return
 
@@ -24,12 +24,12 @@ func disconnect(signal_name: String, callable: Callable):
 			signals[signal_name].remove(i)
 			return
 
-func emit_signal(signal_name: String, args = []):
+func trigger_signal(signal_name: String):
 	if not signals.has(signal_name):
 		return
 
 	for i in range(signals[signal_name].size()):
-		var callable = signals[signal_name][i].callable
-		var binds = signals[signal_name][i].binds
-		if is_instance_valid(callable):
-			callable.call_funcv(binds + args)
+		var target = signals[signal_name][i]
+		if is_instance_valid(target.node) and target.node.has_method(target.method):
+			var callable: Callable = target.node[target.method]
+			callable.call()

@@ -7,8 +7,6 @@ class_name GlobalSignalConnector extends Nodot
 @export var target_node: Node
 ## The name of the method
 @export var target_method: String = "action"
-## Arguments to unbind from signal
-@export var unbind_count: int = 0
 
 
 func _ready():
@@ -17,7 +15,5 @@ func _ready():
 		and trigger_signal != ""
 		and target_method != ""
 	):
-		var callback = target_node[target_method]
-		if unbind_count > 0:
-			callback = Callable(target_node[target_method].unbind(unbind_count))
-		GlobalSignal.connect(trigger_signal, callback)
+		if target_node.has_method(target_method):
+			GlobalSignal.add_listener(trigger_signal, target_node, target_method)

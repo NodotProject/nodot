@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://b4hbh1cwxw3x"]
+[gd_scene load_steps=28 format=3 uid="uid://b4hbh1cwxw3x"]
 
 [ext_resource type="Script" path="res://addons/nodot/utility/Spawner3D.gd" id="1_2gmff"]
 [ext_resource type="Texture2D" uid="uid://dm4vij8t1pt1n" path="res://examples/fps/models/spawner/laboratory_machine_(1628544074)_Base_color.png" id="1_iym7l"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://ga4tdwxoab0o" path="res://examples/fps/models/spawner/metal_(2695919696)_Normal.png" id="11_yw0p7"]
 [ext_resource type="Texture2D" uid="uid://dpboe17qfrjtn" path="res://examples/fps/models/spawner/metal_(2695919696)_Roughness.png" id="12_kwjp7"]
 [ext_resource type="Script" path="res://addons/nodot/utility/DeleteArea3D.gd" id="13_olioy"]
+[ext_resource type="Script" path="res://addons/nodot/utility/GlobalSignalConnector.gd" id="15_tp7jc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7yq5r"]
 albedo_texture = ExtResource("1_iym7l")
@@ -154,6 +155,11 @@ mesh = SubResource("BoxMesh_c1x7t")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.453278, 0.0482569, 1.16174)
 shape = SubResource("ConvexPolygonShape3D_k11ih")
+
+[node name="GlobalSignalConnector" type="Node" parent="." node_paths=PackedStringArray("target_node")]
+script = ExtResource("15_tp7jc")
+trigger_signal = "laser_touch"
+target_node = NodePath("../Spawner3D")
 
 [node name="Spawner3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.170252, 0.577404, 0.413265)
