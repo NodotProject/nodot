@@ -23,6 +23,8 @@ signal movement_ended
 @export var destination_position: Vector3
 ## The destination rotation
 @export var destination_rotation: Vector3
+## Consider the destination position as relative from the current position
+@export var relative_destination_position: bool = false
 ## Time until destination
 @export var time_to_destination: float = 1.0
 ## Time until origin
@@ -66,18 +68,22 @@ func deactivate():
 
 func move_to_destination():
 	activated = true
+	
+	var final_destination_position = destination_position
+	if relative_destination_position:
+		final_destination_position = original_position + destination_position
 	var destination_tween = _create_tween(_on_destination_reached)
 	var destination_rotation_radians = Vector3(
 		deg_to_rad(destination_rotation.x),
 		deg_to_rad(destination_rotation.y),
 		deg_to_rad(destination_rotation.z)
 	)
-	if destination_position:
+	if final_destination_position:
 		(
 			destination_tween
 			. parallel()
 			. tween_property(
-				target_node, "global_position", destination_position, time_to_destination
+				target_node, "global_position", final_destination_position, time_to_destination
 			)
 			. set_trans(transition_type)
 		)
