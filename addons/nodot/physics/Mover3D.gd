@@ -31,16 +31,19 @@ signal movement_ended
 @export_enum("TRANS_LINEAR", "TRANS_SINE", "TRANS_QUINT", "TRANS_QUART", "TRANS_QUAD", "TRANS_EXPO", "TRANS_ELASTIC", "TRANS_CUBIC", "TRANS_CIRC", "TRANS_BOUNCE", "TRANS_BACK") var transition_type: int = 0
 
 
-@onready var original_position = target_node.global_position
-@onready var original_rotation = target_node.rotation
-
-var activated = false
+var original_position: Vector3
+var original_rotation: Vector3
+var activated: bool = false
 
 
 func _ready():
+	if target_node:
+		original_position = target_node.global_position
+		original_rotation = target_node.rotation
+	
 	if auto_start:
 		action()
-
+	
 
 ## Perform the move toggling between destination and origin
 func action():
