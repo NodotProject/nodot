@@ -1,5 +1,5 @@
 ## An autoload script to manage a player
-class_name PlayerManager
+extends Node
 
 ## Triggered when a player setting is changed
 signal settings_changed(settings: Dictionary)
