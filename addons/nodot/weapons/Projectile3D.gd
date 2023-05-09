@@ -23,7 +23,8 @@ func _enter_tree() -> void:
 	max_contacts_reported = 1
 	if is_editor: return
 	explosion = Nodot.get_first_child_of_type(self, Explosion3D)
-	remove_child(explosion)
+	if explosion:
+		remove_child(explosion)
 
 
 func _ready() -> void:

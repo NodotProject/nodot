@@ -14,7 +14,8 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 func _ready() -> void:
-	if !trigger_node: return
+	if trigger_signal == "" or !trigger_node: return
+	
 	if unbind_count > 0:
 		trigger_node.connect(trigger_signal, action.unbind(unbind_count))
 	else:
