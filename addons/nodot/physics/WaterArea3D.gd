@@ -1,3 +1,4 @@
+@tool
 ## An area with a water surface where the player can swim and objects can float
 class_name WaterArea3D extends Area3D
 
@@ -14,6 +15,7 @@ class_name WaterArea3D extends Area3D
 
 @onready var default_gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+var is_editor: bool = Engine.is_editor_hint()
 var rng = RandomNumberGenerator.new()
 var water_mesh_instance: MeshInstance3D = MeshInstance3D.new()
 
@@ -34,12 +36,7 @@ var height_scale: float
 var time: float
 
 
-func _enter_tree() -> void:
-	connect("body_entered", _on_body_entered)
-	connect("body_exited", _on_body_exited)
-
-
-func _ready() -> void:
+func _enter_tree() -> void:	
 	var collider_shape  # TODO: Missing type
 	for child in get_children():
 		if child is CollisionShape3D:
@@ -57,7 +54,7 @@ func _ready() -> void:
 	waterMesh.subdivide_depth = 200
 	waterMesh.material = water_shader
 	water_mesh_instance.mesh = waterMesh
-	water_mesh_instance.transparency = 0.05
+	water_mesh_instance.transparency = 0.00
 	water_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	if collider_shape is BoxShape3D:
@@ -72,6 +69,11 @@ func _ready() -> void:
 	noise_scale = material.get_shader_parameter("noise_scale")
 	wave_speed = material.get_shader_parameter("wave_speed")
 	height_scale = material.get_shader_parameter("height_scale")
+	
+	if is_editor: return
+	
+	connect("body_entered", _on_body_entered)
+	connect("body_exited", _on_body_exited)
 
 
 func _on_body_entered(body: Node3D) -> void:
