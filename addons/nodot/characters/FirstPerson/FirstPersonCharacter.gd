@@ -56,12 +56,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	#if axis_aligned_collider and has_node("CollisionShape3D"):
-	#	get_node("CollisionShape3D").global_transform.basis = Basis.IDENTITY
 	if always_apply_gravity or !_is_on_floor():
 		velocity.y -= gravity * delta
-	
-	#prints("Velocity: ", velocity)
 	
 	if has_node("CharacterMover"):
 		if get_node("CharacterMover").enabled:

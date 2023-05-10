@@ -50,7 +50,7 @@ func aim_raycast() -> void:
 ## Get the objects that the raycast is colliding with
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func get_hit_target():
-	if !(raycast.enabled and raycast.is_colliding()): return
+	if !(raycast.enabled or raycast.is_colliding()): return
 	var collider: Node3D = raycast.get_collider()
 	if !collider: return
 	var distance: float = get_distance(collider)

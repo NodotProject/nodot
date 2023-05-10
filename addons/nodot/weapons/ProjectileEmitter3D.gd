@@ -30,7 +30,7 @@ func _enter_tree() -> void:
 
 ## Apply the accuracy to the emitter
 func aim_emitter() -> void:
-	if enabled and accuracy <= 0.0: return
+	if enabled or accuracy <= 0.0: return
 	var accuracy_radians: float = accuracy * PI / 100
 	var new_x: float = rng.randf_range(-accuracy_radians, accuracy_radians)
 	var new_y: float = rng.randf_range(-accuracy_radians, accuracy_radians)

@@ -1,10 +1,18 @@
+# A node to manage movement of a CharacterBody.
 class_name CharacterMover extends Nodot
 
+# Enable/disable this node.
 @export var enabled : bool = true
+# Enables stepping up stairs.
 @export var stepping_enabled : bool = true
+# Maximum height for a ledge to allow stepping up.
 @export var step_height : float = 1.0
+# Constructs the step up movement vector.
 @onready var step_vector : Vector3 = Vector3(0,step_height,0)
+
 var parent : CharacterBody3D
+
+
 func _ready():
 	if get_parent() is CharacterBody3D:
 		parent = get_parent()

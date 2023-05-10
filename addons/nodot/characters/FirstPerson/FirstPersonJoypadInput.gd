@@ -125,7 +125,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !enabled and is_editor: return
+	if !enabled or is_editor: return
 	var final_speed: float = speed
 	
 	if !direction_movement_only and parent.is_on_floor():
@@ -150,8 +150,7 @@ func _physics_process(delta: float) -> void:
 	elif accelerated_jump:
 		final_speed *= sprint_speed_multiplier
 	
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
+	
 	var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 	var direction = (parent.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
