@@ -22,10 +22,8 @@ func _ready():
 
 func move() -> void:
 	if !parent._is_on_floor() or parent.velocity.y > 0:
-		prints("Move air.")
 		move_air()
 	else:
-		prints("Move ground.")
 		move_ground()
 
 func move_air() -> void:
@@ -53,7 +51,6 @@ func move_ground() -> void:
 	#    them back down to their starting Y-position, if not, they fall,
 	#    otherwise, they step down by -step_height.
 	if !parent.test_move(parent.global_transform,-step_vector):
-		prints("Step Down")
 		parent.move_and_collide(-step_vector)
 	# Now that we've done all that, we get the distance moved for both movements
 	#    and go with whichever one moves us further, as overhangs could impede 

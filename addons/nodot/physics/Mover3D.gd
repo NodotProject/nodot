@@ -67,11 +67,14 @@ func deactivate():
 
 
 func move_to_destination():
-	activated = true
 	
 	var final_destination_position = destination_position
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
+	
+	if final_destination_position == global_position: return
+	
+	activated = true
 	var destination_tween = _create_tween(_on_destination_reached)
 	var destination_rotation_radians = Vector3(
 		deg_to_rad(destination_rotation.x),
@@ -99,6 +102,8 @@ func move_to_destination():
 
 
 func move_to_origin():
+	if global_position == original_position: return
+	
 	activated = false
 	var origin_tween = _create_tween(_on_origin_reached)
 	if original_position:

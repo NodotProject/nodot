@@ -59,10 +59,11 @@ func _physics_process(delta: float) -> void:
 	if always_apply_gravity or !_is_on_floor():
 		velocity.y -= gravity * delta
 	
-	if has_node("CharacterMover"):
-		if get_node("CharacterMover").enabled:
+	var character_mover: CharacterMover = Nodot.get_first_child_of_type(self, CharacterMover)
+	if character_mover:
+		if character_mover.enabled:
 			# For some reason, the step code breaks sprinting.
-			get_node("CharacterMover").move()
+			character_mover.move()
 		else:
 			move_and_slide()
 	else:
