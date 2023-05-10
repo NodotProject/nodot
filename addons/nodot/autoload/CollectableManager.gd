@@ -1,20 +1,20 @@
-class_name CollectableManager
+extends Node
 
 var collectables: Dictionary = {}
 
-add(collectable_node: Node):
+func add(collectable_node: Node):
 	if collectable_node.display_name in collectables:
 		return
 	collectables[collectable_node.display_name] = Collectable.new(collectable_node)
 
-get(display_name: String) -> Collectable:
+func get_info(display_name: String) -> Collectable:
 	if display_name in collectables:
 		return collectables[display_name]
 	return null
 	
 
 
-class Collectable
+class Collectable:
 	
 	## The icon of the collectable.
 	var icon: Texture2D
