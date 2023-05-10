@@ -67,14 +67,14 @@ func _ready():
 
 
 func _physics_process(delta: float) -> void:
-	if is_submerged:
-		check_head_submerged()
+	if !is_submerged: return
+	check_head_submerged()
 
-		if keyboard_input:
-			var jump_pressed: bool = Input.is_action_pressed(ascend_action)
-			var speed = keyboard_input.speed
-			if jump_pressed:
-				parent.velocity.y = lerp(parent.velocity.y, speed, 1.0 * delta)
+	if keyboard_input:
+		var jump_pressed: bool = Input.is_action_pressed(ascend_action)
+		var speed = keyboard_input.speed
+		if jump_pressed:
+			parent.velocity.y = lerp(parent.velocity.y, speed, 1.0 * delta)
 
 
 ## Trigger submerge states

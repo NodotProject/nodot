@@ -1,5 +1,5 @@
 ## A CharacterBody3D for first person games
-class_name FirstPersonCharacter extends CharacterBody3D
+class_name FirstPersonCharacter extends NodotCharacter
 
 ## Allow player input
 @export var input_enabled := true
@@ -11,6 +11,8 @@ class_name FirstPersonCharacter extends CharacterBody3D
 @export var gravity: float = 9.8
 ## Apply gravity even when the character is on the floor
 @export var always_apply_gravity: bool = false
+
+@export var axis_aligned_collider : bool = true
 
 @export_category("Input Actions")
 ## The input action name for pausing the game
@@ -54,18 +56,25 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if always_apply_gravity or !is_on_floor():
+	if always_apply_gravity or !_is_on_floor():
 		velocity.y -= gravity * delta
-
-	move_and_slide()
-
+	
+	if has_node("CharacterMover"):
+		if get_node("CharacterMover").enabled:
+			# For some reason, the step code breaks sprinting.
+			get_node("CharacterMover").move()
+		else:
+			move_and_slide()
+	else:
+		move_and_slide()
+	
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed(escape_action):
-		if input_enabled:
-			pause()
-		else:
-			unpause()
+	if !event.is_action_pressed(escape_action): return
+	if input_enabled:
+		pause()
+	else:
+		unpause()
 
 
 ## Pause the game
@@ -98,3 +107,4 @@ func enable_input() -> void:
 			child.enable()
 		if child is FirstPersonMouseInput:
 			child.enable()
+

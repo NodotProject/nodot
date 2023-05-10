@@ -66,40 +66,40 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if enabled:
-		if event is InputEventMouseMotion:
-			mouse_rotation.y = event.relative.x * mouse_sensitivity
-			mouse_rotation.x = event.relative.y * mouse_sensitivity
-
-		if fps_viewport:
-			if event.is_action_pressed(item_next_action):
-				fps_viewport.next_item()
-			elif event.is_action_pressed(item_previous_action):
-				fps_viewport.previous_item()
+	if !enabled: return
+	if event is InputEventMouseMotion:
+		mouse_rotation.y = event.relative.x * mouse_sensitivity
+		mouse_rotation.x = event.relative.y * mouse_sensitivity
+	
+	if fps_viewport:
+		if event.is_action_pressed(item_next_action):
+			fps_viewport.next_item()
+		elif event.is_action_pressed(item_previous_action):
+			fps_viewport.previous_item()
 
 
 func _physics_process(delta: float) -> void:
-	if enabled and !is_editor:
-		var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
-
-		# Handle look left and right
-		parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
-
-		# Handle look up and down
-		head.rotate_object_local(Vector3(1, 0, 0), look_angle.x)
-
-		head.rotation.x = clamp(head.rotation.x, -1.36, 1.4)
-		head.rotation.z = 0
-		head.rotation.y = 0
-		mouse_rotation = Vector2.ZERO
-
-		if fps_viewport:
-			if Input.is_action_pressed(action_action):
-				fps_viewport.action()
-			elif Input.is_action_just_pressed(zoom_action):
-				fps_viewport.zoom()
-			elif Input.is_action_just_released(zoom_action):
-				fps_viewport.zoomout()
+	if !enabled or is_editor: return
+	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
+	
+	# Handle look left and right
+	parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+	
+	# Handle look up and down
+	head.rotate_object_local(Vector3(1, 0, 0), look_angle.x)
+	
+	head.rotation.x = clamp(head.rotation.x, -1.36, 1.4)
+	head.rotation.z = 0
+	head.rotation.y = 0
+	mouse_rotation = Vector2.ZERO
+	
+	if fps_viewport:
+		if Input.is_action_pressed(action_action):
+			fps_viewport.action()
+		elif Input.is_action_just_pressed(zoom_action):
+			fps_viewport.zoom()
+		elif Input.is_action_just_released(zoom_action):
+			fps_viewport.zoomout()
 
 
 ## Disable input and release mouse

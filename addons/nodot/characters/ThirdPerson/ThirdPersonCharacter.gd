@@ -1,5 +1,5 @@
 ## A CharacterBody3D for third person games
-class_name ThirdPersonCharacter extends CharacterBody3D
+class_name ThirdPersonCharacter extends NodotCharacter
 
 ## Allow player input
 @export var input_enabled: bool = true

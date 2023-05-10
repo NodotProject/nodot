@@ -87,26 +87,26 @@ func get_all_items() -> Array:
 
 ## Change which item is active.
 func change_item(new_index: int) -> void:
-	if item_changing == false:
-		item_changing = true
-		var items: Array = get_all_items()
-		var item_count: int = items.size()
-		if new_index >= item_count - 1:
-			active_item_index = item_count - 1
-		elif new_index <= 0:
-			active_item_index = 0
-		else:
-			active_item_index = new_index
+	if item_changing == true: return
+	item_changing = true
+	var items: Array = get_all_items()
+	var item_count: int = items.size()
+	if new_index >= item_count - 1:
+		active_item_index = item_count - 1
+	elif new_index <= 0:
+		active_item_index = 0
+	else:
+		active_item_index = new_index
 
-		# TODO: Typehint this when nullable static types are supported.
-		# https://github.com/godotengine/godot-proposals/issues/162
-		var active_item = get_active_item()
-		if active_item:
-			await (active_item as FirstPersonItem).deactivate()
+	# TODO: Typehint this when nullable static types are supported.
+	# https://github.com/godotengine/godot-proposals/issues/162
+	var active_item = get_active_item()
+	if active_item:
+		await (active_item as FirstPersonItem).deactivate()
 
-		await items[active_item_index].activate()
-		item_changing = false
-		emit_signal("item_change", items[active_item_index])
+	await items[active_item_index].activate()
+	item_changing = false
+	emit_signal("item_change", items[active_item_index])
 
 
 func action() -> void:

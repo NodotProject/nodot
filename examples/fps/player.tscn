@@ -31,7 +31,6 @@
 [ext_resource type="AudioStream" uid="uid://cry70fydc4b4p" path="res://examples/fps/sfx/explosion.mp3" id="26_63hhn"]
 [ext_resource type="PackedScene" uid="uid://dcyhhyagobp1v" path="res://examples/fps/weapon_models/sniper.tscn" id="29_46cf6"]
 [ext_resource type="AudioStream" uid="uid://cwf2spvgp8r2f" path="res://examples/fps/sfx/underwater_ambience.mp3" id="29_fa7xe"]
-[ext_resource type="Script" path="res://addons/nodot/detection/StepUp3D.gd" id="30_11fwe"]
 [ext_resource type="Texture2D" uid="uid://bdovxhkrf72x1" path="res://examples/fps/materials/scope1.png" id="30_brnig"]
 [ext_resource type="Script" path="res://addons/nodot/characters/FirstPerson/FirstPersonSubmerged.gd" id="30_i1ec3"]
 [ext_resource type="Script" path="res://addons/nodot/sound/FootStepSFX3D.gd" id="31_uugiq"]
@@ -46,6 +45,7 @@
 [ext_resource type="AudioStream" uid="uid://vxh7cxpcqgld" path="res://examples/fps/sfx/footsteps/grass4.mp3" id="40_dd2w8"]
 [ext_resource type="Script" path="res://addons/nodot/utility/Saver.gd" id="42_nxq1b"]
 [ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="43_l48ag"]
+[ext_resource type="Script" path="res://addons/nodot/characters/CharacterMover.gd" id="46_68jfb"]
 
 [sub_resource type="GDScript" id="GDScript_odx3q"]
 resource_name = "pan"
@@ -138,7 +138,8 @@ func dryfire():
 	$AnimationPlayer.play(\"dryfire\")
 "
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gmd7"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_mwur6"]
+size = Vector3(1, 2, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wgoe5"]
 
@@ -181,6 +182,7 @@ func _on_quit_button_pressed():
 "
 
 [node name="FirstPersonCharacterBody3D" type="CharacterBody3D"]
+velocity = Vector3(0, 0, 5)
 script = ExtResource("1_4h8r1")
 head_position = Vector3(0, 0.542, 0)
 
@@ -446,7 +448,7 @@ script = ExtResource("11_lo0jv")
 textures = Array[StandardMaterial3D]([ExtResource("11_op62p")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_5gmd7")
+shape = SubResource("BoxShape3D_mwur6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_wgoe5")
@@ -460,13 +462,6 @@ script = SubResource("GDScript_ewv7c")
 
 [node name="Ambience" type="AudioStreamPlayer" parent="FirstPersonSubmerged/SubmergeSound"]
 stream = ExtResource("29_fa7xe")
-
-[node name="StepUp3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.991578, 0)
-script = ExtResource("30_11fwe")
-
-[node name="RayCast3D" type="RayCast3D" parent="StepUp3D"]
-target_position = Vector3(0, 0, -0.6)
 
 [node name="FootStepSFX" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.864601, 0)
@@ -526,6 +521,9 @@ trigger_node = NodePath("../..")
 trigger_signal = "unpaused"
 target_node = NodePath("..")
 target_method = "hide"
+
+[node name="CharacterMover" type="Node" parent="."]
+script = ExtResource("46_68jfb")
 
 [connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/ResumeButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_resume_button_pressed"]
 [connection signal="pressed" from="CanvasGroup/CenterContainer/VBoxContainer/SaveButton" to="CanvasGroup/CenterContainer/VBoxContainer" method="_on_save_button_pressed"]

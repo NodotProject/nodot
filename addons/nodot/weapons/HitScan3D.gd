@@ -45,44 +45,44 @@ func aim_raycast() -> void:
 ## Get the objects that the raycast is colliding with
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func get_hit_target():
-	if raycast.enabled and raycast.is_colliding():
-		var collider: Node3D = raycast.get_collider()
-		if collider:
-			var distance: float = get_distance(collider)
-			var hit_target = HitTarget.new(
-				distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider
+	if !(raycast.enabled or raycast.is_colliding()): return
+	var collider: Node3D = raycast.get_collider()
+	if !collider: return
+	var distance: float = get_distance(collider)
+	var hit_target = HitTarget.new(
+		distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider
+	)
+	
+	if applied_force > 0:
+		var direction = raycast.global_position.direction_to(hit_target.collision_point)
+		var force = direction * applied_force
+		if collider is RigidBody3D:
+			collider.apply_impulse(
+				force, hit_target.collision_point - collider.global_position
 			)
-
-			if applied_force > 0:
-				var direction = raycast.global_position.direction_to(hit_target.collision_point)
-				var force = direction * applied_force
-				if collider is RigidBody3D:
-					collider.apply_impulse(
-						force, hit_target.collision_point - collider.global_position
-					)
-				if collider is StaticBreakable3D or collider is RigidBreakable3D:
-					collider.save_impulse(
-						force, hit_target.collision_point, collider.global_position
-					)
-
-			if damage > 0.0:
-				var collider_healths: Array[Node] = collider.find_children("*", "Health")
-				if collider_healths.size() > 0:
-					var collider_health: Health = collider_healths[0]
-					var final_damage: float = damage
-					# Calculate damage reduction
-					if damage_distance_reduction > 0.0:
-						var damage_reduction: float = (
-							(final_damage / 100) * damage_distance_reduction
-						)
-						final_damage = final_damage - (distance * damage_reduction)
-					# Apply damage to the hit target
-					if !healing:
-						final_damage = -final_damage
-					collider_health.add_health(final_damage)
-
-			emit_signal("target_hit", hit_target)
-			return hit_target
+		if collider is StaticBreakable3D or collider is RigidBreakable3D:
+			collider.save_impulse(
+				force, hit_target.collision_point, collider.global_position
+			)
+	
+	if damage > 0.0:
+		var collider_healths: Array[Node] = collider.find_children("*", "Health")
+		if collider_healths.size() > 0:
+			var collider_health: Health = collider_healths[0]
+			var final_damage: float = damage
+			# Calculate damage reduction
+			if damage_distance_reduction > 0.0:
+				var damage_reduction: float = (
+					(final_damage / 100) * damage_distance_reduction
+				)
+				final_damage = final_damage - (distance * damage_reduction)
+			# Apply damage to the hit target
+			if !healing:
+				final_damage = -final_damage
+			collider_health.add_health(final_damage)
+	
+	emit_signal("target_hit", hit_target)
+	return hit_target
 
 
 ## Returns the distance from the raycast origin to the target
