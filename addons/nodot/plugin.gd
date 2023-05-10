@@ -9,3 +9,4 @@ func _init():
 	if is_editor:
 		add_autoload_singleton("WindowManager", "res://addons/nodot/autoload/WindowManager.gd")
 		add_autoload_singleton("SaveManager", "res://addons/nodot/autoload/SaveManager.gd")
+		add_autoload_singleton("GlobalSignal", "res://addons/nodot/autoload/GlobalSignal.gd")
