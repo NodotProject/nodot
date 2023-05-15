@@ -12,13 +12,16 @@ signal collectable_added(index: int, collectable_id: String, quantity: int)
 
 # Array of tuples. Collectable id (string) and quantity (int)
 var collectable_stacks: Array = []
-# Collectables that can't fit in storage
-var overflow: Array = []
+
 
 ## Add a collectable to the inventory
 func add(collectable_id: String, quantity: int):
-	var collectable = CollectableManager.get(collectable_id)
-	var weight = collectable.weight
+	var collectable = CollectableManager.get_info(collectable_id)
+	if !collectable:
+		push_error("%s has not been registered in CollectableManager" % collectable_id)
+		return false
+	
+	var weight = collectable.mass
 
 	# Check that we have weight left
 	if max_weight > 0.0:
@@ -26,14 +29,15 @@ func add(collectable_id: String, quantity: int):
 		var total = get_total_weight(stack_weight)
 		if total > max_weight:
 			return false
-	
-	var remaining_quantity = update_available_stack(stack)
+
+	var remaining_quantity = update_available_stack(collectable_id, quantity)
 	if remaining_quantity > 0:
-		var available_slot = get_available_slot()
-		if available_slot:
-			collectable_stacks[available_slot] = [collectable_id, remaining_quantity]
-			emit_signal("collectable_added", available_slot, collectable_id, remaining_quantity)
+		var slot_updated = update_available_slot(collectable_id, quantity)
+		if slot_updated:
 			return true
+	elif remaining_quantity == 0:
+		return true
+		
 
 	return false
 
@@ -45,46 +49,56 @@ func get_total_weight(additional_weight: float = 0.0):
 		var id = stack[0]
 		var quantity = stack[1]
 		var collectable = CollectableManager.get(id)
-		var weight = collectable.weight
+		var weight = collectable.mass
 		var stack_weight = quantity * weight
 		total_weight += stack_weight
 	total_weight += additional_weight
 	return total_weight
 
-## Get an available stack for the collectable
-func update_available_stack(stack):
-	var id = stack[0]
-	var quantity = stack[1]
 
+## Update an available stack for the collectable
+func update_available_stack(collectable_id: String, quantity: int):
 	for i in range(collectable_stacks.size()):
 		var stored_stack = collectable_stacks[i]
 		var stored_stack_id = stored_stack[0]
-		var stored_stack_quantity = stored_stack[1]
-		if stored_stack_id == id:
-			var collectable = CollectableManager.get(id)
+		if stored_stack_id == collectable_id:
+			var collectable = CollectableManager.get(collectable_id)
+			var stored_stack_quantity = stored_stack[1]
+			if stored_stack_quantity >= collectable.stack_limit:
+				continue
 			var available = stored_stack_quantity + quantity
 			if available > collectable.max_stack_size:
 				collectable_stacks[i][1] = collectable.max_stack_size
-				emit_signal("collectable_added", i, id, collectable.max_stack_size)
-				get_available_stack(id, available - collectable.max_stack_size)
+				emit_signal("collectable_added", i, collectable_id, collectable.max_stack_size)
+				update_available_stack(collectable_id, available - collectable.max_stack_size)
 				return 0
 			else:
 				collectable_stacks[i][1] = available
-				emit_signal("collectable_added", i, id, available)
+				emit_signal("collectable_added", i, collectable_id, available)
 				return 0
-	
+
 	return quantity
 
 
 ## Get available slot
-func get_available_slot():
+func update_available_slot(collectable_id: String, quantity: int):
+	var available_slot
+	
 	# Get first empty slot
 	for i in range(collectable_stacks.size()):
 		var stored_stack = collectable_stacks[i]
 		var stored_stack_quantity = stored_stack[1]
 		if stored_stack_quantity == 0:
-			return i
-	
+			available_slot = i
+
 	# Get unused slot
 	if collectable_stacks.size() < capacity:
-		return collectable_stacks.size()
+		available_slot = collectable_stacks.size()
+		
+	if available_slot != null:
+		if available_slot in collectable_stacks:
+			collectable_stacks[available_slot] = [collectable_id, quantity]
+		else:
+			collectable_stacks.append([collectable_id, quantity])
+		emit_signal("collectable_added", available_slot, collectable_id, quantity)
+		return true

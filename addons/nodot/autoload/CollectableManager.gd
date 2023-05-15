@@ -25,11 +25,11 @@ class Collectable:
 	## Maximum stack count
 	var stack_limit: int = 1
 	## The weight of the collectable.
-	var weight: float = 0.1
+	var mass: float = 0.1
 
 	func _init(collectable_node: Node):
 		icon = collectable_node.icon
 		display_name = collectable_node.display_name
 		description = collectable_node.description
 		stack_limit = collectable_node.stack_limit
-		weight = collectable_node.weight
+		mass = collectable_node.mass

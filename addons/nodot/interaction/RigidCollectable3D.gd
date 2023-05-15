@@ -14,19 +14,19 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 ## Maximum stack count
 @export var stack_limit: int = 1
 ## The interactive label
-@export var label: String = "take %s"
+@export var label_text: String = "Take %s"
 ## Allow the item to be collected by colliding with it.
 @export var collect_on_collision: bool = true
 
 ## Triggered on collection
 signal collected
 
-func _init():
+func _enter_tree():
 	CollectableManager.add(self)
 
 func _physics_process(delta: float) -> void:
 	if collect_on_collision:
-		for body in get_overlapping_bodies():
+		for body in get_colliding_bodies():
 			if body is CharacterBody3D:
 				interact(body)
 
@@ -37,4 +37,4 @@ func interact(player_node: CharacterBody3D) -> void:
 		queue_free()
 
 func label() -> String:
-	return label % display_name
+	return label_text % display_name

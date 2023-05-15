@@ -12,13 +12,13 @@ class_name StaticCollectable3D extends NodotStaticBody3D
 ## The quantity of the collectable.
 @export var quantity: int = 1
 ## The weight of the collectable (kg each).
-@export var weight: float = 0.1
+@export var mass: float = 0.1
 ## Maximum stack count
 @export var stack_limit: int = 1
 ## The interactive label
-@export var label: String = "take %s"
+@export var label_text: String = "Take %s"
 ## Allow the item to be collected by colliding with it.
-@export var collect_on_collision: bool = true
+# TODO: Figure this out: @export var collect_on_collision: bool = true
 
 ## Triggered on collection
 signal collected
@@ -26,11 +26,11 @@ signal collected
 func _init():
 	CollectableManager.add(self)
 	
-func _physics_process(delta: float) -> void:
-	if collect_on_collision:
-		for body in get_overlapping_bodies():
-			if body is CharacterBody3D:
-				interact(body)
+#func _physics_process(delta: float) -> void:
+#	if collect_on_collision:
+#		for body in get_overlapping_bodies():
+#			if body is CharacterBody3D:
+#				interact(body)
 
 func interact(player_node: CharacterBody3D) -> void:
 	if player_node.has_method("collect"):
@@ -39,4 +39,4 @@ func interact(player_node: CharacterBody3D) -> void:
 		queue_free()
 
 func label() -> String:
-	return label % display_name
+	return label_text % display_name
