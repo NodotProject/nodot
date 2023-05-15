@@ -12,6 +12,9 @@ func get_info(display_name: String) -> Collectable:
 		return collectables[display_name]
 	return null
 	
+func clear() -> void:
+	collectables = {}
+	
 
 
 class Collectable:
