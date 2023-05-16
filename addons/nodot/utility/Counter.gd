@@ -17,10 +17,14 @@ signal value_changed(value: float)
 signal value_increased(value: float)
 ## Triggered when the value decreases
 signal value_decreased(value: float)
+## Triggered when the value is the minimum value
+signal min_value_reached(value: float)
+## Triggered when the value is the maximum value
+signal max_value_reached(value: float)
 
 
 ## Set the value to a specific amount.
-func set(new_value: float) -> void:
+func set_value(new_value: float) -> void:
 	var old_value = value
 
 	if limit_values:
@@ -35,16 +39,21 @@ func set(new_value: float) -> void:
 
 	if value != old_value:
 		emit_signal("value_changed", value)
+		
+	if value == min_value:
+		emit_signal("min_value_reached", value)
+	if value == max_value:
+		emit_signal("max_value_reached", value)
 
 
 ## Add an amount to the value.
 func add(amount: float) -> void:
-	set(value + amount)
+	set_value(value + amount)
 
 
 ## Remove an amount from the value.
 func remove(amount: float) -> void:
-	set(value - amount)
+	set_value(value - amount)
 
 
 ## Increase the value by the step value

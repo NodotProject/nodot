@@ -113,3 +113,12 @@ func update_available_slot(collectable_id: String, quantity: int) -> bool:
 		emit_signal("collectable_added", available_slot, collectable_id, new_quantity)
 		return true
 	return false
+
+## Get a total count of all items of a specific type
+func get_collectable_count(collectable_id: String) -> int:
+	return collectable_stacks.reduce(func (accum, stack):
+		if stack[0] == collectable_id:
+			return accum + stack[1]
+		return accum
+	, 0)
+	

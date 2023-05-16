@@ -3,6 +3,8 @@ class_name FirstPersonCharacter extends NodotCharacter
 
 ## Allow player input
 @export var input_enabled := true
+## Is the character used by the player
+@export var is_current_player := false
 ## The camera field of view
 @export var fov := 75.0
 ## The head position
@@ -12,7 +14,6 @@ class_name FirstPersonCharacter extends NodotCharacter
 ## Apply gravity even when the character is on the floor
 @export var always_apply_gravity: bool = false
 
-@export var axis_aligned_collider : bool = true
 
 @export_category("Input Actions")
 ## The input action name for pausing the game
@@ -27,9 +28,13 @@ var head: Node3D
 var camera: Camera3D = Camera3D.new()
 var submerge_handler: FirstPersonSubmerged
 var keyboard_input: FirstPersonKeyboardInput
+var inventory: CollectableInventory
 
 
 func _enter_tree() -> void:
+	if is_current_player:
+		PlayerManager.node = self
+		
 	head = Node3D.new()
 	head.name = "Head"
 	camera.name = "Camera3D"
@@ -38,6 +43,7 @@ func _enter_tree() -> void:
 
 	submerge_handler = Nodot.get_first_child_of_type(self, FirstPersonSubmerged)
 	keyboard_input = Nodot.get_first_child_of_type(self, FirstPersonKeyboardInput)
+	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
 
 
 func _ready() -> void:
@@ -68,6 +74,13 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 	else:
 		move_and_slide()
+		
+	var collision = get_last_slide_collision()
+	if collision:
+		for i in collision.get_collision_count():
+			var collider = collision.get_collider(i)
+			if collider.has_method("_on_character_collide"):
+				collider._on_character_collide(self)
 	
 
 func _input(event: InputEvent) -> void:
@@ -109,3 +122,7 @@ func enable_input() -> void:
 		if child is FirstPersonMouseInput:
 			child.enable()
 
+## Add collectables to collectable inventory
+func collect(node: Node3D):
+	if !inventory: return
+	inventory.add(node.display_name, node.quantity)

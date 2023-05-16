@@ -17,22 +17,22 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 @export var label_text: String = "Take %s"
 ## Allow the item to be collected by colliding with it.
 @export var collect_on_collision: bool = true
+## Don't trigger collect logic on the player
+@export var disable_player_collect: bool = false
 
 ## Triggered on collection
 signal collected
 
 func _enter_tree():
 	CollectableManager.add(self)
-
-func _physics_process(delta: float) -> void:
 	if collect_on_collision:
-		for body in get_colliding_bodies():
-			if body is CharacterBody3D:
-				interact(body)
+		connect("character_collided", interact)
 
-func interact(player_node: CharacterBody3D) -> void:
-	if player_node.has_method("collect"):
-		player_node.collect(self)
+func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
+	if enabled:
+		if !disable_player_collect and player_node.has_method("collect"):
+			enabled = false
+			player_node.collect(self)
 		emit_signal("collected")
 		queue_free()
 
