@@ -84,6 +84,8 @@ func _physics_process(delta):
 
 			if collider.has_method("focussed"):
 				collider.focussed()
+		else:
+			label3d.text = ""
 
 
 func collide_ended(body: Node3D):

@@ -24,6 +24,8 @@ var trigger_signal: String = ""
 var actual_trigger_node: Node
 
 func _ready():
+	if is_editor: return
+	
 	if trigger_node:
 		actual_trigger_node = get_node(trigger_node)
 	

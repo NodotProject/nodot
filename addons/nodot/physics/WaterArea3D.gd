@@ -54,7 +54,6 @@ func _enter_tree() -> void:
 	waterMesh.subdivide_depth = 200
 	waterMesh.material = water_shader
 	water_mesh_instance.mesh = waterMesh
-	water_mesh_instance.transparency = 0.05
 	water_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	if collider_shape is BoxShape3D:

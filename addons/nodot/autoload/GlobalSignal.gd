@@ -1,5 +1,5 @@
 ## A simple signal class for global signals
-extends Node
+extends Nodot
 
 var signals: Dictionary = {}
 

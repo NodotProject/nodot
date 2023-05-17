@@ -123,6 +123,6 @@ func enable_input() -> void:
 			child.enable()
 
 ## Add collectables to collectable inventory
-func collect(node: Node3D):
-	if !inventory: return
-	inventory.add(node.display_name, node.quantity)
+func collect(node: Node3D) -> bool:
+	if !inventory: return false
+	return inventory.add(node.display_name, node.quantity)

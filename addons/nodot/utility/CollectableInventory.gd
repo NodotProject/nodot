@@ -10,15 +10,19 @@ class_name CollectableInventory extends Nodot
 
 ## Triggered when a stack or slot is updated
 signal collectable_added(index: int, collectable_id: String, quantity: int)
-## Triggered when the inventory overflows
+## Triggered when the inventory overflows (useful to spawn excess items back into the world)
 signal overflow(collectable_id: String, quantity: int)
+## Triggered when the inventory is too heavy
+signal max_weight_reached
+## Triggered when the capacity is reached
+signal capacity_reached
 
 # Array of tuples. Collectable id (string) and quantity (int)
 var collectable_stacks: Array = []
 
 
 ## Add a collectable to the inventory
-func add(collectable_id: String, quantity: int):
+func add(collectable_id: String, quantity: int) -> bool:
 	var collectable = CollectableManager.get_info(collectable_id)
 	if !collectable:
 		push_error("%s has not been registered in CollectableManager" % collectable_id)
@@ -31,6 +35,7 @@ func add(collectable_id: String, quantity: int):
 		var stack_weight = quantity * weight
 		var total = get_total_weight(stack_weight)
 		if total > max_weight:
+			emit_signal("max_weight_reached")
 			return false
 
 	var remaining_quantity = update_available_stack(collectable_id, quantity)
@@ -43,6 +48,7 @@ func add(collectable_id: String, quantity: int):
 		
 	
 	emit_signal("overflow", remaining_quantity)
+	emit_signal("capacity_reached")
 	return false
 
 

@@ -30,11 +30,12 @@ func _enter_tree():
 
 func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 	if enabled:
-		if !disable_player_collect and player_node.has_method("collect"):
-			enabled = false
-			player_node.collect(self)
-		emit_signal("collected")
-		queue_free()
+		if !disable_player_collect:
+			if player_node.has_method("collect"):
+				if player_node.collect(self):
+					enabled = false
+					emit_signal("collected")
+					queue_free()
 
 func label() -> String:
 	return label_text % display_name
