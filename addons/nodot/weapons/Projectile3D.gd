@@ -11,7 +11,6 @@ class_name Projectile3D extends RigidBody3D
 @export var destroy_on_impact: bool = false
 
 signal collision(position: Vector3, rotation: Vector3, colliders: Array[Node3D])
-signal timeout(position: Vector3, rotation: Vector3)
 signal destroyed(position: Vector3, rotation: Vector3)
 
 var is_editor: bool = Engine.is_editor_hint()
@@ -23,13 +22,13 @@ func _enter_tree() -> void:
 	max_contacts_reported = 1
 	if is_editor: return
 	explosion = Nodot.get_first_child_of_type(self, Explosion3D)
-	remove_child(explosion)
+	if explosion:
+		remove_child(explosion)
 
 
 func _ready() -> void:
 	if lifespan <= 0.0: return
 	await get_tree().create_timer(lifespan).timeout
-	emit_signal("timeout", position, rotation)
 	destroy()
 
 

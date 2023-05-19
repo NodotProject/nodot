@@ -2,7 +2,7 @@
 ## A raycast to detect the floor material and play appropriate footstep sounds.
 class_name FootStepSFX extends RayCast3D
 
-## How many steps per 1m
+## How many meters per step
 @export var frequency: float = 2.0
 
 @onready var parent: CharacterBody3D = get_parent()

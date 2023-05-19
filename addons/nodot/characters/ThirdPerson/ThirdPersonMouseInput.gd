@@ -13,6 +13,8 @@ class_name ThirdPersonMouseInput extends Nodot
 @export var lock_character_rotation := false
 ## Restrict vertical look angle
 @export var vertical_clamp := Vector2(-1.36, 1.4)
+## Custom mouse cursor
+@export var custom_cursor := false
 
 @export_category("Input Actions")
 ## Input action for enabling camera rotation
@@ -24,6 +26,7 @@ var is_editor: bool = Engine.is_editor_hint()
 var mouse_rotation: Vector2 = Vector2.ZERO
 var camera: ThirdPersonCamera
 var camera_container: Node3D
+var cursor_show_state = Input.MOUSE_MODE_VISIBLE
 
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -38,6 +41,8 @@ func _ready() -> void:
 		enable()
 	camera = parent.camera
 	camera_container = camera.get_parent()
+	if custom_cursor:
+		cursor_show_state = Input.MOUSE_MODE_HIDDEN
 
 
 func _input(event: InputEvent) -> void:
@@ -71,7 +76,7 @@ func _physics_process(delta: float) -> void:
 
 ## Disable input and release mouse
 func disable() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	Input.set_mouse_mode(cursor_show_state)
 	enabled = false
 
 

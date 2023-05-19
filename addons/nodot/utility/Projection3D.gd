@@ -38,6 +38,7 @@ func _ready():
 
 	var viewport_container = SubViewportContainer.new()
 	viewport_container.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
+	viewport_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	viewport.size = resolution_size
 	# TODO: Figure out why the progressbar is slightly transparent.
 	# It may not be a material issue but a rendering one (cleared one frame but drawn the next)

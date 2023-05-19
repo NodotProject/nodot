@@ -7,6 +7,8 @@ class_name FirstPersonMouseInput extends Nodot
 @export var enabled := true
 ## Sensitivity of mouse movement
 @export var mouse_sensitivity := 0.1
+## Custom mouse cursor
+@export var custom_cursor := false
 
 @export_category("Input Actions")
 ## The input action name for selecting the next item
@@ -24,6 +26,7 @@ class_name FirstPersonMouseInput extends Nodot
 var head: Node3D
 var is_editor: bool = Engine.is_editor_hint()
 var mouse_rotation: Vector2 = Vector2.ZERO
+var cursor_show_state = Input.MOUSE_MODE_VISIBLE
 
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -43,6 +46,7 @@ func _init():
 		if not InputMap.has_action(action_name):
 			var default_key = default_keys[i]
 			add_action_to_input_map(action_name, default_key)
+	
 
 
 func add_action_to_input_map(action_name, default_key):
@@ -56,6 +60,9 @@ func _ready() -> void:
 	if enabled:
 		enable()
 
+	if custom_cursor:
+		cursor_show_state = Input.MOUSE_MODE_HIDDEN
+		
 	# If there is a viewport, set it
 	for child in parent.get_children():
 		if child is FirstPersonViewport:
@@ -104,7 +111,7 @@ func _physics_process(delta: float) -> void:
 
 ## Disable input and release mouse
 func disable() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	Input.set_mouse_mode(cursor_show_state)
 	enabled = false
 
 

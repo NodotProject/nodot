@@ -185,7 +185,7 @@ func _physics_process(delta: float) -> void:
 
 ## Disable input and release mouse
 func disable() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	enabled = false
 
 

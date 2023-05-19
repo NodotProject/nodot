@@ -23,6 +23,8 @@ class_name Spawner3D extends Nodot3D
 
 ## Triggered when an item is spawned
 signal spawned
+## Triggered when an item is despawned (monitoring must be enabled)
+signal despawned
 ## Triggered when the spawn limit is reached
 signal spawn_limit_reached
 ## Triggered when the spawns_left is updated
@@ -65,6 +67,8 @@ func _enter_tree() -> void:
 ## Spawn all children of Node3D type
 func action() -> void:
 	if !enabled or (spawn_limit > 0 and spawns_left == 0):
+		if spawns_left == 0:
+			emit_signal("spawn_limit_reached")
 		return
 
 	if spawn_delay > 0:
@@ -91,6 +95,8 @@ func check() -> void:
 	var current_spawns = floor(
 		Nodot.get_children_of_type(self, Node3D).size() / saved_children.size()
 	)
+	if current_spawns < (spawn_limit - spawns_left):
+		emit_signal("despawned")
 	if current_spawns < spawn_limit:
 		spawns_left = spawn_limit - current_spawns
 		if auto_spawn_all:
