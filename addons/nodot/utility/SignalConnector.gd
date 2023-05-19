@@ -20,7 +20,7 @@ var is_editor: bool = Engine.is_editor_hint()
 		target_node = new_node
 		if is_editor:
 			actual_target_node = get_node(target_node)
-		notify_property_list_changed()
+			notify_property_list_changed()
 
 @export_subgroup("Argument Binding")
 ## Arguments to unbind from signal
@@ -32,7 +32,7 @@ var trigger_node: NodePath: # WARNING DO NOT CHANGE TYPE: https://github.com/god
 		trigger_node = new_node
 		if is_editor:
 			actual_trigger_node = get_node(trigger_node)
-		notify_property_list_changed()
+			notify_property_list_changed()
 ## The node that will emit the signal
 var actual_trigger_node: Node
 
@@ -41,13 +41,14 @@ var trigger_signal: String = ""
 ## The path of the node that will execute the method
 var actual_target_node: Node
 ## The name of the target node method to execute
-var target_method: String = "action"
+var target_method: String = ""
 
 func _ready():
 	if trigger_node:
 		actual_trigger_node = get_node(trigger_node)
 	if target_node:
 		actual_target_node = get_node(target_node)
+	notify_property_list_changed()
 	
 	if target_method == "" or !is_instance_valid(actual_target_node): return
 	
@@ -55,6 +56,8 @@ func _ready():
 		if trigger_signal != "":
 			GlobalSignal.add_listener(trigger_signal, actual_target_node, target_method)
 	else:
+		if target_method == "":
+			return
 		var callback = actual_target_node[target_method]
 		if method_unbind_count > 0:
 			callback = Callable(actual_target_node[target_method].unbind(method_unbind_count))
@@ -83,38 +86,42 @@ func _get_property_list() -> Array[Dictionary]:
 			"hint": PROPERTY_HINT_NODE_PATH_VALID_TYPES
 		})
 		
+		var signal_list = ""
 		if actual_trigger_node:
 			var signal_data = actual_trigger_node.get_signal_list()
 			var signals: Array = signal_data.map(func(item): return item.name).filter(
 				func(item): return item != ""
 			)
 			signals.sort()
+			signal_list = ",".join(signals)
 
-			property_list.append({
-				"name": "trigger_signal",
-				"type": TYPE_STRING,
-				"usage": PROPERTY_USAGE_DEFAULT,
-				"hint": PROPERTY_HINT_ENUM,
-				"hint_string": ",".join(signals),
-			})
-			
+		property_list.append({
+			"name": "trigger_signal",
+			"type": TYPE_STRING,
+			"usage": PROPERTY_USAGE_DEFAULT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": signal_list,
+		})
+	
+	var method_list = ""
 	if actual_target_node:
 		var method_data = actual_target_node.get_method_list()
 		var methods = method_data.map(func(item): return item.name).filter(
 			func(item): return item != ""
 		)
 		methods.sort()
+		method_list = ",".join(methods)
 			
-		property_list.append_array([{
-			name = "Target",
-			type = TYPE_NIL,
-			usage = PROPERTY_USAGE_SUBGROUP
-		}, {
-			"name": "target_method",
-			"type": TYPE_STRING,
-			"usage": PROPERTY_USAGE_DEFAULT,
-			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": ",".join(methods),
-		}])
+	property_list.append_array([{
+		name = "Target",
+		type = TYPE_NIL,
+		usage = PROPERTY_USAGE_SUBGROUP
+	}, {
+		"name": "target_method",
+		"type": TYPE_STRING,
+		"usage": PROPERTY_USAGE_DEFAULT,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": method_list,
+	}])
 		
 	return property_list
