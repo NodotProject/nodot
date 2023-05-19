@@ -37,6 +37,10 @@ jobs:
         run: npm i -g krazyjakee/GDScriptify2
       - name: Install markdown2html
         run: npm i -g markdown-folder-to-html
+      - name: Remove Unwanted Files
+        run: |
+          rm -rf test
+          rm -rf addons/gut
       - name: Generate docs
         run: |
           gdscriptify2 -o docs/src
