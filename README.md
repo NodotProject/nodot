@@ -14,11 +14,17 @@ Nodot is a video game oriented collection of nodes, autoload scripts and scenes 
 
 ## Setup
 
+1. Download the addon from the addon store in the Godot editor
+1. In Godot, open Project Settings > Plugins > enable Nodot
+1. Nodot nodes will now be available in the `Add Child Node` interface
+
+OR
+
 1. Create an `addons` folder in the root of your project directory if one doesn't exist
 1. Download this repository
 1. Copy the contents of the `addons` folder in this repository into the `addons` folder in your project
-1. In Godot, open Project Setings > Plugins > enable Nodot
-1. Nodot nodes will now be available in the Add Child Node interface
+1. In Godot, open Project Settings > Plugins > enable Nodot
+1. Nodot nodes will now be available in the `Add Child Node` interface
 
 ## Docs
 
@@ -26,11 +32,15 @@ https://nodotproject.github.io/nodot
 
 ## Examples
 
-https://github.com/nodotproject/nodot/tree/main/examples
+First Person Shooter: https://github.com/NodotProject/nodot-fps
+
+## Asset Credits
 
 Example model asset credits:
-- https://quaternius.com (CC0)
-- https://www.kenney.nl (CC0)
-- https://loafbrr.itch.io (CC0)
-- https://pixabay.com (CC0)
-- https://www.sharetextures.com/ (CC0)
+- https://quaternius.com ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- https://www.kenney.nl ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- https://loafbrr.itch.io ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- https://pixabay.com ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- https://www.sharetextures.com/ ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- [MakeHuman](http://www.makehumancommunity.org/) ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
+- ["M Suit 01" by "Mindfront"](http://www.makehumancommunity.org/clothes/m_suit_01.html) ([CC-BY](https://creativecommons.org/licenses/by/2.0/))

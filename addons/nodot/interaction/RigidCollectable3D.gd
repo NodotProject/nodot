@@ -19,23 +19,40 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 @export var collect_on_collision: bool = true
 ## Don't trigger collect logic on the player
 @export var disable_player_collect: bool = false
+## Collectable root node. Used to respawn an item into the world
+@export var collectable_root_node: NodePath
+## Time before the object is freed
+@export var free_delay: float = 0.0
+
+var actual_collectable_root_node: Node
 
 ## Triggered on collection
 signal collected
 
 func _enter_tree():
+	if collectable_root_node:
+		actual_collectable_root_node = get_node(collectable_root_node)
+		
 	CollectableManager.add(self)
 	if collect_on_collision:
 		connect("character_collided", interact)
 
 func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
-	if enabled:
-		if !disable_player_collect:
-			if player_node.has_method("collect"):
-				if player_node.collect(self):
-					enabled = false
-					emit_signal("collected")
-					queue_free()
+	if !enabled or disable_player_collect or !player_node.has_method("collect") or !player_node.collect(self):
+		return
+	
+	enabled = false
+	visible = false
+	emit_signal("collected")
+	
+	if free_delay > 0.0:
+		await get_tree().create_timer(free_delay).timeout
+		
+	if actual_collectable_root_node:
+		actual_collectable_root_node.queue_free()
+	else:
+		queue_free()
 
 func label() -> String:
+	if !enabled: return ""
 	return label_text % display_name

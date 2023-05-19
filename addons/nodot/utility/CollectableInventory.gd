@@ -7,6 +7,8 @@ class_name CollectableInventory extends Nodot
 @export var capacity: int = 25
 ## The maximum weight of the inventory (0 for infinite)
 @export var max_weight: float = 20.0
+## A node3d used to position items back into the world
+@export var spawn_location_node: Node3D
 
 ## Triggered when a stack or slot is updated
 signal collectable_added(index: int, collectable_id: String, quantity: int)
@@ -20,6 +22,9 @@ signal capacity_reached
 # Array of tuples. Collectable id (string) and quantity (int)
 var collectable_stacks: Array = []
 
+func _enter_tree():
+	for i in capacity:
+		collectable_stacks.append(["", 0])
 
 ## Add a collectable to the inventory
 func add(collectable_id: String, quantity: int) -> bool:
@@ -47,7 +52,8 @@ func add(collectable_id: String, quantity: int) -> bool:
 		return true
 		
 	
-	emit_signal("overflow", remaining_quantity)
+	if remaining_quantity > 0:
+		emit_signal("overflow", remaining_quantity)
 	emit_signal("capacity_reached")
 	return false
 
@@ -57,11 +63,12 @@ func get_total_weight(additional_weight: float = 0.0):
 	var total_weight = 0
 	for stack in collectable_stacks:
 		var id = stack[0]
-		var quantity = stack[1]
-		var collectable = CollectableManager.get_info(id)
-		var weight = collectable.mass
-		var stack_weight = quantity * weight
-		total_weight += stack_weight
+		if id != "":
+			var quantity = stack[1]
+			var collectable = CollectableManager.get_info(id)
+			var weight = collectable.mass
+			var stack_weight = quantity * weight
+			total_weight += stack_weight
 	total_weight += additional_weight
 	return total_weight
 
@@ -96,15 +103,12 @@ func update_available_slot(collectable_id: String, quantity: int) -> bool:
 	var available_slot
 	
 	# Get first empty slot
-	for i in range(collectable_stacks.size()):
+	for i in capacity:
 		var stored_stack = collectable_stacks[i]
 		var stored_stack_quantity = stored_stack[1]
 		if stored_stack_quantity == 0:
 			available_slot = i
-
-	# Get unused slot
-	if collectable_stacks.size() < capacity:
-		available_slot = collectable_stacks.size()
+			break
 		
 	if available_slot != null:
 		var collectable = CollectableManager.get_info(collectable_id)
@@ -112,10 +116,7 @@ func update_available_slot(collectable_id: String, quantity: int) -> bool:
 		if quantity > collectable.stack_limit:
 			new_quantity = collectable.stack_limit
 			update_available_slot(collectable_id, quantity - new_quantity)
-		if available_slot in collectable_stacks:
-			collectable_stacks[available_slot] = [collectable_id, new_quantity]
-		else:
-			collectable_stacks.append([collectable_id, new_quantity])
+		collectable_stacks[available_slot] = [collectable_id, new_quantity]
 		emit_signal("collectable_added", available_slot, collectable_id, new_quantity)
 		return true
 	return false
@@ -127,4 +128,29 @@ func get_collectable_count(collectable_id: String) -> int:
 			return accum + stack[1]
 		return accum
 	, 0)
+	
+## Update a specific slot
+func update_slot(slot_index: int, collectable_id: String, quantity: int, _overflow: int):
+	if quantity > 0:
+		collectable_stacks[slot_index] = [collectable_id, quantity]
+		emit_signal("collectable_added", slot_index, collectable_id, quantity)
+	else:
+		collectable_stacks[slot_index] = ["", 0]
+		emit_signal("collectable_added", slot_index, "", 0)
+
+## Drop a slot item back into the real world
+func drop_slot(slot_index: int, collectable_id: String, quantity: int):
+	collectable_stacks[slot_index] = ["", 0]
+	emit_signal("collectable_added", slot_index, "", 0)
+	var collectable_info = CollectableManager.get_info(collectable_id)
+	if !collectable_info: return
+	
+	var item_node = collectable_info.node
+	for i in quantity:
+		var item_instance = item_node.duplicate(15)
+		item_instance.top_level = true
+		if spawn_location_node:
+			spawn_location_node.add_child(item_instance)
+		else:
+			push_error("No spawn location node set")
 	

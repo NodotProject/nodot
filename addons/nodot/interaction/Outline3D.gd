@@ -29,9 +29,11 @@ func _ready():
 
 ## Adds the outline to the mesh material overlay
 func focussed():
-	mesh.material_overlay = shader_material
+	if is_instance_valid(mesh):
+		mesh.material_overlay = shader_material
 
 
 ## Remove the outline from the mesh material overlay
 func unfocussed():
-	mesh.material_overlay = null
+	if is_instance_valid(mesh):
+		mesh.material_overlay = null
