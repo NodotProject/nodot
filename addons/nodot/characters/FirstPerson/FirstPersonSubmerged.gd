@@ -5,7 +5,7 @@ class_name FirstPersonSubmerged extends Nodot
 ## The gravity to apply to the character while submerged
 @export var submerged_gravity: float = 0.3
 ## How slow the character can move while underwater (higher = slower)
-@export var submerge_speed_divider := 2.0
+@export var submerge_speed := 2.0
 
 @export_category("Input Actions")
 ## The input action name for swimming upwards
@@ -23,16 +23,15 @@ signal head_submerged
 signal head_surfaced
 
 @onready var parent: FirstPersonCharacter = get_parent()
-@onready var default_gravity: float = parent.gravity
 
 var camera: Camera3D
-var keyboard_input: FirstPersonKeyboardInput
 var default_speed: float
 var submerged_water_area: WaterArea3D
 var is_submerged: bool = false
 var is_head_submerged: bool = false
 var water_y_position: float = 0.0
-
+var swim_state_id: int
+var surfaced_state_id: int
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -61,20 +60,29 @@ func add_action_to_input_map(action_name, default_key):
 func _ready():
 	if "camera" in parent:
 		camera = parent.camera
-	if "keyboard_input" in parent:
-		keyboard_input = parent.keyboard_input
-		default_speed = keyboard_input.speed
+		
+	var state: StateMachine = parent.sm
+	swim_state_id = state.register_state("swim")
+	surfaced_state_id = state.register_state("surfaced")
+	
+	state.add_valid_transition("swim", "surfaced")
+	state.add_valid_transition("surfaced", "idle")
+	state.add_valid_transition("idle", "swim")
+	state.add_valid_transition("jump", "swim")
+	state.add_valid_transition("sprint", "swim")
+	state.add_valid_transition("crouch", "swim")
+	state.add_valid_transition("prone", "swim")
 
 
 func _physics_process(delta: float) -> void:
 	if !is_submerged: return
 	check_head_submerged()
+	
+	parent.velocity.y -= submerged_gravity * delta
 
-	if keyboard_input:
-		var jump_pressed: bool = Input.is_action_pressed(ascend_action)
-		var speed = keyboard_input.speed
-		if jump_pressed:
-			parent.velocity.y = lerp(parent.velocity.y, speed, 1.0 * delta)
+	var jump_pressed: bool = Input.is_action_pressed(ascend_action)
+	if jump_pressed:
+		parent.velocity.y = lerp(parent.velocity.y, submerge_speed, 1.0 * delta)
 
 
 ## Trigger submerge states
@@ -84,14 +92,11 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 	water_y_position = water_area.water_mesh_instance.global_position.y
 
 	if is_submerged:
-		parent.gravity = submerged_gravity
-		keyboard_input.speed = default_speed / submerge_speed_divider
-		keyboard_input.direction_movement_only = true
+		parent.sm.set_state(swim_state_id)
 		emit_signal("submerged")
 	else:
-		parent.gravity = default_gravity
-		keyboard_input.speed = default_speed
-		keyboard_input.direction_movement_only = false
+		if parent._is_on_floor():
+			parent.sm.set_state(surfaced_state_id)
 		emit_signal("surfaced")
 
 

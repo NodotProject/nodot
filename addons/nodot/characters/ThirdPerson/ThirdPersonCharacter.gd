@@ -1,5 +1,5 @@
 ## A CharacterBody3D for third person games
-class_name ThirdPersonCharacter extends NodotCharacter
+class_name ThirdPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled: bool = true
@@ -32,6 +32,10 @@ func _enter_tree() -> void:
 			remove_child(child)
 			node3d.add_child(child)
 			camera = child
+			
+	if !sm:
+		sm = StateMachine.new()
+		add_child(sm)
 
 
 func _input(event: InputEvent) -> void:

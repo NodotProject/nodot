@@ -29,7 +29,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	position = camera_offset
-	look_at(parent.position)
+	look_at(parent.global_position)
 
 	raycast.position = parent.position
 	raycast.target_position = position
