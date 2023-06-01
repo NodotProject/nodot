@@ -22,7 +22,7 @@ signal unpaused
 
 var head: Node3D
 var camera: Camera3D = Camera3D.new()
-var submerge_handler: FirstPersonSubmerged
+var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
 
 
@@ -40,7 +40,7 @@ func _enter_tree() -> void:
 	head.add_child(camera)
 	add_child(head)
 
-	submerge_handler = Nodot.get_first_child_of_type(self, FirstPersonSubmerged)
+	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
 	
 

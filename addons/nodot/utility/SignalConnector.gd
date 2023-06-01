@@ -9,17 +9,14 @@ var is_editor: bool = Engine.is_editor_hint()
 @export var use_global_signal: bool = false:
 	set(new_value):
 		use_global_signal = new_value
-		if is_editor:
-			actual_trigger_node = get_node(trigger_node)
 		notify_property_list_changed()
 
 @export_subgroup("Target")
 ## The node that has the method
-@export var target_node: NodePath: # WARNING DO NOT CHANGE TYPE: https://github.com/godotengine/godot/issues/77012
+@export var target_node: Node:
 	set(new_node):
 		target_node = new_node
 		if is_editor:
-			actual_target_node = get_node(target_node)
 			notify_property_list_changed()
 
 @export_subgroup("Argument Binding")
@@ -27,41 +24,32 @@ var is_editor: bool = Engine.is_editor_hint()
 @export var method_unbind_count: int = 0
 
 ## The path of the node that will trigger the signal
-var trigger_node: NodePath: # WARNING DO NOT CHANGE TYPE: https://github.com/godotengine/godot/issues/77012
+var trigger_node: Node:
 	set(new_node):
 		trigger_node = new_node
 		if is_editor:
-			actual_trigger_node = get_node(trigger_node)
 			notify_property_list_changed()
-## The node that will emit the signal
-var actual_trigger_node: Node
 
 ## The name of the signal
 var trigger_signal: String = ""
-## The path of the node that will execute the method
-var actual_target_node: Node
 ## The name of the target node method to execute
 var target_method: String = ""
 
 func _ready():
-	if trigger_node:
-		actual_trigger_node = get_node(trigger_node)
-	if target_node:
-		actual_target_node = get_node(target_node)
 	notify_property_list_changed()
 	
-	if target_method == "" or !is_instance_valid(actual_target_node): return
+	if target_method == "" or !is_instance_valid(target_node): return
 	
 	if use_global_signal:
 		if trigger_signal != "":
-			GlobalSignal.add_listener(trigger_signal, actual_target_node, target_method)
+			GlobalSignal.add_listener(trigger_signal, target_node, target_method)
 	else:
 		if target_method == "":
 			return
-		var callback = actual_target_node[target_method]
+		var callback = target_node[target_method]
 		if method_unbind_count > 0:
-			callback = Callable(actual_target_node[target_method].unbind(method_unbind_count))
-		actual_trigger_node.connect(trigger_signal, callback)
+			callback = Callable(target_node[target_method].unbind(method_unbind_count))
+		trigger_node.connect(trigger_signal, callback)
 
 func _get_property_list() -> Array[Dictionary]:
 	var property_list: Array[Dictionary] = [{
@@ -87,8 +75,8 @@ func _get_property_list() -> Array[Dictionary]:
 		})
 		
 		var signal_list = ""
-		if actual_trigger_node:
-			var signal_data = actual_trigger_node.get_signal_list()
+		if trigger_node:
+			var signal_data = trigger_node.get_signal_list()
 			var signals: Array = signal_data.map(func(item): return item.name).filter(
 				func(item): return item != ""
 			)
@@ -104,8 +92,8 @@ func _get_property_list() -> Array[Dictionary]:
 		})
 	
 	var method_list = ""
-	if actual_target_node:
-		var method_data = actual_target_node.get_method_list()
+	if target_node:
+		var method_data = target_node.get_method_list()
 		var methods = method_data.map(func(item): return item.name).filter(
 			func(item): return item != ""
 		)
