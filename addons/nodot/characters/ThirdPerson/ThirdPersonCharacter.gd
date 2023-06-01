@@ -3,26 +3,20 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled: bool = true
-## Gravity strength
-@export var gravity: float = 9.8
-## Apply gravity even when the character is on the floor
-@export var always_apply_gravity: bool = false
+## Is the character used by the player
+@export var is_current_player := false
 
 @export_category("Input Actions")
 ## The input action name for pausing the game
 @export var escape_action: String = "escape"
 
 var camera: ThirdPersonCamera
-
-
-func _physics_process(delta: float) -> void:
-	if always_apply_gravity or !is_on_floor():
-		velocity.y -= gravity * delta
-
-	move_and_slide()
-
+var submerge_handler: CharacterSwim3D
 
 func _enter_tree() -> void:
+	if is_current_player:
+		PlayerManager.node = self
+		
 	# Set up camera container
 	for child in get_children():
 		if child is ThirdPersonCamera:
@@ -36,6 +30,8 @@ func _enter_tree() -> void:
 	if !sm:
 		sm = StateMachine.new()
 		add_child(sm)
+		
+	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 
 
 func _input(event: InputEvent) -> void:

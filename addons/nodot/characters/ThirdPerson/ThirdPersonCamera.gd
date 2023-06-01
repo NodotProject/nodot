@@ -8,8 +8,7 @@ class_name ThirdPersonCamera extends Camera3D
 ## Move the camera to the initial position after some inactivity (0.0 to disable)
 @export var time_to_reset: float = 2.0
 
-@onready var parent: Node3D = get_parent()
-
+var parent: Node3D
 var raycast: RayCast3D
 var time_since_last_move: float = 0.0
 
@@ -24,10 +23,11 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _enter_tree() -> void:
 	if always_in_front:
 		raycast = RayCast3D.new()
-		get_parent().add_child(raycast)
+		get_parent().add_child.call_deferred(raycast)
 
 
 func _ready() -> void:
+	parent = get_parent()
 	position = camera_offset
 	look_at(parent.global_position)
 

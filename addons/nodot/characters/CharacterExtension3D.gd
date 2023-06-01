@@ -12,6 +12,8 @@ var is_editor: bool = Engine.is_editor_hint()
 var sm: StateMachine
 var handled_states: Array[String] = []
 var state_ids: Dictionary = {}
+var direction: Vector3 = Vector3.ZERO
+var third_person_camera: ThirdPersonCamera
 
 func _enter_tree():
 	if not character:
@@ -21,6 +23,9 @@ func _enter_tree():
 		else:
 			enabled = false
 			return
+			
+	if character.camera is ThirdPersonCamera:
+		third_person_camera = character.camera
 	
 	sm = character.sm
 	sm.connect("state_updated", state_updated)
@@ -52,6 +57,17 @@ func handles_state(state: Variant) -> bool:
 		return state_ids.values().has(state)
 	return false
 
+## Turn to face the target. Essentially lerping look_at
+func face_target(target_position: Vector3, weight: float) -> void:
+	# First look directly at the target
+	var initial_rotation = character.rotation
+	character.look_at(target_position)
+	character.rotation.x = initial_rotation.x
+	character.rotation.z = initial_rotation.z
+	# Then lerp the next rotation
+	var target_rot = character.rotation
+	character.rotation.y = lerp_angle(initial_rotation.y, target_rot.y, weight)
+	
 ## Extend this placeholder. This is where your logic will be run every physics frame.
 func action(delta: float) -> void:
 	pass
