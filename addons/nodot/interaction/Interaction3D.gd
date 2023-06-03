@@ -7,7 +7,7 @@ signal carry_started(carried_node: Node3D)
 ## Triggered when dropping an object that was being carried
 signal carry_ended(carried_node: Node3D)
 ## Triggered when the interact function on an object was fired
-signal interacted(interacted_node: Node3D)
+signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_normal: Vector3)
 
 ## The interact input action name
 @export var interact_action: String = "interact"
@@ -48,9 +48,10 @@ func _input(event: InputEvent):
 		carried_body = null
 	else:
 		var collider = get_collider()
-		if is_instance_valid(collider) and collider.has_method("interact"):
-			collider.interact()
-			emit_signal("interacted", collider)
+		if is_instance_valid(collider):
+			if collider.has_method("interact"):
+				collider.interact()
+			emit_signal("interacted", collider, get_collision_point(), get_collision_normal())
 		elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
 			carried_body = collider
 			var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)

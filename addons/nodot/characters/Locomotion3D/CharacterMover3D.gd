@@ -2,7 +2,7 @@
 class_name CharacterMover3D extends CharacterExtensionBase3D
 
 ## Gravity for the character
-@export var gravity: float = 12.0
+@export var gravity: float = 9.8
 ## Friction when stopping. The smaller the value, the more you slide (-1 to disable)
 @export var friction: float = 1.0
 ## Enables stepping up stairs.
@@ -85,15 +85,15 @@ func action(delta: float) -> void:
 			basis = character.transform.basis
 		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		
-		if direction:
+		if direction == Vector3.ZERO:
+			sm.set_state(state_ids["idle"])
+		else:
 			if Input.is_action_pressed(sprint_action):
 				sm.set_state(state_ids["sprint"])
 			else:
 				sm.set_state(state_ids["walk"])
-		else:
-			sm.set_state(state_ids["idle"])
 		
-	if !character._is_on_floor() or character.velocity.y > 0:
+	if !character._is_on_floor():
 		move_air(delta)
 	else:
 		move_ground(delta)
