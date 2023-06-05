@@ -130,7 +130,7 @@ func move_ground(delta: float) -> void:
 	
 	# Start by moving our character body by its normal velocity.
 	character.move_and_slide()
-	if !stepping_enabled or !character._is_on_floor(): return
+	if sm.state == state_ids["jump"] or !stepping_enabled or !character._is_on_floor(): return
 	
 	# Next, we store the resulting position for later, and reset our character's
 	#    position and velocity values.

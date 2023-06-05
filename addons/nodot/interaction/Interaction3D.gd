@@ -48,10 +48,12 @@ func _input(event: InputEvent):
 		carried_body = null
 	else:
 		var collider = get_collider()
-		if is_instance_valid(collider):
-			if collider.has_method("interact"):
-				collider.interact()
-			emit_signal("interacted", collider, get_collision_point(), get_collision_normal())
+		if !is_instance_valid(collider):
+			return
+			
+		emit_signal("interacted", collider, get_collision_point(), get_collision_normal())
+		if collider.has_method("interact"):
+			collider.interact()
 		elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
 			carried_body = collider
 			var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
