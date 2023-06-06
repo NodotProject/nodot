@@ -3,8 +3,6 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled: bool = true
-## Is the character used by the player
-@export var is_current_player := false
 
 @export_category("Input Actions")
 ## The input action name for pausing the game
@@ -14,9 +12,6 @@ var camera: ThirdPersonCamera
 var submerge_handler: CharacterSwim3D
 
 func _enter_tree() -> void:
-	if is_current_player:
-		PlayerManager.node = self
-		
 	# Set up camera container
 	for child in get_children():
 		if child is ThirdPersonCamera:
@@ -26,6 +21,10 @@ func _enter_tree() -> void:
 			remove_child(child)
 			node3d.add_child(child)
 			camera = child
+	
+	if is_current_player:
+		PlayerManager.node = self
+		set_current_camera(camera)
 			
 	if !sm:
 		sm = StateMachine.new()

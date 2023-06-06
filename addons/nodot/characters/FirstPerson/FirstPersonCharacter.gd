@@ -3,8 +3,6 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled := true
-## Is the character used by the player
-@export var is_current_player := false
 ## The camera field of view
 @export var fov := 75.0
 ## The head position
@@ -29,6 +27,7 @@ var inventory: CollectableInventory
 func _enter_tree() -> void:
 	if is_current_player:
 		PlayerManager.node = self
+		set_current_camera(camera)
 		
 	if !sm:
 		sm = StateMachine.new()

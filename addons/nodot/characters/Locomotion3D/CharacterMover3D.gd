@@ -80,7 +80,7 @@ func action(delta: float) -> void:
 		var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 		var basis: Basis
 		if third_person_camera:
-			basis = third_person_camera.global_transform.basis
+			basis = character.current_camera.global_transform.basis
 		else:
 			basis = character.transform.basis
 		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()

@@ -14,6 +14,7 @@ var handled_states: Array[String] = []
 var state_ids: Dictionary = {}
 var direction: Vector3 = Vector3.ZERO
 var third_person_camera: ThirdPersonCamera
+var active_camera: Camera3D
 
 func _enter_tree():
 	if not character:
