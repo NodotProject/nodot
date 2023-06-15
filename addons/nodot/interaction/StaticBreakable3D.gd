@@ -5,7 +5,7 @@ class_name StaticBreakable3D extends StaticBody3D
 ## Triggered when the object is broken
 signal broken
 
-## A node to replace the breakable with that contains all the smaller parts
+## (optional) A node to replace the breakable with that contains all the smaller parts
 @export var replacement_node: Node3D
 
 @onready var parent = get_parent()
@@ -18,9 +18,6 @@ var saved_impulse_position: Vector3
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-
-	if !replacement_node:
-		warnings.append("Should have a replacement node value set")
 
 	if !Nodot.get_first_child_of_type(self, Health):
 		warnings.append("Should have a Health node as a child")
@@ -40,14 +37,15 @@ func _enter_tree() -> void:
 
 ## Perform the break
 func action() -> void:
-	parent.add_child(replacement_node)
-	replacement_node.visible = true
-	replacement_node.position = position
-	var closest_child = find_closest_child()
-	if closest_child:
-		closest_child.apply_impulse(
-			saved_impulse_direction, saved_impulse_position - closest_child.global_position
-		)
+	if replacement_node:
+		parent.add_child(replacement_node)
+		replacement_node.visible = true
+		replacement_node.position = position
+		var closest_child = find_closest_child()
+		if closest_child:
+			closest_child.apply_impulse(
+				saved_impulse_direction, saved_impulse_position - closest_child.global_position
+			)
 	emit_signal("broken")
 	queue_free()
 
@@ -71,3 +69,7 @@ func save_impulse(
 ) -> void:
 	saved_impulse_direction = impulse_direction
 	saved_impulse_position = impulse_position
+
+## Used to apply damage to itself
+func add_health(amount: float) -> void:
+	health.add_health(amount)

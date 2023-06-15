@@ -24,7 +24,7 @@ func remove_listener(signal_name: String, callable: Callable):
 			signals[signal_name].remove(i)
 			return
 
-func trigger_signal(signal_name: String):
+func trigger_signal(signal_name: String, arg: Variant = null):
 	if not signals.has(signal_name):
 		return
 
@@ -32,4 +32,4 @@ func trigger_signal(signal_name: String):
 		var target = signals[signal_name][i]
 		if is_instance_valid(target.node) and target.node.has_method(target.method):
 			var callable: Callable = target.node[target.method]
-			callable.call()
+			callable.call(arg)

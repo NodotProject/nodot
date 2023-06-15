@@ -9,8 +9,8 @@ var is_editor: bool = Engine.is_editor_hint()
 @export var trigger_node: Node:
 	set(new_node):
 		trigger_node = new_node
-		if is_editor:
-			notify_property_list_changed()
+		notify_property_list_changed()
+			
 @export_subgroup("Target")
 ## The global signal name
 @export var global_signal: String = ""
@@ -18,7 +18,7 @@ var is_editor: bool = Engine.is_editor_hint()
 @export var unbind_count: int = 0
 
 ## The name of the signal
-@export var trigger_signal: String = ""
+var trigger_signal: String = ""
 
 func _ready():
 	if is_editor: return
@@ -47,7 +47,7 @@ func _get_property_list() -> Array[Dictionary]:
 	}]
 	
 	var signal_list = ""
-	if trigger_node:
+	if is_instance_valid(trigger_node):
 		var signal_data = trigger_node.get_signal_list()
 		var signals: Array = signal_data.map(func(item): return item.name).filter(
 			func(item): return item != ""
@@ -55,12 +55,12 @@ func _get_property_list() -> Array[Dictionary]:
 		signals.sort()
 		signal_list = ",".join(signals)
 
-	property_list.append({
-		"name": "trigger_signal",
-		"type": TYPE_STRING,
-		"usage": PROPERTY_USAGE_DEFAULT,
-		"hint": PROPERTY_HINT_ENUM,
-		"hint_string": signal_list
-	})
+		property_list.append({
+			"name": "trigger_signal",
+			"type": TYPE_STRING,
+			"usage": PROPERTY_USAGE_DEFAULT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": signal_list
+		})
 		
 	return property_list

@@ -2,10 +2,13 @@ extends Node
 
 var collectables: Dictionary = {}
 
+signal collectable_added(collectable: Collectable)
+
 func add(collectable_node: Node):
 	if collectable_node.display_name in collectables:
 		return
 	collectables[collectable_node.display_name] = Collectable.new(collectable_node)
+	emit_signal("collectable_added", collectable_node)
 
 func get_info(display_name: String) -> Collectable:
 	if display_name != "" and display_name in collectables:
