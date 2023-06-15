@@ -3,7 +3,6 @@ extends EditorPlugin
 
 @export var version = 0.1
 
-
 func _init():
 	var is_editor: bool = Engine.is_editor_hint()
 	if is_editor:
@@ -12,3 +11,4 @@ func _init():
 		add_autoload_singleton("GlobalSignal", "res://addons/nodot/autoload/GlobalSignal.gd")
 		add_autoload_singleton("PlayerManager", "res://addons/nodot/autoload/PlayerManager.gd")
 		add_autoload_singleton("CollectableManager", "res://addons/nodot/autoload/CollectableManager.gd")
+		add_autoload_singleton("InputManager", "res://addons/nodot/autoload/InputManager.gd")

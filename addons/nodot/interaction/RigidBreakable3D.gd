@@ -5,7 +5,7 @@ class_name RigidBreakable3D extends NodotRigidBody3D
 ## Triggered when the object is broken
 signal broken
 
-## A node to replace the breakable with that contains all the smaller parts
+## (optional) A node to replace the breakable with that contains all the smaller parts
 @export var replacement_node: Node3D
 ## A value to propel pieces away from the center when the object is broken
 @export var explosion_force: float = 1.0
@@ -24,9 +24,6 @@ var saved_impulse_position: Vector3
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-
-	if !replacement_node:
-		warnings.append("Should have a replacement node value set")
 
 	if !Nodot.get_first_child_of_type(self, Health):
 		warnings.append("Should have a Health node as a child")
@@ -60,16 +57,17 @@ func _physics_process(delta: float) -> void:
 
 ## Perform the break
 func action() -> void:
-	parent.add_child(replacement_node)
-	replacement_node.visible = true
-	replacement_node.position = position
-	replacement_node.rotation = rotation
-	propel_outwards()
-	var closest_child = find_closest_child()
-	if closest_child:
-		closest_child.apply_impulse(
-			saved_impulse_direction, saved_impulse_position - closest_child.global_position
-		)
+	if replacement_node:
+		parent.add_child(replacement_node)
+		replacement_node.visible = true
+		replacement_node.position = position
+		replacement_node.rotation = rotation
+		propel_outwards()
+		var closest_child = find_closest_child()
+		if closest_child:
+			closest_child.apply_impulse(
+				saved_impulse_direction, saved_impulse_position - closest_child.global_position
+			)
 	emit_signal("broken")
 	queue_free()
 
@@ -104,3 +102,7 @@ func save_impulse(
 	saved_impulse_direction = impulse_direction
 	saved_impulse_position = impulse_position
 	apply_impulse(impulse_direction, impulse_position - origin_position)
+
+## Used to apply damage to itself
+func add_health(amount: float) -> void:
+	health.add_health(amount)

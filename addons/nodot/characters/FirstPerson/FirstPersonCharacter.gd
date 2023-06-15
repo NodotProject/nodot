@@ -1,18 +1,12 @@
 ## A CharacterBody3D for first person games
-class_name FirstPersonCharacter extends NodotCharacter
+class_name FirstPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled := true
-## Is the character used by the player
-@export var is_current_player := false
 ## The camera field of view
 @export var fov := 75.0
 ## The head position
 @export var head_position := Vector3.ZERO
-## Gravity strength
-@export var gravity: float = 9.8
-## Apply gravity even when the character is on the floor
-@export var always_apply_gravity: bool = false
 
 
 @export_category("Input Actions")
@@ -26,14 +20,18 @@ signal unpaused
 
 var head: Node3D
 var camera: Camera3D = Camera3D.new()
-var submerge_handler: FirstPersonSubmerged
-var keyboard_input: FirstPersonKeyboardInput
+var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
 
 
 func _enter_tree() -> void:
 	if is_current_player:
 		PlayerManager.node = self
+		set_current_camera(camera)
+		
+	if !sm:
+		sm = StateMachine.new()
+		add_child(sm)
 		
 	head = Node3D.new()
 	head.name = "Head"
@@ -41,9 +39,9 @@ func _enter_tree() -> void:
 	head.add_child(camera)
 	add_child(head)
 
-	submerge_handler = Nodot.get_first_child_of_type(self, FirstPersonSubmerged)
-	keyboard_input = Nodot.get_first_child_of_type(self, FirstPersonKeyboardInput)
+	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
+	
 
 
 func _ready() -> void:
@@ -60,26 +58,12 @@ func _ready() -> void:
 	else:
 		head.position = head_position
 
-
 func _physics_process(delta: float) -> void:
-	if always_apply_gravity or !_is_on_floor():
-		velocity.y -= gravity * delta
-	
-	var character_mover: CharacterMover = Nodot.get_first_child_of_type(self, CharacterMover)
-	if character_mover:
-		if character_mover.enabled:
-			# For some reason, the step code breaks sprinting.
-			character_mover.move()
-		else:
-			move_and_slide()
-	else:
-		move_and_slide()
-		
 	var collision = get_last_slide_collision()
 	if collision:
 		for i in collision.get_collision_count():
 			var collider = collision.get_collider(i)
-			if collider.has_method("_on_character_collide"):
+			if collider and collider.has_method("_on_character_collide"):
 				collider._on_character_collide(self)
 	
 
@@ -93,34 +77,16 @@ func _input(event: InputEvent) -> void:
 
 ## Pause the game
 func pause():
-	disable_input()
 	input_enabled = false
+	InputManager.disable()
 	emit_signal("paused")
 
 
 ## Unpause the game
 func unpause():
-	enable_input()
 	input_enabled = true
+	InputManager.enable()
 	emit_signal("unpaused")
-
-
-## Disable player input
-func disable_input() -> void:
-	for child in get_children():
-		if child is FirstPersonKeyboardInput:
-			child.disable()
-		if child is FirstPersonMouseInput:
-			child.disable()
-
-
-## Enable player input
-func enable_input() -> void:
-	for child in get_children():
-		if child is FirstPersonKeyboardInput:
-			child.enable()
-		if child is FirstPersonMouseInput:
-			child.enable()
 
 ## Add collectables to collectable inventory
 func collect(node: Node3D) -> bool:

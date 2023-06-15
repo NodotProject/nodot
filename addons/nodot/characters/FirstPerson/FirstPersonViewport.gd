@@ -8,6 +8,9 @@ class_name FirstPersonViewport extends SubViewportContainer
 ## (optional) The first person viewport camera
 @export var viewport_camera: Camera3D
 
+## The input action name for reloading the current active weapon
+@export var reload_action: String = "reload"
+
 var character_camera: Camera3D
 var viewport: SubViewport
 
@@ -29,12 +32,15 @@ func _enter_tree() -> void:
 	subviewport.name = "SubViewport"
 	subviewport.transparent_bg = true
 	subviewport.handle_input_locally = false
+	
 	var camera3d: Camera3D = Camera3D.new()
 	camera3d.name = "Camera3D"
 	camera3d.cull_mask = camera_cull_mask_layer
 	camera3d.fov = fov
+	
 	subviewport.add_child(camera3d)
 	add_child(subviewport)
+	
 	viewport = subviewport
 	viewport_camera = camera3d
 	character_camera = get_parent().camera
@@ -55,6 +61,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	viewport_camera.global_transform = character_camera.global_transform
 	viewport_camera.rotation.z = 0.0
+	
+func _input(event: InputEvent) -> void:
+	if InputMap.has_action(reload_action) and event.is_action_pressed(reload_action):
+		reload()
 
 
 func _on_window_resized(new_size: Vector2) -> void:

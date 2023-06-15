@@ -4,9 +4,7 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 ## An array of audiostreams chosen at random on action
 @export var sfx: Array[AudioStream] = []
 ## (optional) A node path containing a signal to trigger the sound effect
-@export var trigger_node: NodePath
-## (optional) A specific node containing a signal to trigger the sound effect
-@export var specific_trigger_node: Node
+@export var trigger_node: Node
 ## (optional) The signal name fired from the "trigger_node"
 @export var trigger_signal: String = ""
 ## Arguments to unbind from signal
@@ -17,21 +15,14 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var original_volume = volume_db
-var actual_trigger_node: Node
 
 func _enter_tree() -> void:
 	if trigger_signal == "": return
 	
-	if !trigger_node.is_empty():
-		actual_trigger_node = get_node(trigger_node)
-	else:
-		actual_trigger_node = specific_trigger_node
-	
 	if unbind_count > 0:
-		actual_trigger_node.connect(trigger_signal, action.unbind(unbind_count))
-	else:
-		if !actual_trigger_node.is_connected(trigger_signal, action):
-			actual_trigger_node.connect(trigger_signal, action)
+		trigger_node.connect(trigger_signal, action.unbind(unbind_count))
+	elif !trigger_node.is_connected(trigger_signal, action):
+		trigger_node.connect(trigger_signal, action)
 
 
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.

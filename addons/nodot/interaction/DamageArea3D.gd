@@ -20,10 +20,12 @@ func _init():
 
 ## Deals damage to all overlapping bodies
 func action():
-	var colliders = get_overlapping_bodies()
-	if colliders.size() > 0:
-		for collider in colliders:
-			for child in collider.get_children():
-				if child is Health:
-					child.add_health(-damage)
-					emit_signal("damage_given")
+	var colliders = has_overlapping_bodies()
+	if colliders.size() <= 0:
+		return
+	
+	for collider in colliders:
+		var health = Nodot.get_first_child_of_type(collider, Health)
+		if health:
+			health.add_health(-damage)
+			emit_signal("damage_given")

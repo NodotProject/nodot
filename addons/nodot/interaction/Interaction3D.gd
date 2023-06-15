@@ -7,7 +7,7 @@ signal carry_started(carried_node: Node3D)
 ## Triggered when dropping an object that was being carried
 signal carry_ended(carried_node: Node3D)
 ## Triggered when the interact function on an object was fired
-signal interacted(interacted_node: Node3D)
+signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_normal: Vector3)
 
 ## The interact input action name
 @export var interact_action: String = "interact"
@@ -28,7 +28,6 @@ var carried_body_width: float = 0.0
 var label3d: Label3D
 var last_collider: Node3D
 
-
 func _enter_tree():
 	label3d = Label3D.new()
 	label3d.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -39,18 +38,22 @@ func _enter_tree():
 	label3d.position.z = -2
 	add_child(label3d)
 
-
 func _input(event: InputEvent):
-	if !event.is_action_pressed(interact_action): return
+	if !enabled or !event.is_action_pressed(interact_action):
+		return
+		
 	if is_instance_valid(carried_body):
 		carried_body.gravity_scale = 1.0
 		emit_signal("carry_ended", carried_body)
 		carried_body = null
 	else:
 		var collider = get_collider()
-		if is_instance_valid(collider) and collider.has_method("interact"):
+		if !is_instance_valid(collider):
+			return
+			
+		emit_signal("interacted", collider, get_collision_point(), get_collision_normal())
+		if collider.has_method("interact"):
 			collider.interact()
-			emit_signal("interacted", collider)
 		elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
 			carried_body = collider
 			var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)

@@ -32,7 +32,8 @@ https://nodotproject.github.io/nodot
 
 ## Examples
 
-First Person Shooter: https://github.com/NodotProject/nodot-fps
+- First Person Shooter: https://github.com/NodotProject/nodot-fps
+- Third Person Platformer: https://github.com/NodotProject/konna3d
 
 ## Asset Credits
 
