@@ -3,7 +3,7 @@ name: Automatically generate PR description using OpenAI
 
 on:
   pull_request_target:
-    types: [opened, edited]
+    types: [opened]
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
