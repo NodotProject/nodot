@@ -32,8 +32,8 @@ func test_add_stackable_collectable():
 	inventory.add("apple", 4)
 	assert_eq(inventory.collectable_stacks[0], ["apple", 2])
 	assert_eq(inventory.collectable_stacks[1], ["apple", 2])
-	assert_eq(inventory.collectable_stacks[2], ["apple", 1])
-	assert_eq(inventory.collectable_stacks[3], ["apple", 2])
+	assert_eq(inventory.collectable_stacks[2], ["apple", 2])
+	assert_eq(inventory.collectable_stacks[3], ["apple", 1])
 	
 # Can handle when there are no stacks left
 func test_handle_stacks_full():

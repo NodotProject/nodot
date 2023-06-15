@@ -48,6 +48,8 @@ func add(collectable_id: String, quantity: int) -> bool:
 		var overflow = update_available_slot(collectable_id, remaining_quantity)
 		if overflow > 0:
 			return add(collectable_id, overflow)
+		else:
+			return true
 	elif remaining_quantity == 0:
 		return true
 		
@@ -117,6 +119,7 @@ func update_available_stack(collectable_id: String, quantity: int):
 	return quantity
 
 
+
 ## Get available slot
 func update_available_slot(collectable_id: String, quantity: int) -> int:
 	if quantity <= 0: return 0
@@ -133,10 +136,11 @@ func update_available_slot(collectable_id: String, quantity: int) -> int:
 			available_slot = i
 			break
 	
-	# TODO: Add a test for when capacity is 0 (infinite)
-	if available_slot == null and capacity == 0:
-		available_slot = current_stack_size
-		collectable_stacks.append(["", 0])
+	if available_slot == null:
+		# TODO: Add a test for when capacity is 0 (infinite)
+		if capacity == 0 or current_stack_size < capacity:
+			available_slot = current_stack_size
+			collectable_stacks.append(["", 0])
 		
 	if available_slot != null:
 		var collectable = CollectableManager.get_info(collectable_id)

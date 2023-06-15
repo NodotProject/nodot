@@ -130,7 +130,7 @@ func swim(delta: float) -> void:
 	character.velocity.y -= submerged_gravity * delta
 	var jump_pressed: bool = Input.is_action_pressed(ascend_action)
 	if jump_pressed:
-		character.velocity.y = lerp(character.velocity.y, submerge_speed, 1.0 * delta)
+		character.velocity.y = lerp(character.velocity.y, submerge_speed, delta)
 	
 	if direction == Vector3.ZERO:
 		character.velocity.x = move_toward(character.velocity.x, 0, 0.1)
