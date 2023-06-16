@@ -30,8 +30,20 @@ signal movement_ended
 ## Time until origin
 @export var time_to_origin: float = 1.0
 ## Transition type (https://docs.godotengine.org/en/4.0/classes/class_tween.html)
-@export_enum("TRANS_LINEAR", "TRANS_SINE", "TRANS_QUINT", "TRANS_QUART", "TRANS_QUAD", "TRANS_EXPO", "TRANS_ELASTIC", "TRANS_CUBIC", "TRANS_CIRC", "TRANS_BOUNCE", "TRANS_BACK") var transition_type: int = 0
-
+@export_enum(
+	"TRANS_LINEAR",
+	"TRANS_SINE",
+	"TRANS_QUINT",
+	"TRANS_QUART",
+	"TRANS_QUAD",
+	"TRANS_EXPO",
+	"TRANS_ELASTIC",
+	"TRANS_CUBIC",
+	"TRANS_CIRC",
+	"TRANS_BOUNCE",
+	"TRANS_BACK"
+)
+var transition_type: int = 0
 
 var original_position: Vector3
 var original_rotation: Vector3
@@ -42,10 +54,10 @@ func _ready():
 	if target_node:
 		original_position = target_node.global_position
 		original_rotation = target_node.rotation
-	
+
 	if auto_start:
 		action()
-	
+
 
 ## Perform the move toggling between destination and origin
 func action():
@@ -67,13 +79,13 @@ func deactivate():
 
 
 func move_to_destination():
-	
 	var final_destination_position = destination_position
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
-	
-	if final_destination_position == global_position: return
-	
+
+	if final_destination_position == global_position:
+		return
+
 	activated = true
 	var destination_tween = _create_tween(_on_destination_reached)
 	var destination_rotation_radians = Vector3(
@@ -102,8 +114,9 @@ func move_to_destination():
 
 
 func move_to_origin():
-	if global_position == original_position: return
-	
+	if global_position == original_position:
+		return
+
 	activated = false
 	var origin_tween = _create_tween(_on_origin_reached)
 	if original_position:
