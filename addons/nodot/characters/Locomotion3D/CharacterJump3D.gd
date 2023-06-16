@@ -8,7 +8,7 @@ class_name CharacterJump3D extends CharacterExtensionBase3D
 ## The input action name for jumping
 @export var jump_action: String = "jump"
 
-func _ready():
+func ready():
 	if !enabled:
 		return
 	
@@ -31,7 +31,7 @@ func state_updated(old_state: int, new_state: int) -> void:
 func jump() -> void:
 	character.velocity.y = jump_velocity
 
-func action(delta: float) -> void:
+func physics(delta: float) -> void:
 	if !character._is_on_floor():
 		return
 		

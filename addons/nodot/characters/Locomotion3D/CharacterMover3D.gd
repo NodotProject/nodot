@@ -39,7 +39,7 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 var sprint_speed = false
 var third_person_camera_container: Node3D
 
-func _ready():
+func ready():
 	if !enabled:
 		return
 	
@@ -75,7 +75,7 @@ func get_movement_speed(delta: float) -> float:
 		final_speed = movement_speed * sprint_speed_multiplier
 	return final_speed * delta * 100
 
-func action(delta: float) -> void:
+func physics(delta: float) -> void:
 	if character.input_enabled:
 		var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 		var basis: Basis

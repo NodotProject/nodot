@@ -72,7 +72,7 @@ func add_action_to_input_map(action_name, default_key):
 	InputMap.action_add_event(action_name, input_key)
 
 
-func _ready():
+func ready():
 	if "camera" in character:
 		camera = character.camera
 		
@@ -96,7 +96,7 @@ func _ready():
 		third_person_camera_container = third_person_camera.get_parent()
 
 
-func action(delta: float) -> void:
+func physics(delta: float) -> void:
 	if !is_submerged: return
 	check_head_submerged()
 	
