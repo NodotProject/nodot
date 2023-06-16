@@ -12,7 +12,7 @@ class_name CharacterCrouch3D extends CharacterExtensionBase3D
 
 var shape_initial_height: float
 
-func _ready():
+func ready():
 	if !enabled:
 		return
 	
@@ -37,7 +37,7 @@ func state_updated(old_state: int, new_state: int) -> void:
 		collision_shape.shape.height = shape_initial_height
 		sm.set_state(state_ids["idle"])
 
-func action(delta: float) -> void:
+func physics(delta: float) -> void:
 	if Input.is_action_pressed(crouch_action):
 		sm.set_state(state_ids["crouch"])
 	else:
