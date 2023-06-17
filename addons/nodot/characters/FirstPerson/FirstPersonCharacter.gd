@@ -7,6 +7,10 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 @export var fov := 75.0
 ## The head position
 @export var head_position := Vector3.ZERO
+## Minimum amount of fall damage before it is actually applied
+@export var minimum_fall_damage: float = 5.0
+## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
+@export var fall_damage_multiplier: float = 0.5
 
 
 @export_category("Input Actions")
@@ -17,11 +21,16 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 signal paused
 ## Triggered when the game is unpaused
 signal unpaused
+## Triggered when the character takes fall damage
+signal fall_damage(amount: float)
 
 var head: Node3D
 var camera: Camera3D = Camera3D.new()
+var health: Health
 var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
+var was_on_floor: bool = false
+var previous_velocity: float = 0.0
 
 
 func _enter_tree() -> void:
@@ -41,7 +50,7 @@ func _enter_tree() -> void:
 
 	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
-	
+	health = Nodot.get_first_child_of_type(self, Health)
 
 
 func _ready() -> void:
@@ -66,6 +75,22 @@ func _physics_process(delta: float) -> void:
 			var collider = collision.get_collider(i)
 			if collider and collider.has_method("_on_character_collide"):
 				collider._on_character_collide(self)
+	
+	if !health or fall_damage_multiplier <= 0.0:
+		return
+		
+	var on_floor = _is_on_floor()
+	if !was_on_floor:
+		if on_floor:
+			var falling_velocity = abs(previous_velocity)
+			var damage = falling_velocity * fall_damage_multiplier
+			print(damage)
+			if damage > minimum_fall_damage:
+				health.add_health(-damage)
+				emit_signal("fall_damage", damage)
+		else:
+			previous_velocity = velocity.y
+	was_on_floor = on_floor
 	
 
 func _input(event: InputEvent) -> void:
