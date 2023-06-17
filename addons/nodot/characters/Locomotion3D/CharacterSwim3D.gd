@@ -36,6 +36,7 @@ signal head_submerged
 ## Triggered when the head is surfaced
 signal head_surfaced
 
+var direction: Vector3 = Vector3.ZERO
 var camera: Camera3D
 var default_speed: float
 var submerged_water_area: WaterArea3D

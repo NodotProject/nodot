@@ -4,7 +4,6 @@ class_name CharacterExtensionBase3D extends StateHandler
 ## The NodotCharacter3D to apply this node to
 @export var character: NodotCharacter3D
 
-var direction: Vector3 = Vector3.ZERO
 var third_person_camera: ThirdPersonCamera
 var active_camera: Camera3D
 

@@ -36,6 +36,7 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 ## The input action name for sprinting
 @export var sprint_action: String = "sprint"
 
+var direction: Vector3 = Vector3.ZERO
 var sprint_speed = false
 var third_person_camera_container: Node3D
 
