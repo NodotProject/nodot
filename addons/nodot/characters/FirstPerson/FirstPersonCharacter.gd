@@ -54,6 +54,7 @@ func _ready() -> void:
 	if has_node("HeadPosition"):
 		var head_position_node: Node = get_node("HeadPosition")
 		head.position = head_position_node.position
+		head_position = head.position
 		head_position_node.queue_free()
 	else:
 		head.position = head_position

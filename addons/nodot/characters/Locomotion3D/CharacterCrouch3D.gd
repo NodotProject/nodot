@@ -52,6 +52,6 @@ func state_updated(old_state: int, new_state: int) -> void:
 func physics(delta: float) -> void:
 	if Input.is_action_pressed(crouch_action):
 		sm.set_state(state_ids["crouch"])
-	else:
+	elif Input.is_action_just_released(crouch_action):
 		sm.set_state(state_ids["stand"])
 		
