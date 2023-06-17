@@ -50,7 +50,7 @@ func ready():
 	InputManager.register_action(down_action, KEY_S)
 	InputManager.register_action(sprint_action, KEY_SHIFT)
 	
-	register_handled_states(["idle", "walk", "sprint", "jump", "land", "crouch"])
+	register_handled_states(["idle", "walk", "sprint", "jump", "land", "crouch", "prone"])
 		
 	sm.add_valid_transition("idle", ["walk", "sprint"])
 	sm.add_valid_transition("walk", ["idle", "walk", "sprint"])
