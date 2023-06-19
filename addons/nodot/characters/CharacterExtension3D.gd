@@ -1,7 +1,7 @@
 # A base node to add extension logic to NodotCharacter3D
 class_name CharacterExtensionBase3D extends StateHandler
 
-## The NodotCharacter3D to apply this node to
+## The NodotCharacter3D to apply this node to. Uses parent if unset.
 @export var character: NodotCharacter3D
 
 var third_person_camera: ThirdPersonCamera

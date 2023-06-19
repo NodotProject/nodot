@@ -1,7 +1,7 @@
 ## A node to manage Prone movement of a NodotCharacter3D
 class_name CharacterProne3D extends CharacterExtensionBase3D
 
-## The collision shape to shrink when crouched
+## The collision shape to shrink when proned
 @export var collision_shape: CollisionShape3D
 ## The new height of the collision shape
 @export var prone_height: float = 0.1
@@ -11,7 +11,7 @@ class_name CharacterProne3D extends CharacterExtensionBase3D
 @export var movement_speed: float = 0.5
 
 @export_subgroup("Input Actions")
-## The input action name for proneing
+## The input action name for proning
 @export var prone_action: String = "prone"
 
 var initial_movement_speed: float = 5.0

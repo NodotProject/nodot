@@ -7,7 +7,11 @@ class_name ProjectileEmitter3D extends Nodot3D
 ## The accuracy of the emission (0.0 = emit with 100% accuracy, 50.0 = emit in any forward direction, 100.0 = emit in any direction)
 @export var accuracy: float = 0.0
 
+signal projectile_spawned(projectile: Projectile3D)
+signal projectile_destroyed(position: Vector3, rotation: Vector3)
+
 @onready var initial_rotation = rotation
+
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var projectiles: Array[Projectile3D] = []
 var is_editor: bool = Engine.is_editor_hint()
@@ -46,6 +50,12 @@ func action() -> void:
 			aim_emitter()
 		var new_projectile: Projectile3D = projectile.duplicate(15)
 		get_tree().root.add_child(new_projectile)
+		new_projectile.connect("destroyed", _on_projectile_destroyed)
+		emit_signal("projectile_spawned", new_projectile)
 		new_projectile.global_position = global_position
 		new_projectile.global_rotation = global_rotation
 		new_projectile.propel()
+		
+## Triggered when a projectile is destroyed
+func _on_projectile_destroyed(position: Vector3, rotation: Vector3):
+	emit_signal("projectile_destroyed", position, rotation)
