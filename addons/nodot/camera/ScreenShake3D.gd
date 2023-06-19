@@ -5,11 +5,12 @@ class_name ScreenShake3D extends Nodot
 ## (optional) select the character to apply the affect to. Will use the parent if not present.
 @export var character: NodotCharacter3D
 ## The intensity of the shake
-@export var intensity: float = 0.1
+@export var intensity: float = 0.5
 ## The time it takes to reduce the intensity to zero (in seconds)
 @export var timespan: float = 1.0
+## Shake noise
+@export var noise: FastNoiseLite
 
-var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var final_cameras: Array[Camera3D]
 var initial_positions: Array[Vector3]
 var initial_time: float = 0.0
@@ -46,27 +47,19 @@ func _physics_process(delta: float):
 		
 	var diff = current_time / initial_time * 100
 	if current_intensity > 0.0:
-		var shake = (
-			Vector2(
-				rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0)
-			)
-			* current_intensity
-		)
+		var shake = noise.get_noise_1d(current_time * 10.0) * current_intensity
+		
 		for final_camera in final_cameras:
-			final_camera.h_offset = shake.x
-			final_camera.v_offset = shake.y
+			final_camera.rotation.z = shake
 		current_intensity = initial_intensity / 100 * diff
 	elif is_active:
 		is_active = false
 		for final_camera in final_cameras:
-			final_camera.h_offset = 0.0
-			final_camera.v_offset = 0.0
+			final_camera.rotation.z = 0.0
 
 func _set_character_cameras(character: NodotCharacter3D):
 	final_cameras.append(character.camera)
-	var viewport = Nodot.get_first_child_of_type(character, FirstPersonViewport)
-	final_cameras.append(viewport.viewport_camera)
-	initial_positions = [character.camera.position, viewport.viewport_camera.position]
+	initial_positions = [character.camera.position]
 
 
 ## Trigger the camera shake. Passed arguments will override node settings.
