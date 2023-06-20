@@ -8,7 +8,6 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 ## The input action name for pausing the game
 @export var escape_action: String = "escape"
 
-var camera: ThirdPersonCamera
 var submerge_handler: CharacterSwim3D
 
 func _enter_tree() -> void:

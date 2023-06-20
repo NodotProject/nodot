@@ -149,3 +149,13 @@ func reload() -> void:
 	var active_item = get_active_item()
 	if active_item and active_item.has_method("reload"):
 		(active_item as FirstPersonItem).reload()
+
+func hide():
+	if viewport and viewport_camera:
+		viewport_camera.current = false
+		viewport_camera.visible = false
+
+func show():
+	if viewport and viewport_camera:
+		viewport_camera.current = true
+		viewport_camera.visible = true

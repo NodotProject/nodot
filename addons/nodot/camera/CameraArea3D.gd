@@ -25,4 +25,4 @@ func _current_player_exited(body: NodotCharacter3D):
 		return
 	
 	# TODO: Add an option to forcefully set the player camera rotation
-	body.set_current_camera(body.camera)
+	body.reset_current_camera()

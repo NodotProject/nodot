@@ -9,6 +9,7 @@ class_name NodotCharacter3D extends CharacterBody3D
 signal current_camera_changed(old_camera: Camera3D, new_camera: Camera3D)
 
 var current_camera: Camera3D
+var camera: Camera3D = Camera3D.new()
 
 func _is_on_floor() -> bool:
 	var collision_info: KinematicCollision3D = move_and_collide(Vector3(0,-0.1,0),true)
@@ -22,11 +23,28 @@ func _is_on_floor() -> bool:
 func set_current_camera(camera3d: Camera3D):
 	if !is_current_player:
 		return
-		
-	emit_signal("current_camera_changed", current_camera, camera3d)
 	
-	if current_camera:
-		current_camera.current = false
-		camera3d.current = true
+	if current_camera != camera3d:
+	
+		emit_signal("current_camera_changed", current_camera, camera3d)
 		
-	current_camera = camera3d
+		if current_camera:
+			current_camera.current = false
+			camera3d.current = true
+			
+		current_camera = camera3d
+		
+		toggle_viewport_camera(camera3d == camera)
+
+## Reset the active camera to the character
+func reset_current_camera():
+	set_current_camera(camera)
+			
+## Toggle any viewport cameras
+func toggle_viewport_camera(set_current: bool):
+	var viewport = Nodot.get_first_child_of_type(self, FirstPersonViewport)
+	if viewport:
+		if set_current:
+			viewport.show()
+		else:
+			viewport.hide()

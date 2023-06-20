@@ -25,7 +25,6 @@ signal unpaused
 signal fall_damage(amount: float)
 
 var head: Node3D
-var camera: Camera3D = Camera3D.new()
 var health: Health
 var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
