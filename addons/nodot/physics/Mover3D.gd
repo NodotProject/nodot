@@ -135,6 +135,10 @@ func move_to_origin():
 	origin_tween.play()
 	emit_signal("moving_to_origin")
 	emit_signal("movement_started")
+	
+func reset() -> void:
+	target_node.global_position = original_position
+	target_node.rotation = original_rotation
 
 
 func _create_tween(callback: Callable) -> Tween:
