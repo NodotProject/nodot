@@ -38,6 +38,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta) -> void:
+	if !current:
+		return
+		
 	if raycast:
 		if raycast.is_colliding() and !raycast.hit_from_inside:
 			var collider = raycast.get_collider()
