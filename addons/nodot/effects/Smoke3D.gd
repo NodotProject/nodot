@@ -10,6 +10,10 @@ class_name Smoke3D extends Node3D
 @export var effect_scale: float = 1.0: set = _effect_scale_set
 ## The color of the smoke
 @export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
+## Lock global rotation
+@export var lock_rotation: bool = true
+
+@onready var initial_global_rotation: Vector3 = global_rotation
 
 var smoke_texture: CompressedTexture2D = preload("res://addons/nodot/textures/fire_spritesheet.png")
 var smoke_particle = GPUParticles3D.new()
@@ -25,6 +29,10 @@ func _enter_tree() -> void:
 	if emission_shape:
 		build_emission_shape(emission_shape)
 		emission_shape.connect("changed", _emission_shape_set)
+		
+func _physics_process(_delta):
+	if lock_rotation:
+		global_rotation = initial_global_rotation
 
 func _emission_shape_set(new_shape: Shape3D = emission_shape):
 	build_emission_shape(new_shape)
@@ -41,9 +49,9 @@ func _smoke_color_set(new_value: Color):
 func _setup_smoke_particle():
 	smoke_particle.emitting = enabled
 	smoke_particle.amount = 80
-	smoke_particle.lifetime = smoke_life_time
+	smoke_particle.lifetime = _clamp_lifetime(smoke_life_time)
 	smoke_particle.randomness = 1.0
-	smoke_particle.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
+	smoke_particle.draw_order = GPUParticles3D.DRAW_ORDER_INDEX
 	
 	var particle_material = ParticleProcessMaterial.new()
 	smoke_particle.process_material = particle_material
@@ -102,7 +110,9 @@ func _setup_smoke_particle():
 	
 	add_child(smoke_particle)
 		
-
+func _clamp_lifetime(new_lifetime: float):
+	return max(0.001, new_lifetime)
+	
 ## Converts the emission shape into particle material values
 func build_emission_shape(shape: Shape3D = emission_shape) -> void:
 	if  !smoke_particle.process_material: return

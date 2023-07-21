@@ -45,7 +45,7 @@ func _enter_tree() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if contact_monitor and get_contact_count() > 0:
+	if environmental_damage > 0 and contact_monitor and get_contact_count() > 0:
 		var total_velocity: float = (
 			abs(linear_velocity.x) + abs(linear_velocity.y) + abs(linear_velocity.z)
 		)
