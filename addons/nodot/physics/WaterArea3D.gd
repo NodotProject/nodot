@@ -107,7 +107,8 @@ func _on_body_exited(body: Node3D) -> void:
 
 func _physics_process(delta: float) -> void:
 	time += delta
-	material.set_shader_parameter("wave_time", time)
+	if !is_editor:
+		material.set_shader_parameter("wave_time", time)
 
 	for idx in body_tracker.size():
 		if idx <= body_tracker.size() - 1:

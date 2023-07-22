@@ -42,5 +42,5 @@ func action(text: String) -> void:
 	add_child(label3d)
 
 	if despawn_time > 0.0:
-		await get_tree().create_timer(despawn_time).timeout
+		await get_tree().create_timer(despawn_time, false).timeout
 		label3d.queue_free()

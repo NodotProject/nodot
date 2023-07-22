@@ -12,15 +12,6 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 ## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
 @export var fall_damage_multiplier: float = 0.5
 
-
-@export_category("Input Actions")
-## The input action name for pausing the game
-@export var escape_action: String = "escape"
-
-## Triggered when the game is paused
-signal paused
-## Triggered when the game is unpaused
-signal unpaused
 ## Triggered when the character takes fall damage
 signal fall_damage(amount: float)
 
@@ -89,28 +80,6 @@ func _physics_process(delta: float) -> void:
 		else:
 			previous_velocity = velocity.y
 	was_on_floor = on_floor
-	
-
-func _input(event: InputEvent) -> void:
-	if !event.is_action_pressed(escape_action): return
-	if input_enabled:
-		pause()
-	else:
-		unpause()
-
-
-## Pause the game
-func pause():
-	input_enabled = false
-	InputManager.disable()
-	emit_signal("paused")
-
-
-## Unpause the game
-func unpause():
-	input_enabled = true
-	InputManager.enable()
-	emit_signal("unpaused")
 
 ## Add collectables to collectable inventory
 func collect(node: Node3D) -> bool:

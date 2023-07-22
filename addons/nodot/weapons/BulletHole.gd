@@ -40,6 +40,6 @@ func action(hit_target: HitTarget) -> void:
 		decal_node.rotate(hit_target.collision_normal, randf_range(0, 2 * PI))
 
 	if lifespan > 0.0:
-		await get_tree().create_timer(lifespan).timeout
+		await get_tree().create_timer(lifespan, false).timeout
 		if is_instance_valid(decal_node):
 			decal_node.queue_free()

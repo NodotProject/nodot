@@ -2,12 +2,19 @@
 ## Contains MenuContainer nodes and can be used to show, hide or transition between them as needed
 class_name MenuManager extends Nodot2D
 
+## The active menu node name (empty string if none active)
+@export var active_menu: String = ""
+
 ## Triggered when the active menu index changes
 signal menu_changed
 
-var active_menu: String = ""  ## The active menu node name (empty string if none active)
 var active_menu_index: int = -1  ## The active menu node index (-1 if none active)
 
+func _ready():
+	if active_menu == "":
+		hide_all()
+	else:
+		change_to(active_menu)
 
 ## Hide all menus
 func hide_all() -> void:

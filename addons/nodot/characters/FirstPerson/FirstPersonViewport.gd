@@ -49,7 +49,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	# Move existing children to be a child of the camera
 	for child in get_children():
-		if not child is SubViewport:
+		if "transform" in child and not child is SubViewport:
 			var saved_transform: Transform3D = child.transform
 			child.reparent(viewport_camera, true)
 

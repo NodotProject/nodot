@@ -72,7 +72,7 @@ func action() -> void:
 		return
 
 	if spawn_delay > 0:
-		await get_tree().create_timer(spawn_delay).timeout
+		await get_tree().create_timer(spawn_delay, false).timeout
 
 	for child in saved_children:
 		var new_child = child.duplicate(15)

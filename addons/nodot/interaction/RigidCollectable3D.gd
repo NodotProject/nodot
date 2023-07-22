@@ -46,7 +46,7 @@ func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 	emit_signal("collected")
 	
 	if free_delay > 0.0:
-		await get_tree().create_timer(free_delay).timeout
+		await get_tree().create_timer(free_delay, false).timeout
 		
 	if actual_collectable_root_node:
 		actual_collectable_root_node.queue_free()
