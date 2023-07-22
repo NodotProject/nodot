@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3 uid="uid://dj1v33w5ffysa"]
+
+[ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
+[ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_ffg2c"]
+
+[sub_resource type="GDScript" id="GDScript_p2nii"]
+resource_name = "optionsmenucontrol"
+script/source = "extends Node
+
+@onready var menu_manager: MenuManager = get_parent().get_parent()
+
+"
+
+[sub_resource type="GDScript" id="GDScript_yprk4"]
+resource_name = "closebtn"
+script/source = "extends Button
+
+@onready var menu_manager: MenuManager = %OptionsMenuControl.menu_manager
+
+func _on_pressed():
+	menu_manager.go_back()
+"
+
+[node name="OptionsMenuContainer" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_0h6t2")
+
+[node name="OptionsMenuControl" type="Node" parent="."]
+unique_name_in_owner = true
+script = SubResource("GDScript_p2nii")
+
+[node name="BackDrop" type="ColorRect" parent="."]
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.984314)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1151.0
+offset_bottom = 647.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="TabBar" type="TabBar" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tab_count = 3
+tab_0/title = "Video"
+tab_1/title = "Audio"
+tab_2/title = "Controls"
+
+[node name="CloseButton" type="Button" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Close"
+script = SubResource("GDScript_yprk4")
+
+[node name="WindowSizeConnector" type="Node" parent="." node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("2_ffg2c")
+target_nodes = [NodePath("../Control"), NodePath("../BackDrop")]
+
+[connection signal="pressed" from="Control/VBoxContainer/HBoxContainer/CloseButton" to="Control/VBoxContainer/HBoxContainer/CloseButton" method="_on_pressed"]

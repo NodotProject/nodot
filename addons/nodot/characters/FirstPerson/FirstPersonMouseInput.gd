@@ -73,7 +73,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if !enabled: return
+	if !enabled or !parent.input_enabled: return
 	if event is InputEventMouseMotion:
 		mouse_rotation.y = event.relative.x * mouse_sensitivity
 		mouse_rotation.x = event.relative.y * mouse_sensitivity
@@ -86,7 +86,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !enabled or is_editor: return
+	if !enabled or is_editor or !parent.input_enabled: return
 	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 	
 	# Handle look left and right
