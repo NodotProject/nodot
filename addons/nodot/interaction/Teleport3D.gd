@@ -41,7 +41,7 @@ func teleport(body: Node3D) -> void:
 	if !enabled: return
 	
 	if delay > 0:
-		await get_tree().create_timer(delay).timeout
+		await get_tree().create_timer(delay, false).timeout
 		
 	var is_allowed = false
 	if teleport_character_bodies and body is CharacterBody3D:

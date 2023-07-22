@@ -28,7 +28,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	if lifespan <= 0.0: return
-	await get_tree().create_timer(lifespan).timeout
+	await get_tree().create_timer(lifespan, false).timeout
 	destroy()
 
 

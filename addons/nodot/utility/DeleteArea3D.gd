@@ -35,7 +35,7 @@ func delete(body: Node3D) -> void:
 	if !enabled: return
 	
 	if delay > 0:
-		await get_tree().create_timer(delay).timeout
+		await get_tree().create_timer(delay, false).timeout
 		
 	var is_allowed = false
 	if delete_static_bodies and body is StaticBody3D:

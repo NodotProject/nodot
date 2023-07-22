@@ -17,6 +17,6 @@ func action():
 	if !enabled:
 		return
 		
-	await get_tree().create_timer(wait_time).timeout
+	await get_tree().create_timer(wait_time, false).timeout
 	target.queue_free()
 	
