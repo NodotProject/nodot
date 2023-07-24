@@ -1,0 +1,55 @@
+## An autoloader to manager audio buses and volume
+extends Node
+
+var master_audiobus: Array[String] = []
+var music_audiobus: Array[String] = []
+var sfx_audiobus: Array[String] = []
+
+var master_volume: float = 0.0: set = _set_master_volume
+var music_volume: float = 0.0: set = _set_music_volume
+var sfx_volume: float = 0.0: set = _set_sfx_volume
+
+signal master_volume_changed(new_volume: float)
+signal music_volume_changed(new_volume: float)
+signal sfx_volume_changed(new_volume: float)
+
+func _ready():
+	for bus in master_audiobus: _set_bus_volume(bus, master_volume)
+	for bus in music_audiobus: _set_bus_volume(bus, music_volume)
+	for bus in sfx_audiobus: _set_bus_volume(bus, sfx_volume)
+		
+func _set_bus_volume(bus_name: String, volume: float):
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(bus_name), volume)
+
+func _set_master_volume(new_volume: float):
+	master_volume = new_volume
+	for bus in master_audiobus: _set_bus_volume(bus, master_volume)
+	emit_signal("master_volume_changed", master_volume)
+	
+func _set_music_volume(new_volume: float):
+	music_volume = new_volume
+	for bus in music_audiobus: _set_bus_volume(bus, music_volume)
+	emit_signal("music_volume_changed", music_volume)
+	
+func _set_sfx_volume(new_volume: float):
+	sfx_volume = new_volume
+	for bus in sfx_audiobus: _set_bus_volume(bus, sfx_volume)
+	emit_signal("sfx_volume_changed", sfx_volume)
+
+func set_master_volume(new_volume: float):
+	master_volume = new_volume
+	
+func set_music_volume(new_volume: float):
+	music_volume = new_volume
+	
+func set_sfx_volume(new_volume: float):
+	sfx_volume = new_volume
+	
+func add_master_bus(bus_name: String):
+	master_audiobus.append(bus_name)
+	
+func add_music_bus(bus_name: String):
+	music_audiobus.append(bus_name)
+	
+func add_sfx_bus(bus_name: String):
+	sfx_audiobus.append(bus_name)
