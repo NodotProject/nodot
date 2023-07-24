@@ -33,7 +33,7 @@ func change_to(menu_name: String) -> void:
 	if !is_instance_valid(menu_node):
 		return
 		
-	menu_node.show()
+	menu_node._show()
 	active_menu = menu_name
 	active_menu_index = menu_node.get_index()
 	emit_signal("menu_changed", active_menu_index)
@@ -43,7 +43,7 @@ func change_to(menu_name: String) -> void:
 func change_to_index(menu_index: int) -> void:
 	hide_all()
 	var menu_node: MenuContainer = get_child(menu_index)
-	menu_node.show()
+	menu_node._show()
 	active_menu_index = menu_index
 	previous_menu = active_menu
 	active_menu = menu_node.name
