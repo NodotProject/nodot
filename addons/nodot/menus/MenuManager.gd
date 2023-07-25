@@ -20,7 +20,7 @@ func _ready():
 ## Hide all menus
 func hide_all() -> void:
 	for child in get_children():
-		child.hide()
+		child._hide()
 	active_menu = ""
 	active_menu_index = -1
 

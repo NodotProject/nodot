@@ -35,9 +35,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _ready() -> void:
 	character_camera = parent.get_parent().character_camera
 	
-	if !is_editor and is_instance_valid(WindowManager):
-		WindowManager.connect("window_resized", _on_window_resized)
-		WindowManager.bump()
+	if !is_editor and is_instance_valid(VideoManager):
+		VideoManager.connect("window_resized", _on_window_resized)
+		VideoManager.bump()
 		
 	if scope_texture:
 		var sprite2d: Sprite2D = Sprite2D.new()

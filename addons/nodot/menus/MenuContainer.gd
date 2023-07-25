@@ -16,7 +16,7 @@ func _show() -> void:
 		set_visible(true)
 
 
-func hide() -> void:
+func _hide() -> void:
 	emit_signal("hiding")
 	if !custom_transition:
 		set_visible(false)

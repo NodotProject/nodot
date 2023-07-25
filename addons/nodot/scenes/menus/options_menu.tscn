@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dj1v33w5ffysa"]
+[gd_scene load_steps=18 format=3 uid="uid://dj1v33w5ffysa"]
 
 [ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
 [ext_resource type="AudioStream" uid="uid://cct5wx5iwr1jk" path="res://sfx/music/685206__x1shi__video-game-music-seamless.mp3" id="2_1vghd"]
@@ -13,27 +13,6 @@ script/source = "extends Node
 
 "
 
-[sub_resource type="GDScript" id="GDScript_tnn2v"]
-resource_name = "revertbtn"
-script/source = "extends Button
-
-@export var nodes: Array[Node] = []
-
-var default_values: Dictionary = {
-	\"HSlider\": 95,
-	\"HSlider2\": 95,
-	\"HSlider3\": 95
-}
-
-func revert():
-	for node in nodes:
-		if \"value\" in node:
-			node.value = default_values[node.name]
-
-func _on_pressed():
-	revert()
-"
-
 [sub_resource type="GDScript" id="GDScript_yprk4"]
 resource_name = "closebtn"
 script/source = "extends Button
@@ -42,6 +21,127 @@ script/source = "extends Button
 
 func _on_pressed():
 	menu_manager.go_back()
+"
+
+[sub_resource type="GDScript" id="GDScript_l8cix"]
+resource_name = "displaymode"
+script/source = "extends MenuButton
+
+@onready var popup = get_popup()
+
+const display_mode_names = [\"Windowed\", \"x\", \"x\", \"Fullscreen\", \"Exclusive Fullscreen\"]
+
+func _ready():
+	popup.connect(\"id_pressed\", _on_pressed)
+	update_text()
+	
+func _on_pressed(item_id: int):
+	VideoManager.display_mode = item_id
+	update_text()
+			
+func update_text():
+	text = display_mode_names[VideoManager.display_mode]
+"
+
+[sub_resource type="GDScript" id="GDScript_61kd7"]
+resource_name = "screenselect"
+script/source = "extends MenuButton
+
+@onready var popup = get_popup()
+
+func _ready():
+	popup.connect(\"id_pressed\", _on_pressed)
+	for i in VideoManager.get_screen_count():
+		popup.add_item(str(i), i)
+	update_text()
+	
+func _on_pressed(item_id: int):
+	VideoManager.screen = item_id
+	update_text()
+			
+func update_text():
+	text = str(VideoManager.screen)
+"
+
+[sub_resource type="GDScript" id="GDScript_g05di"]
+resource_name = "fpslimit"
+script/source = "extends TextEdit
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_text_changed():
+	var regex = RegEx.new()
+	regex.compile(\"[0-9]\")
+	
+	var matches = regex.search_all(text)
+	var new_text: String = \"\"
+	if matches:
+		for r_match in matches:
+			new_text += r_match.get_string()
+	text = new_text
+	set_caret_column(text.length())
+	if text != \"\":
+		var fps_limit = int(text)
+		VideoManager.fps_limit = fps_limit
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_f8lsk"]
+resource_name = "vsync"
+script/source = "extends CheckButton
+
+func _ready():
+	button_pressed = VideoManager.vsync
+
+func _on_pressed():
+	VideoManager.vsync = button_pressed
+"
+
+[sub_resource type="GDScript" id="GDScript_knrud"]
+resource_name = "msaabtn"
+script/source = "extends MenuButton
+
+@onready var popup = get_popup()
+
+func _ready():
+	popup.connect(\"id_pressed\", _on_pressed)
+	update_text()
+	
+func _on_pressed(item_id: int):
+	match item_id:
+		0: VideoManager.msaa = Viewport.MSAA_DISABLED
+		1: VideoManager.msaa = Viewport.MSAA_2X
+		2: VideoManager.msaa = Viewport.MSAA_4X
+		3: VideoManager.msaa = Viewport.MSAA_8X
+	update_text()
+			
+func update_text():
+	text = popup.get_item_text(VideoManager.msaa)
+"
+
+[sub_resource type="GDScript" id="GDScript_j2ipi"]
+resource_name = "brightness"
+script/source = "extends HSlider
+
+func _on_value_changed(value):
+	VideoManager.brightness = value
+"
+
+[sub_resource type="GDScript" id="GDScript_kevlo"]
+resource_name = "contrast"
+script/source = "extends HSlider
+
+func _on_value_changed(value):
+	VideoManager.contrast = value
 "
 
 [sub_resource type="GDScript" id="GDScript_2332y"]
@@ -66,6 +166,27 @@ script/source = "extends HSlider
 
 func _on_value_changed(value):
 	AudioManager.set_sfx_volume_decimal(value / 100)
+"
+
+[sub_resource type="GDScript" id="GDScript_tnn2v"]
+resource_name = "revertbtn"
+script/source = "extends Button
+
+@export var nodes: Array[Node] = []
+
+var default_values: Dictionary = {
+	\"HSlider\": 95,
+	\"HSlider2\": 95,
+	\"HSlider3\": 95
+}
+
+func revert():
+	for node in nodes:
+		if \"value\" in node:
+			node.value = default_values[node.name]
+
+func _on_pressed():
+	revert()
 "
 
 [node name="OptionsMenuContainer" type="Node2D"]
@@ -104,51 +225,46 @@ color = Color(0, 0, 0, 0.984314)
 
 [node name="ControlContainer" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchors_preset = 0
 offset_right = 1152.0
-offset_bottom = 647.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_bottom = 648.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="WindowSizeConnector" type="Node" parent="ControlContainer" node_paths=PackedStringArray("target_nodes")]
 script = ExtResource("2_ffg2c")
 target_nodes = [NodePath(".."), NodePath("../../BackDrop")]
 
-[node name="Control" type="Control" parent="ControlContainer"]
+[node name="CenterContainer" type="Control" parent="ControlContainer"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1035.0
-offset_top = -573.0
-offset_right = -148.0
-offset_bottom = -71.0
-grow_horizontal = 0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -576.0
+offset_bottom = -324.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="WindowSizeConnector" type="Node" parent="ControlContainer/Control" node_paths=PackedStringArray("target_nodes")]
+[node name="WindowSizeConnector" type="Node" parent="ControlContainer/CenterContainer" node_paths=PackedStringArray("target_nodes")]
 script = ExtResource("2_ffg2c")
 target_nodes = [NodePath("..")]
 size_multiplier = 0.8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlContainer/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlContainer/CenterContainer"]
+layout_mode = 2
+offset_right = 1152.0
+offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlContainer/Control/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TabBar" type="TabBar" parent="ControlContainer/Control/VBoxContainer/HBoxContainer"]
+[node name="TabBar" type="TabBar" parent="ControlContainer/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 tab_count = 3
@@ -156,69 +272,167 @@ tab_0/title = "Video"
 tab_1/title = "Audio"
 tab_2/title = "Controls"
 
-[node name="RevertButton" type="Button" parent="ControlContainer/Control/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("nodes")]
-layout_mode = 2
-text = "Restore Defaults"
-script = SubResource("GDScript_tnn2v")
-nodes = [NodePath("../../AudioOptions/GridContainer/HSlider"), NodePath("../../AudioOptions/GridContainer/HSlider2"), NodePath("../../AudioOptions/GridContainer/HSlider3")]
-
-[node name="CloseButton" type="Button" parent="ControlContainer/Control/VBoxContainer/HBoxContainer"]
+[node name="CloseButton" type="Button" parent="ControlContainer/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Close"
 script = SubResource("GDScript_yprk4")
 
-[node name="AudioOptions" type="VBoxContainer" parent="ControlContainer/Control/VBoxContainer"]
+[node name="VideoOptions" type="VBoxContainer" parent="ControlContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ControlContainer/Control/VBoxContainer/AudioOptions"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_constants/line_spacing = 10
-theme_override_font_sizes/font_size = 24
-text = "Audio Options"
-
-[node name="GridContainer" type="GridContainer" parent="ControlContainer/Control/VBoxContainer/AudioOptions"]
+[node name="GridContainer" type="GridContainer" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions"]
 layout_mode = 2
 theme_override_constants/h_separation = 30
 theme_override_constants/v_separation = 15
 columns = 2
 
-[node name="SliderLabel" type="Label" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="Label" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Display Mode"
+vertical_alignment = 1
+
+[node name="DisplayModeMenuButton" type="MenuButton" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Exclusive Fullscreen"
+item_count = 3
+popup/item_0/text = "Windowed"
+popup/item_0/id = 0
+popup/item_1/text = "Fullscreen"
+popup/item_1/id = 3
+popup/item_2/text = "Exclusive Fullscreen"
+popup/item_2/checked = true
+popup/item_2/id = 4
+script = SubResource("GDScript_l8cix")
+
+[node name="Label2" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "Monitor"
+
+[node name="ScreenMenuButton" type="MenuButton" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+script = SubResource("GDScript_61kd7")
+
+[node name="Label3" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "FPS Limit"
+
+[node name="FPSLimitTextInput" type="TextEdit" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "0"
+scroll_fit_content_height = true
+script = SubResource("GDScript_g05di")
+
+[node name="Label4" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "Vertical Sync"
+
+[node name="VSyncCheckButton" type="CheckButton" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+script = SubResource("GDScript_f8lsk")
+
+[node name="Label5" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "Anti-Aliasing (MSAA)"
+
+[node name="MSAAMenuButton" type="MenuButton" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+item_count = 4
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "2x"
+popup/item_1/id = 1
+popup/item_2/text = "4x"
+popup/item_2/id = 2
+popup/item_3/text = "8x"
+popup/item_3/id = 3
+script = SubResource("GDScript_knrud")
+
+[node name="Label6" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "Brightness"
+
+[node name="BrightnessHSlider" type="HSlider" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+max_value = 8.0
+step = 0.1
+value = 1.0
+script = SubResource("GDScript_j2ipi")
+
+[node name="Label7" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+text = "Contrast"
+
+[node name="ContrastHSlider" type="HSlider" parent="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+max_value = 8.0
+step = 0.1
+value = 1.0
+script = SubResource("GDScript_kevlo")
+
+[node name="AudioOptions" type="VBoxContainer" parent="ControlContainer/CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions"]
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 15
+columns = 2
+
+[node name="SliderLabel" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "Master Volume"
 
-[node name="HSlider" type="HSlider" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider" type="HSlider" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 value = 95.0
 script = SubResource("GDScript_2332y")
 
-[node name="SliderLabel2" type="Label" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="SliderLabel2" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "Music Volume"
 
-[node name="HSlider2" type="HSlider" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider2" type="HSlider" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 value = 95.0
 script = SubResource("GDScript_ninhr")
 
-[node name="SliderLabel3" type="Label" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="SliderLabel3" type="Label" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "SFX Volume"
 
-[node name="HSlider3" type="HSlider" parent="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider3" type="HSlider" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 value = 95.0
 script = SubResource("GDScript_bjj28")
 
-[connection signal="pressed" from="ControlContainer/Control/VBoxContainer/HBoxContainer/RevertButton" to="ControlContainer/Control/VBoxContainer/HBoxContainer/RevertButton" method="_on_pressed"]
-[connection signal="pressed" from="ControlContainer/Control/VBoxContainer/HBoxContainer/CloseButton" to="ControlContainer/Control/VBoxContainer/HBoxContainer/CloseButton" method="_on_pressed"]
-[connection signal="value_changed" from="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider" to="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider" method="_on_value_changed"]
-[connection signal="value_changed" from="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider2" to="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
-[connection signal="value_changed" from="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider3" to="ControlContainer/Control/VBoxContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions"]
+layout_mode = 2
+alignment = 2
+
+[node name="RevertButton" type="Button" parent="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/HBoxContainer" node_paths=PackedStringArray("nodes")]
+layout_mode = 2
+text = "Restore Defaults"
+script = SubResource("GDScript_tnn2v")
+nodes = [NodePath("../../GridContainer/HSlider"), NodePath("../../GridContainer/HSlider2"), NodePath("../../GridContainer/HSlider3")]
+
+[connection signal="pressed" from="ControlContainer/CenterContainer/VBoxContainer/HBoxContainer/CloseButton" to="ControlContainer/CenterContainer/VBoxContainer/HBoxContainer/CloseButton" method="_on_pressed"]
+[connection signal="text_changed" from="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/FPSLimitTextInput" to="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/FPSLimitTextInput" method="_on_text_changed"]
+[connection signal="pressed" from="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" to="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_pressed"]
+[connection signal="value_changed" from="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" to="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" to="ControlContainer/CenterContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider" to="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" to="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
+[connection signal="value_changed" from="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" to="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
+[connection signal="pressed" from="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" to="ControlContainer/CenterContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" method="_on_pressed"]
