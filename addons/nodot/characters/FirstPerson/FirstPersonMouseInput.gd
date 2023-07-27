@@ -6,7 +6,7 @@ class_name FirstPersonMouseInput extends Nodot
 ## Is input enabled
 @export var enabled := true
 ## Sensitivity of mouse movement
-@export var mouse_sensitivity := 0.1
+@export var mouse_sensitivity := 0.2
 ## Custom mouse cursor
 @export var custom_cursor := false
 

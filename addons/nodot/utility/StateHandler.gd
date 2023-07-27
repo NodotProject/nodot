@@ -31,10 +31,7 @@ func _process(delta):
 		
 	process(delta)
 	
-func _input(event: InputEvent) -> void:
-	if !InputManager.enabled:
-		return
-		
+func _input(event: InputEvent) -> void:		
 	input(event)
 
 ## Registers a set of states that the node handles
