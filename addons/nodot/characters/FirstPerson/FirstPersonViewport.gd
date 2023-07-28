@@ -53,9 +53,9 @@ func _ready() -> void:
 			var saved_transform: Transform3D = child.transform
 			child.reparent(viewport_camera, true)
 
-	if is_instance_valid(WindowManager):
-		WindowManager.connect("window_resized", _on_window_resized)
-		WindowManager.bump()
+	if is_instance_valid(VideoManager):
+		VideoManager.connect("window_resized", _on_window_resized)
+		VideoManager.bump()
 
 
 func _physics_process(delta: float) -> void:

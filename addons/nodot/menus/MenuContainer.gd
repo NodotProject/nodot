@@ -10,13 +10,13 @@ signal hiding
 @export var custom_transition: bool = false  ## Used to override the simple visibility transition with a custom one
 
 
-func show() -> void:
+func _show() -> void:
 	emit_signal("showing")
 	if !custom_transition:
 		set_visible(true)
 
 
-func hide() -> void:
+func _hide() -> void:
 	emit_signal("hiding")
 	if !custom_transition:
 		set_visible(false)

@@ -9,6 +9,11 @@ signal loaded
 var savers: Array[Saver] = []
 var custom_values: Dictionary = {}
 
+## Used for global options and game settings
+var config: Dictionary = {}
+
+func _init():
+	load_config()
 
 ## Register a saver node
 func register_saver(saver_node: Saver):
@@ -66,3 +71,24 @@ func get_special_id(input_node: Node):
 ## Set a custom value to be stored in the save file
 func set_value(key: String, value: Variant):
 	custom_values[key] = value
+	
+## Resets the save data to default
+func reset():
+	savers = []
+	custom_values = {}
+	load_config()
+
+## Save the configuration file
+func save_config():
+	var file_path = "user://config.bin"
+	var file = FileAccess.open(file_path, FileAccess.WRITE)
+	file.store_var(config)
+	file.close()
+	
+## Load the configuration file
+func load_config() -> void:
+	var file_path = "user://config.bin"
+	if FileAccess.file_exists(file_path):
+		var file = FileAccess.open(file_path, FileAccess.READ)
+		config = file.get_var(true)
+		file.close()
