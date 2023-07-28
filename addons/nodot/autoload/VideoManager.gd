@@ -20,6 +20,21 @@ func _ready() -> void:
 	set_minimum_window_size()
 	_on_window_resized()
 	
+	if "display_mode" in SaveManager.config:
+		display_mode = SaveManager.config.display_mode
+	if "screen" in SaveManager.config:
+		screen = SaveManager.config.screen
+	if "fps_limit" in SaveManager.config:
+		fps_limit = SaveManager.config.fps_limit
+	if "vsync" in SaveManager.config:
+		vsync = SaveManager.config.vsync
+	if "msaa" in SaveManager.config:
+		msaa = SaveManager.config.msaa
+	if "brightness" in SaveManager.config:
+		brightness = SaveManager.config.brightness
+	if "contrast" in SaveManager.config:
+		contrast = SaveManager.config.contrast
+	
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
 	emit_signal("window_resized", new_size)
@@ -91,3 +106,14 @@ func register(node: Node):
 		world_environments.append(node)
 	if node is SubViewport and !subviewports.has(node):
 		subviewports.append(node)
+
+## Save the video settings to the config file
+func save_config():
+	SaveManager.config.display_mode = display_mode
+	SaveManager.config.screen = screen
+	SaveManager.config.fps_limit = fps_limit
+	SaveManager.config.vsync = vsync
+	SaveManager.config.msaa = msaa
+	SaveManager.config.brightness = brightness
+	SaveManager.config.contrast = contrast
+	SaveManager.save_config()

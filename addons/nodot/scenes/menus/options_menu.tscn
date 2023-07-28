@@ -39,6 +39,9 @@ script/source = "extends Button
 @onready var menu_manager: MenuManager = %OptionsMenuControl.menu_manager
 
 func _on_pressed():
+	AudioManager.save_config()
+	VideoManager.save_config()
+	InputManager.save_config()
 	menu_manager.go_back()
 "
 
@@ -167,6 +170,10 @@ func _on_value_changed(value):
 resource_name = "masterslider"
 script/source = "extends HSlider
 
+func _ready():
+	var converted_volume = AudioManager._convert_volume(AudioManager.master_volume)
+	value = converted_volume * 100
+	
 func _on_value_changed(value):
 	AudioManager.set_master_volume_decimal(value / 100)
 "
@@ -175,6 +182,10 @@ func _on_value_changed(value):
 resource_name = "music_slider"
 script/source = "extends HSlider
 
+func _ready():
+	var converted_volume = AudioManager._convert_volume(AudioManager.music_volume)
+	value = converted_volume * 100
+	
 func _on_value_changed(value):
 	AudioManager.set_music_volume_decimal(value / 100)
 "
@@ -183,6 +194,10 @@ func _on_value_changed(value):
 resource_name = "sfxslider"
 script/source = "extends HSlider
 
+func _ready():
+	var converted_volume = AudioManager._convert_volume(AudioManager.sfx_volume)
+	value = converted_volume * 100
+	
 func _on_value_changed(value):
 	AudioManager.set_sfx_volume_decimal(value / 100)
 "
@@ -242,12 +257,17 @@ func _input(event: InputEvent):
 	if target_action_name != \"\":
 		if event is InputEventMouseMotion:
 			return
+		
+		InputManager.remove_action(target_action_name, target_key_name)
 		if event is InputEventKey:
-			InputManager.remove_action(target_action_name, target_key_name)
-			InputManager.add_action(target_action_name, event.keycode)
-			target_button.text = InputManager.get_action_key(target_action_name)
-			for ev in InputMap.action_get_events(target_action_name):
-				print(ev.as_text())
+			InputManager.add_action(target_action_name, event.keycode, 0)
+		if event is InputEventMouseButton:
+			InputManager.add_action(target_action_name, event.button_index, 1)
+		if event is InputEventJoypadButton:
+			InputManager.add_action(target_action_name, event.button_index, 2)
+			
+		target_button.text = InputManager.get_action_key(target_action_name)
+		
 		target_action_name = \"\"
 		target_key_name = \"\"
 		%InputEntryPanel.visible = false
@@ -272,7 +292,6 @@ script = SubResource("GDScript_p2nii")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="OptionsMenuControl/BGM"]
 stream = ExtResource("2_1vghd")
-volume_db = -80.0
 bus = &"Music"
 
 [node name="MusicStartSignalConnector" type="Node" parent="OptionsMenuControl/BGM" node_paths=PackedStringArray("trigger_node", "target_node")]
