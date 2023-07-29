@@ -29,11 +29,8 @@ func _physics_process(_delta):
 		if angle < max_angle:
 			var params = PhysicsRayQueryParameters3D.new()
 
-			params.from = global_transform.origin
-			params.to = body.global_transform.origin
-
-			params.collide_with_bodies = true
-			params.collide_with_areas = false
+			params.from = cam_pos
+			params.to = body_pos
 
 			var result = space_state.intersect_ray(params)
 			if result and result.collider == body:
