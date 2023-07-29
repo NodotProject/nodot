@@ -5,10 +5,20 @@ class_name ViewCone3D extends SpotLight3D
 @export var enabled: bool = true
 @export var detection_group: String = "detectable"
 @export var detection_color: Color = Color.RED
+@export_flags_3d_physics var collision_layer: int = 0
+
+signal body_detected(body: Node3D)
+signal body_lost(body: Node3D)
 
 var original_color = light_color
+var detected = false
+var last_detected_body: Node3D
 
 func _physics_process(_delta):
+	if !enabled:
+		return
+	
+	var detected_this_pass = false
 	var cam_pos = global_transform.origin
 	var max_distance_squared = pow(spot_range, 2)
 	var max_angle = deg_to_rad(spot_angle)
@@ -28,13 +38,23 @@ func _physics_process(_delta):
 
 		if angle < max_angle:
 			var params = PhysicsRayQueryParameters3D.new()
-
+			
+			if collision_layer != 0:
+				params.collision_mask = collision_layer
 			params.from = cam_pos
 			params.to = body_pos
 
 			var result = space_state.intersect_ray(params)
 			if result and result.collider == body:
+				detected_this_pass = true
 				light_color = detection_color
-				if body.has_method("detected"):
-					body.detected()
-		
+				if !detected:
+					detected = true
+					if body.has_method("detected"):
+						body.detected()
+					last_detected_body = body
+					emit_signal("body_detected", body)
+	
+	if detected_this_pass == false and detected == true:
+		detected = false
+		emit_signal("body_lost", last_detected_body)
