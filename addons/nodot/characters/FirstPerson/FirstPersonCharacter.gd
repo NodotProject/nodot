@@ -25,8 +25,7 @@ var previous_velocity: float = 0.0
 
 func _enter_tree() -> void:
 	if is_current_player:
-		PlayerManager.node = self
-		set_current_camera(camera)
+		set_current_player()
 		
 	if !sm:
 		sm = StateMachine.new()
@@ -85,3 +84,9 @@ func _physics_process(delta: float) -> void:
 func collect(node: Node3D) -> bool:
 	if !inventory: return false
 	return inventory.add(node.display_name, node.quantity)
+
+## Set the character as the current player
+func set_current_player():
+	is_current_player = true
+	PlayerManager.node = self
+	set_current_camera(camera)

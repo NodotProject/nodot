@@ -5,8 +5,6 @@ class_name FirstPersonMouseInput extends Nodot
 
 ## Is input enabled
 @export var enabled := true
-## Sensitivity of mouse movement
-@export var mouse_sensitivity := 0.2
 ## Custom mouse cursor
 @export var custom_cursor := false
 
@@ -75,8 +73,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if !enabled or !parent.input_enabled: return
 	if event is InputEventMouseMotion:
-		mouse_rotation.y = event.relative.x * mouse_sensitivity
-		mouse_rotation.x = event.relative.y * mouse_sensitivity
+		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
+		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
 	
 	if fps_viewport:
 		if event.is_action_pressed(item_next_action):

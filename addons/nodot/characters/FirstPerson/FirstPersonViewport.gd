@@ -7,9 +7,10 @@ class_name FirstPersonViewport extends SubViewportContainer
 @export var fov: float = 75.0
 ## (optional) The first person viewport camera
 @export var viewport_camera: Camera3D
-
 ## The input action name for reloading the current active weapon
 @export var reload_action: String = "reload"
+
+@onready var character: FirstPersonCharacter = get_parent()
 
 var character_camera: Camera3D
 var viewport: SubViewport
@@ -28,6 +29,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _enter_tree() -> void:
+	if not character.is_authority():
+		return
+		
 	var subviewport: SubViewport = SubViewport.new()
 	subviewport.name = "SubViewport"
 	subviewport.transparent_bg = true
@@ -97,23 +101,25 @@ func get_all_items() -> Array:
 
 ## Change which item is active.
 func change_item(new_index: int) -> void:
-	if item_changing == true: return
-	item_changing = true
 	var items: Array = get_all_items()
 	var item_count: int = items.size()
+	if item_count == 0: return
+	if item_changing == true: return
+	item_changing = true
+	
 	if new_index >= item_count - 1:
 		active_item_index = item_count - 1
 	elif new_index <= 0:
 		active_item_index = 0
 	else:
 		active_item_index = new_index
-
+		
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()
 	if active_item:
 		await (active_item as FirstPersonItem).deactivate()
-
+	
 	await items[active_item_index].activate()
 	item_changing = false
 	emit_signal("item_change", items[active_item_index])

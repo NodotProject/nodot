@@ -9,8 +9,6 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 @export var stepping_enabled: bool = true
 ## Maximum height for a ledge to allow stepping up.
 @export var step_height: float = 0.5
-## Constructs the step up movement vector.
-@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 ## How fast the character can move
 @export var movement_speed := 5.0
 ## How fast the character can move while sprinting (higher = faster)
@@ -35,6 +33,9 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 @export var down_action: String = "down"
 ## The input action name for sprinting
 @export var sprint_action: String = "sprint"
+
+## Constructs the step up movement vector.
+@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 
 var direction: Vector3 = Vector3.ZERO
 var sprint_speed = false

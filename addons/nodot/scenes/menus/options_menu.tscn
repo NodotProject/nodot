@@ -1,7 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://dj1v33w5ffysa"]
 
 [ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
-[ext_resource type="AudioStream" uid="uid://cct5wx5iwr1jk" path="res://sfx/music/685206__x1shi__video-game-music-seamless.mp3" id="2_1vghd"]
 [ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_ffg2c"]
 [ext_resource type="Script" path="res://addons/nodot/utility/SignalConnector.gd" id="3_nn3pg"]
 
@@ -223,6 +222,17 @@ func _on_pressed():
 	revert()
 "
 
+[sub_resource type="GDScript" id="GDScript_iaxat"]
+resource_name = "mouse_sensitivity"
+script/source = "extends HSlider
+
+func _ready():
+	value = InputManager.mouse_sensitivity
+	
+func _on_value_changed(value):
+	InputManager.mouse_sensitivity = value
+"
+
 [sub_resource type="GDScript" id="GDScript_ljq8r"]
 resource_name = "keybindings"
 script/source = "extends GridContainer
@@ -291,8 +301,6 @@ script = SubResource("GDScript_p2nii")
 [node name="BGM" type="Node" parent="OptionsMenuControl"]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="OptionsMenuControl/BGM"]
-stream = ExtResource("2_1vghd")
-bus = &"Music"
 
 [node name="MusicStartSignalConnector" type="Node" parent="OptionsMenuControl/BGM" node_paths=PackedStringArray("trigger_node", "target_node")]
 script = ExtResource("3_nn3pg")
@@ -527,8 +535,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 max_value = 1.0
-step = 0.1
+step = 0.05
 value = 0.5
+script = SubResource("GDScript_iaxat")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions"]
 layout_mode = 2
@@ -592,3 +601,4 @@ text = "Press Any Key..."
 [connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" to="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
 [connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" to="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
 [connection signal="pressed" from="Control/MarginContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" to="Control/MarginContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" method="_on_pressed"]
+[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer/MouseHSlider" to="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer/MouseHSlider" method="_on_value_changed"]

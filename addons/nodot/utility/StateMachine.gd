@@ -3,7 +3,7 @@ class_name StateMachine extends Nodot
 
 ## The initial state
 @export var state: int = 0: set = _on_state_changed
-## Valid state transitions
+## Valid state transitions is an array of int tuples with old state and new (i.e [[2, 4], [2, 5]])
 @export var valid_transitions: Array[Array] = []
 
 ## Triggered when the state changes
@@ -44,7 +44,7 @@ func add_valid_transition(from, to) -> void:
 	elif from is String:
 		from_id = state_names.find(from)
 		if from_id < 0:
-			return
+			from_id = register_state(from)
 		
 	var to_ids = to
 	if to is int:
@@ -52,7 +52,7 @@ func add_valid_transition(from, to) -> void:
 	if to is String:
 		to_ids = state_names.find(to)
 		if to_ids < 0:
-			return
+			to_ids = register_state(to)
 			
 	if to is Array:
 		to_ids = []
@@ -61,7 +61,10 @@ func add_valid_transition(from, to) -> void:
 				if t is int:
 					to_ids.append(t)
 				if t is String:
-					to_ids.append(state_names.find(t))
+					var found_t = state_names.find(t)
+					if found_t < 0:
+						found_t = register_state(t)
+					to_ids.append(found_t)
 		
 	if valid_transitions.size() > from_id:
 		if to_ids is Array:
