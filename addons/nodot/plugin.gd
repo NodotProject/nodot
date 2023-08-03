@@ -13,3 +13,4 @@ func _init():
 		add_autoload_singleton("PlayerManager", "res://addons/nodot/autoload/PlayerManager.gd")
 		add_autoload_singleton("CollectableManager", "res://addons/nodot/autoload/CollectableManager.gd")
 		add_autoload_singleton("InputManager", "res://addons/nodot/autoload/InputManager.gd")
+		add_autoload_singleton("NetworkManager", "res://addons/nodot/autoload/NetworkManager.gd")
