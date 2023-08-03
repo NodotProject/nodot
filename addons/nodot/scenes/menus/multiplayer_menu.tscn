@@ -7,16 +7,22 @@
 resource_name = "joinbtn"
 script/source = "extends Button
 
+@export var menu_container: MenuContainer
+
 func _on_pressed():
-	MultiplayerManager.join(%AddressTextEdit.text, int(%PortTextEdit.text))
+	NetworkManager.join(%AddressTextEdit.text, int(%PortTextEdit.text), %DisplayNameTextEdit.text)
+	menu_container.get_parent().hide_all()
 "
 
 [sub_resource type="GDScript" id="GDScript_3xy7t"]
 resource_name = "hostbtn"
 script/source = "extends Button
 
+@export var menu_container: MenuContainer
+
 func _on_pressed():
-	MultiplayerManager.host(int(%PortTextEdit.text))
+	NetworkManager.host(int(%PortTextEdit.text), %DisplayNameTextEdit.text)
+	menu_container.get_parent().hide_all()
 "
 
 [sub_resource type="GDScript" id="GDScript_rdf5s"]
@@ -30,7 +36,6 @@ func _on_pressed():
 "
 
 [node name="MultiplayerMenuContainer" type="Node2D"]
-visible = false
 script = ExtResource("1_gyir0")
 
 [node name="Control" type="Control" parent="."]
@@ -50,12 +55,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -101.0
-offset_top = -64.0
-offset_right = 99.0
-offset_bottom = 116.0
+offset_left = -100.0
+offset_top = -110.0
+offset_right = 100.0
+offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="DisplayNameTextEdit" type="TextEdit" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "WifflePiff"
 
 [node name="AddressTextEdit" type="TextEdit" parent="Control/VBoxContainer"]
 unique_name_in_owner = true
@@ -71,15 +82,17 @@ size_flags_vertical = 3
 text = "9005"
 placeholder_text = "Port"
 
-[node name="JoinButton" type="Button" parent="Control/VBoxContainer"]
+[node name="JoinButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 layout_mode = 2
 text = "Join"
 script = SubResource("GDScript_oevdl")
+menu_container = NodePath("../../..")
 
-[node name="HostButton" type="Button" parent="Control/VBoxContainer"]
+[node name="HostButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 layout_mode = 2
 text = "Host"
 script = SubResource("GDScript_3xy7t")
+menu_container = NodePath("../../..")
 
 [node name="BackButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 layout_mode = 2

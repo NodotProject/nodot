@@ -7,9 +7,13 @@
 resource_name = "start"
 script/source = "extends Button
 
+@export var menu_container: MenuContainer
 ## The initial scene
 @export_file(\"*.tscn\") var first_scene_path: String
 
+func _ready():
+	first_scene_path = menu_container.first_scene_path
+	
 func _on_pressed():
 	var map: PackedScene = load(first_scene_path)
 	var map_instance = map.instantiate()
@@ -69,11 +73,12 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
 layout_mode = 2
 
-[node name="StartGameButton" type="Button" parent="Control/CenterContainer/VBoxContainer"]
+[node name="StartGameButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Start Game"
 script = SubResource("GDScript_ymbmu")
+menu_container = NodePath("../../../..")
 
 [node name="MultiplayerButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 layout_mode = 2

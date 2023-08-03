@@ -30,9 +30,9 @@ func set_current_camera(camera3d: Camera3D):
 		
 		if current_camera:
 			current_camera.current = false
-			camera3d.current = true
 			
 		current_camera = camera3d
+		current_camera.current = true
 		
 		toggle_viewport_camera(camera3d == camera)
 
@@ -65,6 +65,13 @@ func face_target(target_position: Vector3, weight: float) -> void:
 ## If in multiplayer mode this checks if the client has authority. If singleplayer it will always return true
 func is_authority():
 	if !NetworkManager.enabled or is_multiplayer_authority():
+		return true
+	else:
+		return false
+		
+## If in multiplayer mode this checks if the client owns this node. If singleplayer it will always return true
+func is_authority_owner():
+	if !NetworkManager.enabled or get_multiplayer_authority() == multiplayer.get_unique_id():
 		return true
 	else:
 		return false

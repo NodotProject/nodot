@@ -102,7 +102,9 @@ func reload():
 func connect_magazine() -> void:
 	if magazine_node:
 		if hitscan_node:
-			magazine_node.connect("discharged", hitscan_node.action)
+			magazine_node.connect("discharged", func ():
+				hitscan_node.action.rpc()
+				)
 		if projectile_emitter_node:
 			magazine_node.connect("discharged", projectile_emitter_node.action)
 	if hitscan_node and bullethole_node:

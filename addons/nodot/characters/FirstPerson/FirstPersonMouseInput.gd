@@ -18,7 +18,7 @@ class_name FirstPersonMouseInput extends Nodot
 ## The input action name for zooming in
 @export var zoom_action: String = "zoom"
 
-@onready var parent: FirstPersonCharacter = get_parent()
+@onready var character: FirstPersonCharacter = get_parent()
 @onready var fps_viewport: FirstPersonViewport
 
 var head: Node3D
@@ -55,6 +55,8 @@ func add_action_to_input_map(action_name, default_key):
 
 
 func _ready() -> void:
+	if not character.is_authority(): return
+	
 	if enabled:
 		enable()
 
@@ -62,16 +64,18 @@ func _ready() -> void:
 		cursor_show_state = Input.MOUSE_MODE_HIDDEN
 		
 	# If there is a viewport, set it
-	for child in parent.get_children():
+	for child in character.get_children():
 		if child is FirstPersonViewport:
 			fps_viewport = child
 
-	if parent.has_node("Head"):
-		head = parent.get_node("Head")
+	if character.has_node("Head"):
+		head = character.get_node("Head")
 
 
 func _input(event: InputEvent) -> void:
-	if !enabled or !parent.input_enabled: return
+	if not character.is_authority_owner(): return
+	
+	if !enabled or !character.input_enabled: return
 	if event is InputEventMouseMotion:
 		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
 		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
@@ -84,11 +88,13 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !enabled or is_editor or !parent.input_enabled: return
+	if character and character.is_authority_owner() == false: return
+	
+	if !head or !enabled or is_editor or !character.input_enabled: return
 	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
 	
 	# Handle look left and right
-	parent.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
+	character.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
 	
 	# Handle look up and down
 	head.rotate_object_local(Vector3(1, 0, 0), look_angle.x)

@@ -61,6 +61,8 @@ func ready():
 		third_person_camera_container = third_person_camera.get_parent()
 	
 func state_updated(old_state: int, new_state: int) -> void:
+	if not is_authority(): return
+		
 	var sprint_id = state_ids["sprint"]
 	
 	if new_state == state_ids["jump"]:
@@ -78,6 +80,8 @@ func get_movement_speed(delta: float) -> float:
 	return final_speed * delta * 100
 
 func physics(delta: float) -> void:
+	if not is_authority(): return
+	
 	if character.input_enabled:
 		var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 		var basis: Basis

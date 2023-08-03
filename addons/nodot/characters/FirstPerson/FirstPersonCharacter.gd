@@ -22,24 +22,24 @@ var inventory: CollectableInventory
 var was_on_floor: bool = false
 var previous_velocity: float = 0.0
 
-
 func _enter_tree() -> void:
-	if is_current_player:
-		set_current_player()
-		
 	if !sm:
 		sm = StateMachine.new()
 		add_child(sm)
-		
-	head = Node3D.new()
-	head.name = "Head"
-	camera.name = "Camera3D"
-	head.add_child(camera)
-	add_child(head)
+	
+	if !has_node("Head"):
+		head = Node3D.new()
+		head.name = "Head"
+		camera.name = "Camera3D"
+		head.add_child(camera)
+		add_child(head)
 
 	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
 	health = Nodot.get_first_child_of_type(self, Health)
+	
+	if NetworkManager.enabled:
+		set_multiplayer_authority(int(str(name)), true)
 
 
 func _ready() -> void:
@@ -56,8 +56,16 @@ func _ready() -> void:
 		head_position_node.queue_free()
 	else:
 		head.position = head_position
+	
+	if is_authority() and is_current_player:
+		set_current_player()
+		
+	if has_method("_after_ready"):
+		call("_after_ready")
 
 func _physics_process(delta: float) -> void:
+	if not is_authority(): return
+	
 	var collision = get_last_slide_collision()
 	if collision:
 		for i in collision.get_collision_count():
@@ -82,11 +90,14 @@ func _physics_process(delta: float) -> void:
 
 ## Add collectables to collectable inventory
 func collect(node: Node3D) -> bool:
+	if not is_host(): return false
 	if !inventory: return false
 	return inventory.add(node.display_name, node.quantity)
 
 ## Set the character as the current player
 func set_current_player():
+	if not is_authority(): return
+	
 	is_current_player = true
 	PlayerManager.node = self
 	set_current_camera(camera)

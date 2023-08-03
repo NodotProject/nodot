@@ -1,6 +1,8 @@
 ## Creates a viewport that can be used for first person items. For example hands and guns.
 class_name FirstPersonViewport extends SubViewportContainer
 
+## The character the viewport is attached to
+@export var character: FirstPersonCharacter
 ## Which cull mask layers to give the camera
 @export_flags_3d_render var camera_cull_mask_layer: int = 2
 ## The viewport cameras field of view
@@ -9,8 +11,6 @@ class_name FirstPersonViewport extends SubViewportContainer
 @export var viewport_camera: Camera3D
 ## The input action name for reloading the current active weapon
 @export var reload_action: String = "reload"
-
-@onready var character: FirstPersonCharacter = get_parent()
 
 var character_camera: Camera3D
 var viewport: SubViewport
@@ -29,8 +29,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _enter_tree() -> void:
-	if not character.is_authority():
-		return
 		
 	var subviewport: SubViewport = SubViewport.new()
 	subviewport.name = "SubViewport"
@@ -47,8 +45,6 @@ func _enter_tree() -> void:
 	
 	viewport = subviewport
 	viewport_camera = camera3d
-	character_camera = get_parent().camera
-
 
 func _ready() -> void:
 	# Move existing children to be a child of the camera
@@ -61,17 +57,21 @@ func _ready() -> void:
 		VideoManager.connect("window_resized", _on_window_resized)
 		VideoManager.bump()
 
-
-func _physics_process(delta: float) -> void:
-	viewport_camera.global_transform = character_camera.global_transform
+func _process(delta: float) -> void:
+	if !viewport_camera or !character.is_authority(): return
+	
+	viewport_camera.global_transform = character.camera.global_transform
 	viewport_camera.rotation.z = 0.0
 	
 func _input(event: InputEvent) -> void:
+	if not character.is_authority(): return
+	
 	if InputMap.has_action(reload_action) and event.is_action_pressed(reload_action):
 		reload()
 
 
 func _on_window_resized(new_size: Vector2) -> void:
+	if not character.is_authority(): return
 	viewport.size = new_size
 
 
@@ -88,6 +88,8 @@ func previous_item() -> void:
 ## Get the active item if there is one
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func get_active_item():
+	if not character.is_authority(): return
+	
 	var items = Nodot.get_children_of_type(viewport_camera, FirstPersonItem)
 	for item in items:
 		if item.active:
@@ -123,7 +125,6 @@ func change_item(new_index: int) -> void:
 	await items[active_item_index].activate()
 	item_changing = false
 	emit_signal("item_change", items[active_item_index])
-
 
 func action() -> void:
 	# TODO: Typehint this when nullable static types are supported.

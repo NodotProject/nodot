@@ -37,10 +37,14 @@ func _enter_tree():
 	label3d.modulate = font_color
 	label3d.position.z = -2
 	add_child(label3d)
+	
+func _ready():
+	if not is_multiplayer_authority(): return
+	
+	InputManager.register_action(interact_action, KEY_F)
 
 func _input(event: InputEvent):
-	if !enabled or !event.is_action_pressed(interact_action):
-		return
+	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
 		
 	if is_instance_valid(carried_body):
 		carried_body.gravity_scale = 1.0
@@ -66,6 +70,8 @@ func _input(event: InputEvent):
 
 
 func _physics_process(delta):
+	if not is_multiplayer_authority(): return
+	
 	if is_instance_valid(carried_body):
 		var carry_position = global_transform.origin
 		carry_position -= global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
