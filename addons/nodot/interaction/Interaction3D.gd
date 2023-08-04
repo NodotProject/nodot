@@ -47,9 +47,7 @@ func _input(event: InputEvent):
 	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
 		
 	if is_instance_valid(carried_body):
-		carried_body.gravity_scale = 1.0
-		emit_signal("carry_ended", carried_body)
-		carried_body = null
+		carry_end()
 	else:
 		var collider = get_collider()
 		if !is_instance_valid(collider):
@@ -58,21 +56,14 @@ func _input(event: InputEvent):
 		emit_signal("interacted", collider, get_collision_point(), get_collision_normal())
 		if collider.has_method("interact"):
 			collider.interact()
-		elif enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
-			carried_body = collider
-			var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
-			if carried_body_mesh:
-				var mesh_size = carried_body_mesh.get_aabb().size
-				carried_body_width = max(mesh_size.x, mesh_size.y, mesh_size.z)
-			carried_body.gravity_scale = 0.0
-			emit_signal("carry_started", carried_body)
+		else:
+			carry_begin(collider)
 
 
-
-func _physics_process(delta):
-	if not is_multiplayer_authority(): return
-	
+func _physics_process(delta):	
 	if is_instance_valid(carried_body):
+		if not multiplayer.is_server(): return
+		
 		var carry_position = global_transform.origin
 		carry_position -= global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
 		carried_body.global_transform.origin = lerp(
@@ -80,6 +71,8 @@ func _physics_process(delta):
 		)
 		carried_body.rotation = lerp(carried_body.rotation, Vector3.ZERO, 10.0 * delta)
 	else:
+		if not is_multiplayer_authority(): return
+		
 		var collider = get_collider()
 		if is_instance_valid(last_collider) and last_collider != collider:
 			collide_ended(last_collider)
@@ -96,6 +89,21 @@ func _physics_process(delta):
 		else:
 			label3d.text = ""
 
+func carry_begin(collider: Node):
+	if enable_pickup and is_instance_valid(collider) and collider is RigidBody3D and collider.mass <= max_mass:
+		carried_body = collider
+		var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
+		if carried_body_mesh:
+			var mesh_size = carried_body_mesh.get_aabb().size
+			carried_body_width = max(mesh_size.x, mesh_size.y, mesh_size.z)
+		carried_body.gravity_scale = 0.0
+		emit_signal("carry_started", carried_body)
+		
+func carry_end():
+	if is_instance_valid(carried_body):
+		carried_body.gravity_scale = 1.0
+		emit_signal("carry_ended", carried_body)
+		carried_body = null
 
 func collide_ended(body: Node3D):
 	label3d.text = ""

@@ -46,7 +46,7 @@ func ready():
 	sm.add_valid_transition("jump", "fly")
 
 func state_updated(old_state: int, new_state: int) -> void:
-	if not is_authority_owner(): return
+	if not is_authority(): return
 	
 	if new_state == state_ids["fly"]:
 		pass
@@ -55,7 +55,7 @@ func state_updated(old_state: int, new_state: int) -> void:
 		sm.set_state(state_ids["idle"])
 
 func physics(delta: float) -> void:
-	if not is_authority_owner(): return
+	if not is_authority(): return
 	
 	if fly_doubletap_timeleft > 0.0:
 		fly_doubletap_timeleft -= delta

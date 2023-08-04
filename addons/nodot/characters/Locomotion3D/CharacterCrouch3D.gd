@@ -40,6 +40,8 @@ func ready():
 
 
 func state_updated(old_state: int, new_state: int) -> void:
+	if not is_authority(): return
+	
 	if new_state == state_ids["crouch"]:
 		apply_collision_shape_height(crouch_height)
 		if character_mover:
@@ -52,6 +54,8 @@ func state_updated(old_state: int, new_state: int) -> void:
 
 
 func physics(delta: float) -> void:
+	if not is_authority(): return
+	
 	if Input.is_action_pressed(crouch_action):
 		sm.set_state(state_ids["crouch"])
 	elif Input.is_action_just_released(crouch_action):

@@ -36,6 +36,7 @@ func _on_pressed():
 "
 
 [node name="MultiplayerMenuContainer" type="Node2D"]
+process_mode = 3
 script = ExtResource("1_gyir0")
 
 [node name="Control" type="Control" parent="."]

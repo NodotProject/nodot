@@ -49,6 +49,7 @@ func _on_pressed():
 "
 
 [node name="MainMenuContainer" type="Node2D"]
+process_mode = 3
 visible = false
 script = ExtResource("1_17ji3")
 

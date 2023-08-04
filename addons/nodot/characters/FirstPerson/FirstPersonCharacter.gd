@@ -38,6 +38,7 @@ func _enter_tree() -> void:
 	inventory = Nodot.get_first_child_of_type(self, CollectableInventory)
 	health = Nodot.get_first_child_of_type(self, Health)
 	
+	PlayerManager.players.add(self)
 	if NetworkManager.enabled:
 		set_multiplayer_authority(int(str(name)), true)
 

@@ -4,8 +4,6 @@ class_name MenuContainer extends Nodot2D
 
 ## Change visibility using a custom transition
 @export var custom_transition: bool = false  ## Used to override the simple visibility transition with a custom one
-## The scene to load when starting a new game
-@export_file("*.tscn") var first_scene_path: String
 
 ## Fired when the menu is going to show
 signal showing
