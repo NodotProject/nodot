@@ -10,9 +10,6 @@ script/source = "extends Button
 @export var menu_container: MenuContainer
 ## The initial scene
 @export_file(\"*.tscn\") var first_scene_path: String
-
-func _ready():
-	first_scene_path = menu_container.first_scene_path
 	
 func _on_pressed():
 	var map: PackedScene = load(first_scene_path)
