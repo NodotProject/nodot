@@ -26,6 +26,7 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 ## Execute the hitscan
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
+@rpc("any_peer", "call_local")
 func action():
 	if enabled:
 		if accuracy > 0.0:

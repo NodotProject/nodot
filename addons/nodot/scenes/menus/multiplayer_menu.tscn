@@ -1,0 +1,106 @@
+[gd_scene load_steps=6 format=3 uid="uid://bigmdsd7jk3kv"]
+
+[ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_gyir0"]
+[ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_sljgc"]
+
+[sub_resource type="GDScript" id="GDScript_oevdl"]
+resource_name = "joinbtn"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+
+func _on_pressed():
+	NetworkManager.join(%AddressTextEdit.text, int(%PortTextEdit.text), %DisplayNameTextEdit.text)
+	menu_container.get_parent().hide_all()
+"
+
+[sub_resource type="GDScript" id="GDScript_3xy7t"]
+resource_name = "hostbtn"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+
+func _on_pressed():
+	NetworkManager.host(int(%PortTextEdit.text), %DisplayNameTextEdit.text)
+	menu_container.get_parent().hide_all()
+"
+
+[sub_resource type="GDScript" id="GDScript_rdf5s"]
+resource_name = "backbtn"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+
+func _on_pressed():
+	menu_container.get_parent().change_to(\"MainMenuContainer\")
+"
+
+[node name="MultiplayerMenuContainer" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_gyir0")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="WindowSizeConnector" type="Node" parent="Control" node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("2_sljgc")
+target_nodes = [NodePath("..")]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -110.0
+offset_right = 100.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DisplayNameTextEdit" type="TextEdit" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "WifflePiff"
+
+[node name="AddressTextEdit" type="TextEdit" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "127.0.0.1"
+placeholder_text = "Host Address"
+
+[node name="PortTextEdit" type="TextEdit" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "9005"
+placeholder_text = "Port"
+
+[node name="JoinButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+layout_mode = 2
+text = "Join"
+script = SubResource("GDScript_oevdl")
+menu_container = NodePath("../../..")
+
+[node name="HostButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+layout_mode = 2
+text = "Host"
+script = SubResource("GDScript_3xy7t")
+menu_container = NodePath("../../..")
+
+[node name="BackButton" type="Button" parent="Control/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+layout_mode = 2
+text = "Back"
+script = SubResource("GDScript_rdf5s")
+menu_container = NodePath("../../..")
+
+[connection signal="pressed" from="Control/VBoxContainer/JoinButton" to="Control/VBoxContainer/JoinButton" method="_on_pressed"]
+[connection signal="pressed" from="Control/VBoxContainer/HostButton" to="Control/VBoxContainer/HostButton" method="_on_pressed"]
+[connection signal="pressed" from="Control/VBoxContainer/BackButton" to="Control/VBoxContainer/BackButton" method="_on_pressed"]

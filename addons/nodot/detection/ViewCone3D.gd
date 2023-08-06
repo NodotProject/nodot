@@ -1,16 +1,13 @@
-@tool
 ## A SpotLight3D that detects nodes that enter it's vision
 class_name ViewCone3D extends SpotLight3D
 
 @export var enabled: bool = true
 @export var detection_group: String = "detectable"
-@export var detection_color: Color = Color.RED
 @export_flags_3d_physics var collision_layer: int = 0
 
 signal body_detected(body: Node3D)
 signal body_lost(body: Node3D)
 
-var original_color = light_color
 var detected = false
 var last_detected_body: Node3D
 
@@ -22,7 +19,6 @@ func _physics_process(_delta):
 	var cam_pos = global_transform.origin
 	var max_distance_squared = pow(spot_range, 2)
 	var max_angle = deg_to_rad(spot_angle)
-	light_color = original_color
 	
 	for body in get_tree().get_nodes_in_group(detection_group):
 		var space_state = get_world_3d().direct_space_state
@@ -47,7 +43,6 @@ func _physics_process(_delta):
 			var result = space_state.intersect_ray(params)
 			if result and result.collider == body:
 				detected_this_pass = true
-				light_color = detection_color
 				if !detected:
 					detected = true
 					if body.has_method("detected"):

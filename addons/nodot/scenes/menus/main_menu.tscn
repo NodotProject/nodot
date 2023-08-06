@@ -1,0 +1,101 @@
+[gd_scene load_steps=7 format=3 uid="uid://kwbgl8vks38r"]
+
+[ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_17ji3"]
+[ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_xus4v"]
+
+[sub_resource type="GDScript" id="GDScript_ymbmu"]
+resource_name = "start"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+## The initial scene
+@export_file(\"*.tscn\") var first_scene_path: String
+	
+func _on_pressed():
+	var map: PackedScene = load(first_scene_path)
+	var map_instance = map.instantiate()
+	get_tree().root.add_child(map_instance)
+"
+
+[sub_resource type="GDScript" id="GDScript_1bk6e"]
+resource_name = "multiplayerbtn"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+
+func _on_pressed():
+	menu_container.get_parent().change_to(\"MultiplayerMenuContainer\")
+"
+
+[sub_resource type="GDScript" id="GDScript_ago8y"]
+resource_name = "optionsbtn"
+script/source = "extends Button
+
+@export var menu_container: MenuContainer
+
+func _on_pressed():
+	menu_container.get_parent().change_to(\"OptionsMenuContainer\")
+"
+
+[sub_resource type="GDScript" id="GDScript_uguho"]
+resource_name = "quitbtn"
+script/source = "extends Button
+
+func _on_pressed():
+	get_tree().quit(0)
+"
+
+[node name="MainMenuContainer" type="Node2D"]
+process_mode = 3
+visible = false
+script = ExtResource("1_17ji3")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="WindowSizeConnector" type="Node" parent="Control" node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("2_xus4v")
+target_nodes = [NodePath("..")]
+
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
+layout_mode = 2
+
+[node name="StartGameButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start Game"
+script = SubResource("GDScript_ymbmu")
+menu_container = NodePath("../../../..")
+
+[node name="MultiplayerButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+layout_mode = 2
+text = "Multiplayer"
+script = SubResource("GDScript_1bk6e")
+menu_container = NodePath("../../../..")
+
+[node name="OptionsButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
+layout_mode = 2
+text = "Options"
+script = SubResource("GDScript_ago8y")
+menu_container = NodePath("../../../..")
+
+[node name="QuitButton" type="Button" parent="Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+script = SubResource("GDScript_uguho")
+
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/StartGameButton" to="Control/CenterContainer/VBoxContainer/StartGameButton" method="_on_pressed"]
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/MultiplayerButton" to="Control/CenterContainer/VBoxContainer/MultiplayerButton" method="_on_pressed"]
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/OptionsButton" to="Control/CenterContainer/VBoxContainer/OptionsButton" method="_on_pressed"]
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/QuitButton" to="Control/CenterContainer/VBoxContainer/QuitButton" method="_on_pressed"]

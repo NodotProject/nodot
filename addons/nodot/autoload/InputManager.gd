@@ -37,10 +37,8 @@ func add_action(action_name: String, key_code: int, input_source: int):
 		1: add_action_event_joypad(action_name, key_code)
 		
 func add_action_event_key(action_name: String, key: int = -1):
-	if key >= 0:
+	if key > 0:
 		var input_key = InputEventKey.new()
-		var x = InputEventMouseButton.new()
-		x.button_index = MOUSE_BUTTON_WHEEL_UP
 		input_key.keycode = key
 		InputMap.action_add_event(action_name, input_key)
 		

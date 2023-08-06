@@ -24,7 +24,9 @@ func ready():
 	sm.add_valid_transition("crouch", ["jump"])
 	sm.add_valid_transition("prone", ["jump"])
 
-func state_updated(old_state: int, new_state: int) -> void:	
+func state_updated(old_state: int, new_state: int) -> void:
+	if not is_authority_owner(): return
+	
 	if new_state == state_ids["jump"]:
 		jump()
 
@@ -32,6 +34,8 @@ func jump() -> void:
 	character.velocity.y = jump_velocity
 
 func physics(delta: float) -> void:
+	if not is_authority_owner(): return
+	
 	if !character._is_on_floor():
 		return
 		

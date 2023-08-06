@@ -9,8 +9,6 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 @export var stepping_enabled: bool = true
 ## Maximum height for a ledge to allow stepping up.
 @export var step_height: float = 0.5
-## Constructs the step up movement vector.
-@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 ## How fast the character can move
 @export var movement_speed := 5.0
 ## How fast the character can move while sprinting (higher = faster)
@@ -36,6 +34,9 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 ## The input action name for sprinting
 @export var sprint_action: String = "sprint"
 
+## Constructs the step up movement vector.
+@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
+
 var direction: Vector3 = Vector3.ZERO
 var sprint_speed = false
 var third_person_camera_container: Node3D
@@ -60,6 +61,8 @@ func ready():
 		third_person_camera_container = third_person_camera.get_parent()
 	
 func state_updated(old_state: int, new_state: int) -> void:
+	if not is_authority(): return
+		
 	var sprint_id = state_ids["sprint"]
 	
 	if new_state == state_ids["jump"]:
@@ -77,6 +80,8 @@ func get_movement_speed(delta: float) -> float:
 	return final_speed * delta * 100
 
 func physics(delta: float) -> void:
+	if not is_authority(): return
+	
 	if character.input_enabled:
 		var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 		var basis: Basis
