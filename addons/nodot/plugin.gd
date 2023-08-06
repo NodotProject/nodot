@@ -10,6 +10,7 @@ func _init():
 		add_autoload_singleton("AudioManager", "res://addons/nodot/autoload/AudioManager.gd")
 		add_autoload_singleton("SaveManager", "res://addons/nodot/autoload/SaveManager.gd")
 		add_autoload_singleton("GlobalSignal", "res://addons/nodot/autoload/GlobalSignal.gd")
+		add_autoload_singleton("GlobalStorage", "res://addons/nodot/autoload/GlobalStorage.gd")
 		add_autoload_singleton("PlayerManager", "res://addons/nodot/autoload/PlayerManager.gd")
 		add_autoload_singleton("CollectableManager", "res://addons/nodot/autoload/CollectableManager.gd")
 		add_autoload_singleton("InputManager", "res://addons/nodot/autoload/InputManager.gd")
