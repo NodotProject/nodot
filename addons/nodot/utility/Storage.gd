@@ -10,13 +10,13 @@ signal value_changed(key, new_value)
 signal key_deleted(key)
 
 ## Method to set a value for a given key
-func set(key, value):
+func setItem(key, value):
 	data[key] = value
 	emit_signal("value_changed", key, value)
 	trigger_signal(key, value)
 
 ## Method to get the value for a given key
-func get(key):
+func getItem(key):
 	return data.get(key)
 
 ## Method to check if a key exists

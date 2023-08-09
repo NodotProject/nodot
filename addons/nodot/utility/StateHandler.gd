@@ -15,6 +15,9 @@ var state_ids: Dictionary = {}
 func _ready():
 	if !enabled:
 		return
+	
+	if !sm and get_parent() is StateMachine:
+		sm = get_parent()
 		
 	sm.connect("state_updated", state_updated)
 	ready()
