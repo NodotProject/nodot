@@ -52,6 +52,7 @@ jobs:
           cp scripts/guides docs/guides -r
           cp addons/nodot/icons docs/icons -r
           cp logo.png docs/logo.png
+          cp README.md docs/README.md
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
