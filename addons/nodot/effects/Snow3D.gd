@@ -1,10 +1,16 @@
 @tool
+## Creates customizable snow effect
 class_name Snow3D extends Nodot3D
 
+## Texture used for snowflakes
 @export var texture: Texture2D = load("res://addons/nodot/textures/snowflake.png"): set = _set_texture
+## Color of snowflakes
 @export var color: Color = Color(Color.WHITE, 0.3): set = _set_color
+## Amount of snowflakes
 @export var amount: int = 200: set = _set_amount
+## If true, snowflakes will be shaded
 @export var shaded: bool = false: set = _set_shaded
+## Size of snowflakes
 @export var size: Vector2 = Vector2(10, 10): set = _set_size
 
 var particles_node := GPUParticles3D.new()

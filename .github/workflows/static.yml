@@ -35,18 +35,23 @@ jobs:
         uses: actions/configure-pages@v3
       - name: Install gdscriptify2
         run: npm i -g krazyjakee/GDScriptify2
-      - name: Install markdown2html
-        run: npm i -g markdown-folder-to-html
+      - name: Install docsify
+        run: npm i -g docsify-cli
       - name: Remove Unwanted Files
         run: |
           rm -rf test
           rm -rf addons/gut
       - name: Generate docs
         run: |
-          gdscriptify2 -o docs/src
-          markdown-folder-to-html docs/src
-          mv docs/_src/* docs
-          rm -rf docs/_src
+          gdscriptify2 -d addons/nodot -o docs/src
+          mv addons/nodot/docs/src/* docs
+          rm -rf addons/nodot/docs
+          sed -i 's/\\/\//g' docs/index.md
+          cp scripts/_sidebar.md docs/_sidebar.md
+          cp scripts/index.html docs/index.html
+          cp scripts/guides docs/guides -r
+          cp addons/nodot/icons docs/icons -r
+          docsify generate docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

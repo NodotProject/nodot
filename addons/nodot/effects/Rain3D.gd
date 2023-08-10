@@ -1,10 +1,16 @@
 @tool
+## Creates customizable rain effect
 class_name Rain3D extends Nodot3D
 
+## The texture for each raindrop
 @export var texture: Texture2D = load("res://addons/nodot/textures/raindrop.png"): set = _set_texture
+## The color of the raindrops
 @export var color: Color = Color(Color.WHITE, 0.3): set = _set_color
+## The amount of raindrops
 @export var amount: int = 200: set = _set_amount
+## Whether the raindrops are shaded
 @export var shaded: bool = false: set = _set_shaded
+## The size of the raindrops
 @export var size: Vector2 = Vector2(10, 10): set = _set_size
 
 var particles_node := GPUParticles3D.new()

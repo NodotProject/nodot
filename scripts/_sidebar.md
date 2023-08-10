@@ -1,0 +1,2 @@
+* [Home](/)
+* [Index](index.md)

@@ -1,11 +1,15 @@
 #!/bin/bash
 
 # npm i -g krazyjakee/GDScriptify2
-# npm i -g markdown-folder-to-html
+# npm i -g docsify-cli
 rm -rf docs
+docsify init ./docs
 gdscriptify2 -d addons/nodot -o docs/src
-mv addons/nodot/docs .
-sed -i 's/\\/\//g' docs/src/index.md
-markdown-folder-to-html docs/src
-mv docs/_src/* docs
-rm -rf docs/_src
+mv addons/nodot/docs/src/* docs
+rm -rf addons/nodot/docs
+sed -i 's/\\/\//g' docs/index.md
+cp scripts/_sidebar.md docs/_sidebar.md
+cp scripts/index.html docs/index.html
+cp addons/nodot/icons docs/icons -r
+docsify docs
+
