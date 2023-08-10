@@ -1,2 +1,2 @@
 * [Home](/)
-* [Index](index.md)
+* [Nodes Overview](index.md)
