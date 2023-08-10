@@ -43,9 +43,9 @@ jobs:
           rm -rf addons/gut
       - name: Generate docs
         run: |
-          gdscriptify2 -d addons/nodot -o docs/src
-          mv addons/nodot/docs/src/* docs
-          rm -rf addons/nodot/docs
+          gdscriptify2 -o docs/src
+          mv docs/src/* docs
+          rm -rf docs/src
           sed -i 's/\\/\//g' docs/index.md
           cp scripts/_sidebar.md docs/_sidebar.md
           cp scripts/index.html docs/index.html
