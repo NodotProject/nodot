@@ -51,6 +51,7 @@ jobs:
           cp scripts/index.html docs/index.html
           cp scripts/guides docs/guides -r
           cp addons/nodot/icons docs/icons -r
+          cp logo.png docs/logo.png
           docsify generate docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1

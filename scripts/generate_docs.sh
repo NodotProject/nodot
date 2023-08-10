@@ -10,6 +10,7 @@ rm -rf addons/nodot/docs
 sed -i 's/\\/\//g' docs/index.md
 cp scripts/_sidebar.md docs/_sidebar.md
 cp scripts/index.html docs/index.html
+cp logo.png docs/logo.png
 cp addons/nodot/icons docs/icons -r
 docsify docs
 
