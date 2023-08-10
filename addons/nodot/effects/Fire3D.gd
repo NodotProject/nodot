@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/fire.svg")
 ## Creates customizable fire, smoke and spark effects
 class_name Fire3D extends Node3D
 

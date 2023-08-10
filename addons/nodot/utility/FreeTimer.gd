@@ -1,3 +1,4 @@
+## A timer that can be used to queue_free a node after a certain amount of time
 class_name FreeTimer extends Nodot
 
 ## Whether the FreeTimer is enabled or not

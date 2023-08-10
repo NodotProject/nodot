@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/footsteps.svg")
 ## A raycast to detect the floor material and play appropriate footstep sounds.
 class_name FootStepSFX extends RayCast3D
 

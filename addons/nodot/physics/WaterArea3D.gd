@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/water.svg")
 ## An area with a water surface where the player can swim and objects can float
 class_name WaterArea3D extends Area3D
 

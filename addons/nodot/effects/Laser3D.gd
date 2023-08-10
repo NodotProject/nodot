@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/laser.svg")
 ## A raycast that also produces a laser beam
 class_name Laser3D extends RayCast3D
 

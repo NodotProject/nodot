@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cu75186nq7j7a"
-path="res://.godot/imported/visioncone.svg-5d27a6a802246b5279e59df2127144f7.ctex"
+uid="uid://bo0br3irg4gtu"
+path="res://.godot/imported/laser.svg-2a25275bc7c54c98ff4a768c49d28594.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icons/visioncone.svg"
-dest_files=["res://.godot/imported/visioncone.svg-5d27a6a802246b5279e59df2127144f7.ctex"]
+source_file="res://addons/nodot/icons/laser.svg"
+dest_files=["res://.godot/imported/laser.svg-2a25275bc7c54c98ff4a768c49d28594.ctex"]
 
 [params]
 
