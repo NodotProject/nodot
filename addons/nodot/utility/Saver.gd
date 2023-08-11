@@ -1,3 +1,4 @@
+@icon("../icons/saver.svg")
 ## Connects with the SaveManager to save field data for the parent node
 class_name Saver extends Nodot
 

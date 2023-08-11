@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/signal.svg")
 ## Proxies local signals to global signals
 class_name LocalToGlobalSignalProxy extends Nodot
 

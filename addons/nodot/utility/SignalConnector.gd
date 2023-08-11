@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/signal.svg")
 ## Connects signals to methods
 class_name SignalConnector extends Nodot
 

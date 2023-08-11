@@ -1,4 +1,5 @@
 @tool
+@icon("../icons/stateconnector.svg")
 ## Connects state changes to methods
 class_name StateConnector extends Nodot
 

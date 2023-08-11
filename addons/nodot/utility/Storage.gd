@@ -1,3 +1,4 @@
+@icon("../icons/storage.svg")
 ## Redis-like class to store key-value pairs
 class_name Storage extends Nodot
 

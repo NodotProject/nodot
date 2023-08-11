@@ -1,3 +1,4 @@
+@icon("../icons/statemachine.svg")
 ## A simple state machine
 class_name StateMachine extends Nodot
 

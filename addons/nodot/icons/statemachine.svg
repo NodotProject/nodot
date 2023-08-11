@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="6" r="4" fill="rgb(23.137255%,62.352941%,81.176471%)" />
+  <circle cx="6" cy="26" r="4" fill="rgb(23.137255%,62.352941%,81.176471%)" />
+  <circle cx="26" cy="26" r="4" fill="rgb(23.137255%,62.352941%,81.176471%)" />
+
+  <line x1="16" y1="6" x2="6" y2="26" stroke="rgb(23.137255%,62.352941%,81.176471%)" stroke-width="2" />
+  <line x1="6" y1="26" x2="26" y2="26" stroke="rgb(23.137255%,62.352941%,81.176471%)" stroke-width="2" />
+  <line x1="26" y1="26" x2="16" y2="6" stroke="rgb(23.137255%,62.352941%,81.176471%)" stroke-width="2" />
+</svg>

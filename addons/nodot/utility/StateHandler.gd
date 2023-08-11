@@ -1,3 +1,4 @@
+@icon("../icons/statehandler.svg")
 ## A node to handle and control events from a state machine
 class_name StateHandler extends Nodot
 
