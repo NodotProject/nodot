@@ -21,12 +21,12 @@ func getItem(key):
 	return data.get(key)
 
 ## Method to check if a key exists
-func exists(key):
+func hasItem(key):
 	return data.has(key)
 
 ## Method to delete a key-value pair
-func delete(key):
-	if exists(key):
+func deleteItem(key):
+	if hasItem(key):
 		var value = data[key]
 		data.erase(key)
 		emit_signal("key_deleted", key)

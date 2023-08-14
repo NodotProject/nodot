@@ -20,20 +20,20 @@ func _ready() -> void:
 	set_minimum_window_size()
 	_on_window_resized()
 	
-	if "display_mode" in SaveManager.config:
-		display_mode = SaveManager.config.display_mode
-	if "screen" in SaveManager.config:
-		screen = SaveManager.config.screen
-	if "fps_limit" in SaveManager.config:
-		fps_limit = SaveManager.config.fps_limit
-	if "vsync" in SaveManager.config:
-		vsync = SaveManager.config.vsync
-	if "msaa" in SaveManager.config:
-		msaa = SaveManager.config.msaa
-	if "brightness" in SaveManager.config:
-		brightness = SaveManager.config.brightness
-	if "contrast" in SaveManager.config:
-		contrast = SaveManager.config.contrast
+	if SaveManager.config.hasItem("display_mode"):
+		display_mode = SaveManager.config.getItem("display_mode")
+	if SaveManager.config.hasItem("screen"):
+		screen = SaveManager.config.getItem("screen")
+	if SaveManager.config.hasItem("fps_limit"):
+		fps_limit = SaveManager.config.getItem("fps_limit")
+	if SaveManager.config.hasItem("vsync"):
+		vsync = SaveManager.config.getItem("vsync")
+	if SaveManager.config.hasItem("msaa"):
+		msaa = SaveManager.config.getItem("msaa")
+	if SaveManager.config.hasItem("brightness"):
+		brightness = SaveManager.config.getItem("brightness")
+	if SaveManager.config.hasItem("contrast"):
+		contrast = SaveManager.config.getItem("contrast")
 	
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
@@ -109,11 +109,11 @@ func register(node: Node):
 
 ## Save the video settings to the config file
 func save_config():
-	SaveManager.config.display_mode = display_mode
-	SaveManager.config.screen = screen
-	SaveManager.config.fps_limit = fps_limit
-	SaveManager.config.vsync = vsync
-	SaveManager.config.msaa = msaa
-	SaveManager.config.brightness = brightness
-	SaveManager.config.contrast = contrast
+	SaveManager.config.setItem("display_mode", display_mode)
+	SaveManager.config.setItem("screen", screen)
+	SaveManager.config.setItem("fps_limit", fps_limit)
+	SaveManager.config.setItem("vsync", vsync)
+	SaveManager.config.setItem("msaa", msaa)
+	SaveManager.config.setItem("brightness", brightness)
+	SaveManager.config.setItem("contrast", contrast)
 	SaveManager.save_config()

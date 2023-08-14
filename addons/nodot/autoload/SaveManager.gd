@@ -10,7 +10,7 @@ var savers: Array[Saver] = []
 var custom_values: Dictionary = {}
 
 ## Used for global options and game settings
-var config: Dictionary = {}
+var config: Storage = Storage.new()
 
 func _init():
 	load_config()
@@ -90,5 +90,7 @@ func load_config() -> void:
 	var file_path = "user://config.bin"
 	if FileAccess.file_exists(file_path):
 		var file = FileAccess.open(file_path, FileAccess.READ)
-		config = file.get_var(true)
+		var new_config = file.get_var(true)
+		if new_config and new_config is Storage:
+			config = new_config
 		file.close()

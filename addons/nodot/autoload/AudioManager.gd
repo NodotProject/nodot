@@ -18,12 +18,12 @@ func _ready():
 	for bus in music_audiobus: _set_bus_volume(bus, music_volume)
 	for bus in sfx_audiobus: _set_bus_volume(bus, sfx_volume)
 	
-	if "master_volume" in SaveManager.config:
-		master_volume = SaveManager.config.master_volume
-	if "music_volume" in SaveManager.config:
-		music_volume = SaveManager.config.music_volume
-	if "sfx_volume" in SaveManager.config:
-		sfx_volume = SaveManager.config.sfx_volume
+	if SaveManager.config.hasItem("master_volume"):
+		master_volume = SaveManager.config.getItem("master_volume")
+	if SaveManager.config.hasItem("music_volume"):
+		music_volume = SaveManager.config.getItem("music_volume")
+	if SaveManager.config.hasItem("sfx_volume"):
+		sfx_volume = SaveManager.config.getItem("sfx_volume")
 		
 func _set_bus_volume(bus_name: String, volume: float):
 	var bus_index = AudioServer.get_bus_index(bus_name)
@@ -79,7 +79,7 @@ func add_sfx_bus(bus_name: String):
 	sfx_audiobus.append(bus_name)
 
 func save_config():
-	SaveManager.config.master_volume = master_volume
-	SaveManager.config.music_volume = music_volume
-	SaveManager.config.sfx_volume = sfx_volume
+	SaveManager.config.setItem("master_volume", master_volume)
+	SaveManager.config.setItem("music_volume", music_volume)
+	SaveManager.config.setItem("sfx_volume", sfx_volume)
 	SaveManager.save_config()
