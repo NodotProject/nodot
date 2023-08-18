@@ -82,7 +82,7 @@ func reset():
 func save_config():
 	var file_path = "user://config.bin"
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
-	file.store_var(config)
+	file.store_var(config.data, true)
 	file.close()
 	
 ## Load the configuration file
@@ -91,6 +91,6 @@ func load_config() -> void:
 	if FileAccess.file_exists(file_path):
 		var file = FileAccess.open(file_path, FileAccess.READ)
 		var new_config = file.get_var(true)
-		if new_config and new_config is Storage:
-			config = new_config
+		if new_config:
+			config.data = new_config
 		file.close()

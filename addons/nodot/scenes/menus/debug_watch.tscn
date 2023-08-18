@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://k587cy22pi3v"]
+
+[ext_resource type="Script" path="res://addons/nodot/controls/AccordionStack.gd" id="1_5igw8"]
+[ext_resource type="Texture2D" uid="uid://sauhslu15678" path="res://addons/nodot/icons/plus.svg" id="1_exb1e"]
+[ext_resource type="Script" path="res://addons/nodot/controls/Accordion.gd" id="1_wtowa"]
+
+[node name="AccordionStack" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_5igw8")
+
+[node name="Accordion" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_wtowa")
+show_button_icon = ExtResource("1_exb1e")
+
+[node name="Button" type="Button" parent="Accordion"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -2.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "test"
+
+[node name="Accordion2" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_wtowa")
+show_button_icon = ExtResource("1_exb1e")
+
+[node name="Button" type="Button" parent="Accordion2"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "test2"

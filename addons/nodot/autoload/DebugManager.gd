@@ -13,7 +13,7 @@ func unregister(node: NodotDebug):
 var supported_types = [StateMachine]
 
 func _physics_process(delta):
-	var items: Array[NodotDebug] = debug_nodes.items
+	var items = debug_nodes.items
 	for node in items:
 		if !node.enabled or !is_instance_valid(node) or !is_instance_valid(node.target_node):
 			unregister(node)
