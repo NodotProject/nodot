@@ -1,44 +1,62 @@
-[gd_scene load_steps=4 format=3 uid="uid://k587cy22pi3v"]
+[gd_scene load_steps=3 format=3 uid="uid://k587cy22pi3v"]
 
 [ext_resource type="Script" path="res://addons/nodot/controls/AccordionStack.gd" id="1_5igw8"]
-[ext_resource type="Texture2D" uid="uid://sauhslu15678" path="res://addons/nodot/icons/plus.svg" id="1_exb1e"]
-[ext_resource type="Script" path="res://addons/nodot/controls/Accordion.gd" id="1_wtowa"]
 
-[node name="AccordionStack" type="Control"]
+[sub_resource type="GDScript" id="GDScript_d81go"]
+resource_name = "debug_watcher_root"
+script/source = "extends Node
+
+@onready var stack: AccordionStack = $AccordionStack
+
+var existing_accordions: Dictionary = {}
+var existing_labels: Dictionary = {}
+
+func _ready():
+	DebugManager.connect(\"debug_node_added\", add_node)
+	DebugManager.connect(\"debug_node_removed\", remove_node)
+
+func add_node(node: NodotDebug):
+	DebugManager.data.add_listener(str(node.get_path()), self, \"data_updated\")
+	
+func remove_node(node: NodotDebug):
+	DebugManager.data.remove_listener(str(node.get_path()), self, \"data_updated\")
+		
+func data_updated(value: Variant, key: String):
+	if !existing_accordions.keys().has(key):
+		create_accordion(key)
+	
+	var new_data = DebugManager.data.getItem(key)	
+	for watch_item in new_data:
+		update_label(key, watch_item, str(new_data[watch_item]))
+
+func update_label(key: String, item_name: String, value: String):
+	var accordion = existing_accordions[key]
+	var label_id = \"%s:%s\" % [key, item_name]
+	if !existing_labels.keys().has(label_id):
+		create_label(accordion, key, item_name)
+	existing_labels[label_id].text = \"%s: %s\" % [item_name, value]
+		
+func create_accordion(key: String):
+	var acc: Accordion = Accordion.new()
+	acc.show_button_text = key
+	stack.add_child(acc)
+	existing_accordions[key] = acc
+
+func create_label(accordion: Accordion, key: String, item_name: String):
+	var label: Label = Label.new()
+	accordion.add_child(label)
+	existing_labels[\"%s:%s\" % [key, item_name]] = label
+"
+
+[node name="Node" type="Node"]
+process_mode = 3
+script = SubResource("GDScript_d81go")
+
+[node name="AccordionStack" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 46.41
+offset_top = 43.525
+offset_right = 86.41
+offset_bottom = 83.525
 script = ExtResource("1_5igw8")
-
-[node name="Accordion" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_wtowa")
-show_button_icon = ExtResource("1_exb1e")
-
-[node name="Button" type="Button" parent="Accordion"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -2.0
-offset_bottom = -9.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "test"
-
-[node name="Accordion2" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_wtowa")
-show_button_icon = ExtResource("1_exb1e")
-
-[node name="Button" type="Button" parent="Accordion2"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "test2"

@@ -24,9 +24,6 @@ var vbox: VBoxContainer
 var target_size: Vector2 = Vector2.ZERO
 
 func _enter_tree():
-	vbox = VBoxContainer.new()
-	add_child(vbox)
-	
 	show_button = Button.new()
 	show_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	show_button.text = show_button_text
@@ -35,9 +32,14 @@ func _enter_tree():
 		show_button.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		show_button.expand_icon = true
 	add_child(show_button)
+	
+	vbox = VBoxContainer.new()
+	add_child(vbox)
+	
 	show_button.connect("pressed", toggle)
+	connect("child_entered_tree", _child_enter_tree)
 
-func _ready():	
+func _ready():
 	for child in get_children():
 		if child != show_button and child != vbox:
 			child.reparent(vbox)
@@ -53,9 +55,9 @@ func _ready():
 	vbox.position.y = button_size.y
 	var new_size = Vector2.ZERO
 	if collapsed:
-		new_size = Vector2(button_size.x, get_collapsed_height())
+		new_size = Vector2(max(size.x, button_size.x), get_collapsed_height())
 	else:
-		new_size = Vector2(button_size.x, get_full_height())
+		new_size = Vector2(max(size.x, button_size.x), get_full_height())
 	set_size(new_size)
 	target_size = new_size
 	
@@ -98,3 +100,7 @@ func get_collapsed_height():
 func get_full_height():
 	var button_height = get_collapsed_height()
 	return button_height + vbox.get_rect().size.y
+
+func _child_enter_tree(child: Node):
+	if child != show_button and child != vbox:
+		child.reparent(vbox)
