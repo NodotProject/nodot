@@ -1,3 +1,4 @@
+## Stack accordions vertically
 class_name AccordionStack extends Control
 
 var accordions: Array[Node] = []
@@ -18,6 +19,7 @@ func _process(delta):
 		var child_height = child.get_rect().size.y
 		last_child_height += child_height
 
+## Close all accordions except for the one passed as an argument
 func action(node: Accordion):
 	for accordion in accordions:
 		if accordion != node:

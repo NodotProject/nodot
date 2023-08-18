@@ -1,12 +1,21 @@
+@icon("../icons/accordion.svg")
+## A button to expand children inside of it on click
 class_name Accordion extends Control
 
+## Whether the accordion starts collapsed or not
 @export var collapsed: bool = true
+## The speed that the accordion expands/collapses
 @export var collapse_speed: float = 5.0
+## The text to show on the expand button
 @export var show_button_text: String = "Show"
-@export var show_button_icon: Texture2D
+## The icon to show on the expand button
+@export var show_button_icon: Texture2D = load("res://addons/nodot/icons/plus.svg")
 
+## Triggered when the accordion begins to expand
 signal expand_started(node: Accordion)
+## Triggered when the accordion begins to collapse
 signal collapse_started(node: Accordion)
+## Triggered when an accordion begins to expand or collapse
 signal animation_started(node: Accordion)
 
 var show_button: Button
@@ -55,31 +64,37 @@ func _process(delta):
 	if target_size != current_size:
 		var new_size = lerp(current_size, target_size, collapse_speed * delta)
 		set_size(new_size)
-	
+
+## Expand the accordion
 func expand():
 	set_height(get_full_height())
 	collapsed = false
 	emit_signal("expand_started", self)
 	emit_signal("animation_started", self)
 	
+## Collapse the accordion
 func collapse():
 	set_height(get_collapsed_height())
 	collapsed = true
 	emit_signal("collapse_started", self)
 	emit_signal("animation_started", self)
-	
+
+## Expand if the accordion is collapsed and visa versa
 func toggle():
 	if collapsed:
 		expand()
 	else:
 		collapse()
-		
+
+## Set the target height of the accordion
 func set_height(new_height: float):
 	target_size = Vector2(get_rect().size.x, new_height)
-	
+
+## Get the collapsed height of the accordion
 func get_collapsed_height():
 	return show_button.get_rect().size.y
-	
+
+## Get the expanded height of the accordion
 func get_full_height():
 	var button_height = get_collapsed_height()
 	return button_height + vbox.get_rect().size.y
