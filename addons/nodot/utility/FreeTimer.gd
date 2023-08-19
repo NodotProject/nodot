@@ -13,6 +13,9 @@ class_name FreeTimer extends Nodot
 func _ready():
 	if enabled and autostart:
 		action()
+	
+	if !target:
+		target = get_parent()
 
 func action():
 	if !enabled:

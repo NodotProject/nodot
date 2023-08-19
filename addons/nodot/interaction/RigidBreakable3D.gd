@@ -42,6 +42,8 @@ func _enter_tree() -> void:
 
 	if environmental_damage > 0.0:
 		contact_monitor = true
+		if max_contacts_reported == 0:
+			max_contacts_reported = 1
 
 
 func _physics_process(delta: float) -> void:
