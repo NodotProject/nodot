@@ -10,10 +10,10 @@ var INPUT_KEY_SOURCE = {
 }
 
 func _ready():
-	if "mouse_sensitivity" in SaveManager.config:
-		mouse_sensitivity = SaveManager.config.mouse_sensitivity
-	if "input_actions" in SaveManager.config:
-		var input_actions = SaveManager.config.input_actions
+	if SaveManager.config.hasItem("mouse_sensitivity"):
+		mouse_sensitivity = SaveManager.config.getItem("mouse_sensitivity")
+	if SaveManager.config.hasItem("input_actions"):
+		var input_actions = SaveManager.config.getItem("input_actions")
 		for action_name in input_actions:
 			if InputMap.has_action(action_name):
 				InputMap.action_erase_events(action_name)
@@ -73,7 +73,7 @@ func get_action_key(action: String) -> String:
 	return ""
 
 func save_config():
-	SaveManager.config.mouse_sensitivity = mouse_sensitivity
+	SaveManager.config.setItem("mouse_sensitivity", mouse_sensitivity)
 	
 	var input_actions = {}
 	var actions = InputMap.get_actions()
@@ -91,5 +91,5 @@ func save_config():
 			if event is InputEventJoypadButton:
 				key_codes.append([2, event.button_index])
 		input_actions[action_name] = key_codes
-	SaveManager.config.input_actions = input_actions
+	SaveManager.config.setItem("input_actions", input_actions)
 	SaveManager.save_config()

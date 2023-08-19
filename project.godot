@@ -26,6 +26,7 @@ VideoManager="*res://addons/nodot/autoload/VideoManager.gd"
 AudioManager="*res://addons/nodot/autoload/AudioManager.gd"
 GlobalStorage="*res://addons/nodot/autoload/GlobalStorage.gd"
 NetworkManager="*res://addons/nodot/autoload/NetworkManager.gd"
+DebugManager="*res://addons/nodot/autoload/DebugManager.gd"
 
 [display]
 

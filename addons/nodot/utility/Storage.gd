@@ -21,12 +21,12 @@ func getItem(key):
 	return data.get(key)
 
 ## Method to check if a key exists
-func exists(key):
+func hasItem(key):
 	return data.has(key)
 
 ## Method to delete a key-value pair
-func delete(key):
-	if exists(key):
+func deleteItem(key):
+	if hasItem(key):
 		var value = data[key]
 		data.erase(key)
 		emit_signal("key_deleted", key)
@@ -46,13 +46,14 @@ func add_listener(signal_name: String, node: Node, method: StringName):
 		})
 
 ## Remove a listener for a specific key
-func remove_listener(signal_name: String, callable: Callable):
+func remove_listener(signal_name: String, node: Node, method: StringName):
 	if not signals.has(signal_name):
 		return
 
 	for i in range(signals[signal_name].size()):
-		if signals[signal_name][i].callable == callable:
-			signals[signal_name].remove(i)
+		var callable = signals[signal_name][i]
+		if callable.node == node and callable.method == method:
+			signals[signal_name].remove_at(i)
 			return
 
 ## Trigger a signal for a specific key
@@ -64,7 +65,4 @@ func trigger_signal(signal_name: String, arg: Variant = null):
 		var target = signals[signal_name][i]
 		if is_instance_valid(target.node) and target.node.has_method(target.method):
 			var callable: Callable = target.node[target.method]
-			if arg:
-				callable.call(arg)
-			else:
-				callable.call()
+			callable.call(arg, signal_name)

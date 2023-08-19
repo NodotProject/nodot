@@ -20,3 +20,4 @@ mono_crash.*.json
 # Docs and builds
 docs/*
 build
+*.tmp
