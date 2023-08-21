@@ -42,16 +42,8 @@ func _init():
 	for i in action_names.size():
 		var action_name = action_names[i]
 		if not InputMap.has_action(action_name):
-			var default_key = default_keys[i]
-			add_action_to_input_map(action_name, default_key)
-	
-
-
-func add_action_to_input_map(action_name, default_key):
-	var input_key = InputEventMouseButton.new()
-	input_key.button_index = default_key
-	InputMap.add_action(action_name)
-	InputMap.action_add_event(action_name, input_key)
+			InputMap.add_action(action_name)
+			InputManager.add_action_event_mouse(action_name, default_keys[i])
 
 
 func _ready() -> void:
