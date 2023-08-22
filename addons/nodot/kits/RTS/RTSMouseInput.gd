@@ -1,3 +1,4 @@
+## A node that handles mouse input for an IsometricCamera3D
 class_name RTSMouseInput extends Nodot3D
 
 @export var enabled: bool = true
@@ -12,8 +13,11 @@ class_name RTSMouseInput extends Nodot3D
 @export var select_action: String = "isometric_camera_select"
 @export var action_action: String = "isometric_camera_action"
 
+## Emitted when a node is selected
 signal selected(node: Node)
+## Emitted when multiple nodes are selected
 signal selected_multiple(nodes: Array[Node])
+## Emitted when an action is requested
 signal action_requested(collision: Dictionary)
 
 var selected_nodes: Array[Node] = []

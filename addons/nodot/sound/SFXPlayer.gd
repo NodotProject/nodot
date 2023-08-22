@@ -1,6 +1,6 @@
 @tool
 ## A sound effect player with randomization and trigger options
-class_name SFXPlayer3D extends AudioStreamPlayer3D
+class_name SFXPlayer extends AudioStreamPlayer
 
 ## An array of audiostreams chosen at random on action
 @export var sfx: Array[AudioStream] = []
