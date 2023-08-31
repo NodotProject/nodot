@@ -80,6 +80,7 @@ func deactivate():
 
 func move_to_destination():
 	var final_destination_position = destination_position
+	original_position = target_node.global_position
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
 

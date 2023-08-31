@@ -1,16 +1,19 @@
+@tool
 ## When the current player enters this area, the camera is overridden
 class_name CameraArea3D extends NodotArea3D
 
-var camera: Camera3D
+## The camera to set to when triggered
+@export var camera: Camera3D
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-	if !Nodot.get_first_child_of_type(self, Camera3D):
+	if !camera:
 		warnings.append("Requires a Camera3D as a child")
 	return warnings
 
 func _enter_tree():
-	camera = Nodot.get_first_child_of_type(self, Camera3D)
+	if !camera:
+		camera = Nodot.get_first_child_of_type(self, Camera3D)
 	connect("current_player_body_entered", _current_player_entered)
 	connect("current_player_body_exited", _current_player_exited)
 

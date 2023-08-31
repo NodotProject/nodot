@@ -14,13 +14,13 @@ func _init():
 	connect("body_exited", _on_body_exited)
 	
 func _on_body_entered(body: Node3D):
-	if body is NodotCharacter3D:
+	if enabled and body is NodotCharacter3D:
 		emit_signal("character_body_entered", body)
-		if body == PlayerManager.node:
+		if "is_current_player" in body and body.is_current_player:
 			emit_signal("current_player_body_entered", body)
 	
 func _on_body_exited(body: Node3D):
-	if body is NodotCharacter3D:
-		emit_signal("current_player_body_entered", body)
-		if body == PlayerManager.node:
+	if enabled and body is NodotCharacter3D:
+		emit_signal("character_body_exited", body)
+		if "is_current_player" in body and body.is_current_player:
 			emit_signal("current_player_body_exited", body)

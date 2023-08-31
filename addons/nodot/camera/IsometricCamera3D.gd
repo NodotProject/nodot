@@ -35,6 +35,7 @@ var zoom_velocity: Vector3 = Vector3.ZERO
 func _init():
 	register_key_actions()
 	register_mouse_actions()
+	top_level = true
 
 func _ready():
 	global_position.y = height

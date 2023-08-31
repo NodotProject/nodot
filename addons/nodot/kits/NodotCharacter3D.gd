@@ -5,11 +5,11 @@ class_name NodotCharacter3D extends CharacterBody3D
 @export var sm: StateMachine
 ## Is the character used by the player
 @export var is_current_player: bool = false
+@export var camera: Camera3D = Camera3D.new()
 
 signal current_camera_changed(old_camera: Camera3D, new_camera: Camera3D)
 
 var current_camera: Camera3D
-var camera: Camera3D = Camera3D.new()
 
 func _is_on_floor() -> bool:
 	var collision_info: KinematicCollision3D = move_and_collide(Vector3(0,-0.1,0),true)
