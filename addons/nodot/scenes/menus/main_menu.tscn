@@ -15,6 +15,7 @@ func _on_pressed():
 	var map: PackedScene = load(first_scene_path)
 	var map_instance = map.instantiate()
 	get_tree().root.add_child(map_instance)
+	menu_container.get_parent().hide_all()
 "
 
 [sub_resource type="GDScript" id="GDScript_1bk6e"]
