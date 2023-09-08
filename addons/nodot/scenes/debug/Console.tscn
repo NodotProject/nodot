@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0e8r8e7gn056"]
+
+[ext_resource type="Script" path="res://addons/nodot/scenes/debug/Console.gd" id="1_81317"]
+[ext_resource type="Script" path="res://addons/nodot/scenes/debug/cvars.gd" id="2_bhpyj"]
+
+[node name="Console" type="Node"]
+process_mode = 3
+script = ExtResource("1_81317")
+
+[node name="window" type="Window" parent="."]
+disable_3d = true
+handle_input_locally = false
+title = "Shooter Command Console"
+position = Vector2i(113, 36)
+size = Vector2i(720, 480)
+transient = true
+min_size = Vector2i(256, 100)
+
+[node name="control" type="Control" parent="window"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="panel" type="Panel" parent="window/control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="panel" type="Panel" parent="window/control/panel"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="scrollContainer" type="ScrollContainer" parent="window/control/panel/panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConsoleMessageContainer" type="VBoxContainer" parent="window/control/panel/panel/scrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="lineEdit" type="LineEdit" parent="window/control/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -40.0
+offset_right = -8.0
+offset_bottom = -9.0
+placeholder_text = "Enter Command Here"
+
+[node name="cvars" type="Node" parent="."]
+script = ExtResource("2_bhpyj")
+
+[connection signal="close_requested" from="window" to="window" method="hide"]
+[connection signal="focus_entered" from="window" to="." method="_on_window_focus_entered"]
+[connection signal="window_input" from="window" to="." method="_on_window_window_input"]
+[connection signal="text_submitted" from="window/control/panel/lineEdit" to="." method="_on_line_edit_text_submitted"]

@@ -92,5 +92,6 @@ func load_config() -> void:
 		var file = FileAccess.open(file_path, FileAccess.READ)
 		var new_config = file.get_var(true)
 		if new_config:
-			config.data = new_config
+			if new_config is Dictionary:
+				config.data = new_config
 		file.close()

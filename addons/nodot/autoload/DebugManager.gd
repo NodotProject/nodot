@@ -4,6 +4,7 @@ extends Node
 signal debug_node_added(debug_node: NodotDebug)
 signal debug_node_removed(debug_node: NodotDebug)
 
+var console: Console = Console.new()
 var debug_nodes: UniqueSet = UniqueSet.new()
 var data: Storage = Storage.new()
 
