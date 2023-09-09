@@ -32,8 +32,10 @@ https://nodotproject.github.io/nodot
 
 ## Examples
 
-- First Person Shooter: https://github.com/NodotProject/nodot-fps
+- First Person Shooter (FPS): https://github.com/NodotProject/nodot-fps
 - Third Person Platformer: https://github.com/NodotProject/konna3d
+- Realtime Strategy (RTS): https://github.com/NodotProject/nodot-rts
+- Multiplayer First Person Shooter: https://github.com/NodotProject/nodot-multiplayer-fps
 
 ## Asset Credits
 
@@ -43,6 +45,4 @@ Example model asset credits:
 - https://loafbrr.itch.io ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
 - https://pixabay.com ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
 - https://www.sharetextures.com/ ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
-- [MakeHuman](http://www.makehumancommunity.org/) ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
-- ["M Suit 01" by "Mindfront"](http://www.makehumancommunity.org/clothes/m_suit_01.html) ([CC-BY](https://creativecommons.org/licenses/by/2.0/))
 - ["Lens Flare addon by Slsilicon & Zylann"](https://github.com/Zylann/solar_system_demo/tree/godot4/addons/SIsilicon.vfx.lens%20flare) ([MIT](https://opensource.org/licenses/MIT))
