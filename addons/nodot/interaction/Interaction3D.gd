@@ -32,6 +32,7 @@ func _enter_tree():
 	label3d = Label3D.new()
 	label3d.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label3d.fixed_size = true
+	label3d.pixel_size = 0.001
 	label3d.no_depth_test = true
 	label3d.font_size = font_size
 	label3d.modulate = font_color

@@ -85,7 +85,7 @@ func _on_body_entered(body: Node3D) -> void:
 			body.set_submerged(true, self)
 	if (
 		body is CharacterBody3D
-		and "submerge_handler" in body
+		and body.submerge_handler
 		and body.submerge_handler.has_method("set_submerged")
 	):
 		body.submerge_handler.set_submerged(true, self)
@@ -100,7 +100,7 @@ func _on_body_exited(body: Node3D) -> void:
 	# probe_tracker.remove_at(idx)
 	if (
 		body is CharacterBody3D
-		and "submerge_handler" in body
+		and body.submerge_handler
 		and body.submerge_handler.has_method("set_submerged")
 	):
 		body.submerge_handler.set_submerged(false, self)

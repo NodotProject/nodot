@@ -35,7 +35,7 @@ func trigger_signal(signal_name: String, arg: Variant = null):
 		var target = signals[signal_name][i]
 		if is_instance_valid(target.node) and target.node.has_method(target.method):
 			var callable: Callable = target.node[target.method]
-			if arg:
+			if arg != null:
 				callable.call(arg)
 			else:
 				callable.call()

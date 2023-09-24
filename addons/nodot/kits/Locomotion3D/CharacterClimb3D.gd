@@ -55,4 +55,4 @@ func physics(delta: float):
 		
 		was_on_floor = is_on_floor
 			
-	character.move_and_slide()
+		character.move_and_slide()
