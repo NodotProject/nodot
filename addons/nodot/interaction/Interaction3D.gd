@@ -65,12 +65,13 @@ func _physics_process(delta):
 	if is_instance_valid(carried_body):
 		if not multiplayer.is_server(): return
 		
-		var carry_position = global_transform.origin
-		carry_position -= global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
-		carried_body.global_transform.origin = lerp(
-			carried_body.global_transform.origin, carry_position, 10.0 * delta
-		)
-		carried_body.rotation = lerp(carried_body.rotation, Vector3.ZERO, 10.0 * delta)
+		var carry_position = global_transform.origin - global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
+		var speed = carried_body.global_position.distance_to(carry_position) * 500
+		carried_body.linear_velocity = carried_body.global_transform.origin.direction_to(carry_position) * speed * delta
+		var rotate_speed: float = 10.0 * delta
+		carried_body.global_rotation.x = lerp_angle(carried_body.global_rotation.x, 0.0, rotate_speed)
+		carried_body.global_rotation.z = lerp_angle(carried_body.global_rotation.z, 0.0, rotate_speed)
+		carried_body.global_rotation.y = lerp_angle(carried_body.global_rotation.y, global_rotation.y, rotate_speed)
 	else:
 		if not is_multiplayer_authority(): return
 		
@@ -96,7 +97,7 @@ func carry_begin(collider: Node):
 		var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
 		if carried_body_mesh:
 			var mesh_size = carried_body_mesh.get_aabb().size
-			carried_body_width = max(mesh_size.x, mesh_size.y, mesh_size.z)
+			carried_body_width = max(mesh_size.x * carried_body_mesh.scale.x, mesh_size.y * carried_body_mesh.scale.y, mesh_size.z * carried_body_mesh.scale.z)
 		carried_body.gravity_scale = 0.0
 		emit_signal("carry_started", carried_body)
 		
