@@ -1,4 +1,3 @@
-@tool
 ## A Node to move other nodes from one place to another (any maybe even back again)
 class_name Mover3D extends Nodot3D
 
@@ -52,7 +51,7 @@ var activated: bool = false
 
 func _ready():
 	if target_node:
-		original_position = target_node.global_position
+		original_position = target_node.position
 		original_rotation = target_node.rotation
 
 	if auto_start:
@@ -80,11 +79,11 @@ func deactivate():
 
 func move_to_destination():
 	var final_destination_position = destination_position
-	original_position = target_node.global_position
+	original_position = target_node.position
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
 
-	if final_destination_position == global_position:
+	if final_destination_position == position:
 		return
 
 	activated = true
@@ -99,7 +98,7 @@ func move_to_destination():
 			destination_tween
 			. parallel()
 			. tween_property(
-				target_node, "global_position", final_destination_position, time_to_destination
+				target_node, "position", final_destination_position, time_to_destination
 			)
 			. set_trans(transition_type)
 		)
@@ -115,7 +114,7 @@ func move_to_destination():
 
 
 func move_to_origin():
-	if global_position == original_position:
+	if position == original_position:
 		return
 
 	activated = false
@@ -124,7 +123,7 @@ func move_to_origin():
 		(
 			origin_tween
 			. parallel()
-			. tween_property(target_node, "global_position", original_position, time_to_origin)
+			. tween_property(target_node, "position", original_position, time_to_origin)
 			. set_trans(transition_type)
 		)
 	(
@@ -138,7 +137,7 @@ func move_to_origin():
 	emit_signal("movement_started")
 	
 func reset() -> void:
-	target_node.global_position = original_position
+	target_node.position = original_position
 	target_node.rotation = original_rotation
 
 

@@ -27,11 +27,12 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## Execute the hitscan
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 @rpc("any_peer", "call_local")
-func action():
+func action(dispatch_count: int = 1) -> void:
 	if enabled:
-		if accuracy > 0.0:
-			aim_raycast()
-		return get_hit_target()
+		for i in dispatch_count:
+			if accuracy > 0.0:
+				aim_raycast()
+			get_hit_target()
 
 
 ## Point the raycast at the target with a random offset based on accuracy

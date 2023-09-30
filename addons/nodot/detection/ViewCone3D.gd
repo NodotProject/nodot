@@ -8,14 +8,13 @@ class_name ViewCone3D extends SpotLight3D
 signal body_detected(body: Node3D)
 signal body_lost(body: Node3D)
 
-var detected = false
-var last_detected_body: Node3D
+var detected_bodies: Array[Node] = []
 
 func _physics_process(_delta):
 	if !enabled:
 		return
 	
-	var detected_this_pass = false
+	var detected_bodies_this_pass: Array[Node] = []
 	var cam_pos = global_transform.origin
 	var max_distance_squared = pow(spot_range, 2)
 	var max_angle = deg_to_rad(spot_angle)
@@ -42,14 +41,22 @@ func _physics_process(_delta):
 
 			var result = space_state.intersect_ray(params)
 			if result and result.collider == body:
-				detected_this_pass = true
-				if !detected:
-					detected = true
+				detected_bodies_this_pass.append(body)
+				if !detected_bodies.has(body):
+					detected_bodies.append(body)
 					if body.has_method("detected"):
-						body.detected()
-					last_detected_body = body
+						body.detected(self)
 					emit_signal("body_detected", body)
 	
-	if detected_this_pass == false and detected == true:
-		detected = false
-		emit_signal("body_lost", last_detected_body)
+	if detected_bodies_this_pass.size() > 0:
+		var removed_bodies: Array[Node] = []
+		for detected_body in detected_bodies:
+			if !detected_bodies_this_pass.has(detected_body):
+				removed_bodies.append(detected_body)
+				
+		for removed_body in removed_bodies:
+			if removed_body.has_method("undetected"):
+				removed_body.undetected(self)
+			emit_signal("body_lost", removed_body)
+			var i = detected_bodies.find(removed_body)
+			detected_bodies.remove_at(i)

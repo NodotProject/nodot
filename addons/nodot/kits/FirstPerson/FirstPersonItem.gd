@@ -103,7 +103,7 @@ func connect_magazine() -> void:
 	if magazine_node:
 		if hitscan_node:
 			magazine_node.connect("discharged", func ():
-				hitscan_node.action.rpc()
+				hitscan_node.action.rpc(magazine_node.discharge_count)
 				)
 		if projectile_emitter_node:
 			magazine_node.connect("discharged", projectile_emitter_node.action)
