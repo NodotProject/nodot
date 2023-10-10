@@ -38,7 +38,7 @@ signal burned_out
 signal burn_progress(progress: float)
 
 var ignited: bool = false
-var non_burnables: Array[RID] = []
+var non_burnables: Array[Node] = []
 var spreadable: bool = false
 var burning_timer: float = 0.0
 var damage_tick: float = 0.0
@@ -47,13 +47,13 @@ var is_full_effect: bool = false
 
 func _ready():
 	if enabled and auto_ignite:
-		ignited = true
+		action()
 
 func _physics_process(delta):
 	if !enabled:
 		return
 		
-	if ignited and !permanent:
+	if ignited:
 		burning_timer += delta
 		if time_to_spread > burning_timer:
 			if !spreadable:
@@ -65,8 +65,9 @@ func _physics_process(delta):
 		elif time_to_burnout > burning_timer:
 			if !is_full_effect:
 				emit_signal("full_effect_reached")
-			effect_scale_percentage = 1.0 - ((burning_timer - time_to_full_effect) / (time_to_burnout - time_to_full_effect))
-		else:
+			if !permanent:
+				effect_scale_percentage = 1.0 - ((burning_timer - time_to_full_effect) / (time_to_burnout - time_to_full_effect))
+		elif !permanent:
 			enabled = false
 			reset()
 			emit_signal("burned_out")
@@ -79,20 +80,19 @@ func _physics_process(delta):
 			damage_tick = 0.0
 			health_node.add_health(-damage_per_second)
 		
-		emit_signal("burn_progress", burning_timer / time_to_burnout)
-
+		if !permanent:
+			emit_signal("burn_progress", burning_timer / time_to_burnout)
 		
-	if spreadable or permanent:
+	if ignited and (spreadable or permanent):
 		var bodies = target.get_colliding_bodies()
 		for body in bodies:
-			var rid = body.get_rid()
-			if !non_burnables.has(rid):
+			if !non_burnables.has(body):
 				var burnable = Nodot.get_first_child_of_type(body, Burnable3D)
 				if burnable and burnable.enabled and !burnable.ignited:
 					emit_signal("spreading_to", body)
 					burnable.action()
 				else:
-					non_burnables.append(rid)
+					non_burnables.append(body)
 		
 func action():
 	if enabled:

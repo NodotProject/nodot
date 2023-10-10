@@ -20,7 +20,11 @@ func _ready():
 func action():
 	if !enabled:
 		return
+	
+	var tree = get_tree()
+	if !tree:
+		return
 		
-	await get_tree().create_timer(wait_time, false).timeout
+	await tree.create_timer(wait_time, false).timeout
 	target.queue_free()
 	

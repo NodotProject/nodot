@@ -15,6 +15,8 @@ class_name Fire3D extends Node3D
 @export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
 ## The color of the sparks
 @export var sparks_color: Color = Color.YELLOW: set = _spark_color_set
+## Set the render priority
+@export var render_priority: int = 0: set = _set_render_priority
 ## Lock global rotation
 @export var lock_rotation: bool = true
 
@@ -69,6 +71,15 @@ func _smoke_color_set(new_value: Color):
 func _spark_color_set(new_value: Color):
 	sparks_color = new_value
 	set_colors()
+	
+func _set_render_priority(new_priority: int):
+	render_priority = new_priority
+	if fire_particle.draw_pass_1:
+		fire_particle.draw_pass_1.surface_get_material(0).render_priority = new_priority
+	if smoke_particle.draw_pass_1:
+		smoke_particle.draw_pass_1.surface_get_material(0).render_priority = new_priority
+	if spark_particle.draw_pass_1:
+		spark_particle.draw_pass_1.surface_get_material(0).render_priority = new_priority
 
 func _setup_fire_particle():
 	fire_particle.emitting = enabled
@@ -79,6 +90,7 @@ func _setup_fire_particle():
 	fire_particle.sorting_offset = 1.0
 	
 	var particle_material = ParticleProcessMaterial.new()
+	particle_material.render_priority = render_priority
 	fire_particle.process_material = particle_material
 	
 	particle_material.direction = Vector3.UP
@@ -128,6 +140,7 @@ func _setup_fire_particle():
 	mesh_material.particles_anim_loop = true
 	mesh_material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	mesh_material.billboard_keep_scale = true
+	mesh_material.render_priority = render_priority
 	quadmesh.material = mesh_material
 	
 	fire_particle.draw_pass_1 = quadmesh
@@ -143,6 +156,7 @@ func _setup_smoke_particle():
 	smoke_particle.draw_order = GPUParticles3D.DRAW_ORDER_INDEX
 	
 	var particle_material = ParticleProcessMaterial.new()
+	particle_material.render_priority = render_priority
 	smoke_particle.process_material = particle_material
 	
 	particle_material.direction = Vector3.UP
@@ -193,6 +207,7 @@ func _setup_smoke_particle():
 	mesh_material.particles_anim_loop = true
 	mesh_material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	mesh_material.billboard_keep_scale = true
+	mesh_material.render_priority = render_priority
 	quadmesh.material = mesh_material
 	
 	smoke_particle.draw_pass_1 = quadmesh
@@ -208,6 +223,7 @@ func _setup_sparks_particle():
 	spark_particle.draw_order = GPUParticles3D.DRAW_ORDER_INDEX
 	
 	var particle_material = ParticleProcessMaterial.new()
+	particle_material.render_priority = render_priority
 	spark_particle.process_material = particle_material
 	
 	particle_material.direction = Vector3.UP
@@ -249,6 +265,7 @@ func _setup_sparks_particle():
 	mesh_material.albedo_texture = spark_texture
 	mesh_material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	mesh_material.billboard_keep_scale = true
+	mesh_material.render_priority = render_priority
 	quadmesh.material = mesh_material
 	
 	spark_particle.draw_pass_1 = quadmesh
