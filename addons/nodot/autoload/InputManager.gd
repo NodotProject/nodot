@@ -3,6 +3,7 @@ extends Node
 
 var mouse_sensitivity: float = 0.5
 
+var default_input_actions: Dictionary
 var INPUT_KEY_SOURCE = {
 	KEYBOARD = 0,
 	MOUSE = 1,
@@ -10,15 +11,12 @@ var INPUT_KEY_SOURCE = {
 }
 
 func _ready():
+	default_input_actions = get_all_input_actions()
 	if SaveManager.config.hasItem("mouse_sensitivity"):
 		mouse_sensitivity = SaveManager.config.getItem("mouse_sensitivity")
 	if SaveManager.config.hasItem("input_actions"):
 		var input_actions = SaveManager.config.getItem("input_actions")
-		for action_name in input_actions:
-			if InputMap.has_action(action_name):
-				InputMap.action_erase_events(action_name)
-			for key_code in input_actions[action_name]:
-				add_action(action_name, key_code[1], key_code[0])
+		set_all_input_actions(input_actions)
 
 func register_action(action_name: String, default_key: int = -1, input_source: int = 0) -> void:
 	if InputMap.has_action(action_name):
@@ -74,7 +72,21 @@ func get_action_key(action: String) -> String:
 
 func save_config():
 	SaveManager.config.setItem("mouse_sensitivity", mouse_sensitivity)
-	
+	var input_actions = get_all_input_actions()
+	SaveManager.config.setItem("input_actions", input_actions)
+	SaveManager.save_config()
+
+func reset_to_defaults():
+	set_all_input_actions(default_input_actions)
+
+func set_all_input_actions(input_actions: Dictionary):
+	for action_name in input_actions:
+		if InputMap.has_action(action_name):
+			InputMap.action_erase_events(action_name)
+		for key_code in input_actions[action_name]:
+			add_action(action_name, key_code[1], key_code[0])
+				
+func get_all_input_actions() -> Dictionary:
 	var input_actions = {}
 	var actions = InputMap.get_actions()
 	for action_name in actions:
@@ -85,11 +97,13 @@ func save_config():
 		var key_codes = []
 		for event in InputMap.action_get_events(action_name):
 			if event is InputEventKey:
-				key_codes.append([0, event.keycode])
+				if event.keycode > 0:
+					key_codes.append([0, event.keycode])
 			if event is InputEventMouseButton:
 				key_codes.append([1, event.button_index])
 			if event is InputEventJoypadButton:
 				key_codes.append([2, event.button_index])
 		input_actions[action_name] = key_codes
-	SaveManager.config.setItem("input_actions", input_actions)
-	SaveManager.save_config()
+	
+	return input_actions
+	

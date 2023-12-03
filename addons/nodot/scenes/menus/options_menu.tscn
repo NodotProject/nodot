@@ -237,14 +237,31 @@ func _on_value_changed(value):
 resource_name = "keybindings"
 script/source = "extends GridContainer
 
+@export var reset_btn: Button
+@export var ignored_actions: Array[String] = [\"escape\"]
+
 var target_action_name: String = \"\"
 var target_key_name: String = \"\"
 var target_button: Button
 
 func _ready():
 	%InputEntryPanel.visible = false
+	reset_btn.connect(\"pressed\", reset)
+	await get_tree().process_frame
+	populate_controls()
+	
+func reset():
+	var children = get_children()
+	var labels = children.slice(0, 3)
+	for child in children:
+		if !labels.has(child):
+			child.queue_free()
+	InputManager.reset_to_defaults()
+	populate_controls()
+			
+func populate_controls():
 	for action in InputMap.get_actions():
-		if !action.begins_with(\"ui_\") and action != \"escape\":
+		if !action.begins_with(\"ui_\") and !ignored_actions.has(action):
 			var action_label: Label = Label.new()
 			var action_title = action.replace(\"_\", \" \")
 			action_title = action_title[0].to_upper() + action_title.substr(1, -1)
@@ -539,15 +556,21 @@ step = 0.05
 value = 0.5
 script = SubResource("GDScript_iaxat")
 
+[node name="ResetSettings" type="Button" parent="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer"]
+layout_mode = 2
+text = "Reset to default"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer"]
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer" node_paths=PackedStringArray("reset_btn")]
 layout_mode = 2
 theme_override_constants/h_separation = 30
 columns = 3
 script = SubResource("GDScript_ljq8r")
+reset_btn = NodePath("../../HBoxContainer/ResetSettings")
+ignored_actions = Array[String](["escape", "sprint", "zoom"])
 
 [node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer/GridContainer"]
 layout_mode = 2

@@ -121,7 +121,7 @@ seamless = true
 noise = SubResource("FastNoiseLite_pg80e")
 
 [resource]
-render_priority = 1
+render_priority = 0
 shader = SubResource("Shader_ty6yi")
 shader_parameter/albedo = Color(0.376471, 0.603922, 1, 1)
 shader_parameter/albedo2 = Color(0.203922, 0.266667, 1, 1)
