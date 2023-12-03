@@ -43,10 +43,7 @@ func save(slot: int = 0) -> void:
 
 
 ## Loads a save file and applies it to the nodes in the current scene
-func load(slot: int = 0, reload_scene: bool = false) -> void:
-	if reload_scene:
-		get_tree().reload_current_scene()
-		await get_tree().process_frame
+func load(slot: int = 0) -> void:
 
 	var file_path = "user://save%s.sav" % slot
 	if FileAccess.file_exists(file_path):

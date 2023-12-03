@@ -35,3 +35,6 @@ func get_next_item() -> Variant:
 		return items[0]
 	current_index += 1
 	return items[current_index]
+
+func get_size() -> int:
+	return items.size()

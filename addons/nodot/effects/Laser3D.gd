@@ -9,6 +9,12 @@ class_name Laser3D extends RayCast3D
 @export var laser_intensity: float = 1.5: set = set_laser_intensity
 ## The thickness of the laser (and raycast)
 @export_range(1, 5, 1) var thickness: int = 2: set = set_laser_thickness
+## Transparency
+@export var transparency: float = 0.2: set = set_transparency
+## GI Mode
+@export_enum("Disabled", "Static", "Dynamic") var gi_mode: int = 1: set = set_gi_mode
+## GI Lightmap Scale
+@export_enum("1x", "2x", "4x", "8x", "max") var gi_lightmap_scale: int = 0: set = set_lightmap_scale
 
 signal body_entered(body: Node3D)
 signal all_bodies_exited
@@ -20,18 +26,18 @@ var active_collider: Node3D
 func _enter_tree() -> void:
 	var laser_mesh = CylinderMesh.new()
 	laser_mesh_instance.cast_shadow = false
-	laser_mesh_instance.transparency = 0.2
 	laser_mesh_instance.mesh = laser_mesh
 	var laser_material = StandardMaterial3D.new()
-	laser_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	if transparency > 0.0:
+		laser_material.albedo_color.a = transparency
 	laser_material.albedo_color = laser_color
 	laser_material.emission_enabled = true
 	laser_material.emission = laser_color
 	laser_material.emission_energy_multiplier = laser_intensity
-	laser_material.rim_enabled = true
-	laser_material.rim = 0.3
 	laser_material.disable_receive_shadows = true
 	laser_mesh_instance.mesh.surface_set_material(0, laser_material)
+	laser_mesh_instance.gi_mode = gi_mode
+	laser_mesh_instance.gi_lightmap_scale = gi_lightmap_scale
 	add_child(laser_mesh_instance)
 	_realign_laser_mesh()
 
@@ -95,3 +101,15 @@ func set_laser_intensity(new_intensity: float) -> void:
 	var laser_material = laser_mesh_instance.get_active_material(0)
 	laser_material.emission_energy_multiplier = laser_intensity
 	
+func set_transparency(new_value: float):
+	transparency = new_value
+	if laser_mesh_instance and laser_mesh_instance.mesh and laser_mesh_instance.mesh.get_surface_count() > 0:
+		laser_mesh_instance.get_active_material(0).albedo_color.a = transparency
+	
+func set_gi_mode(new_value: int):
+	gi_mode = new_value
+	laser_mesh_instance.gi_mode = new_value
+	
+func set_lightmap_scale(new_value: int):
+	gi_lightmap_scale = new_value
+	laser_mesh_instance.gi_lightmap_scale = new_value

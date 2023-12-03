@@ -23,6 +23,7 @@ func hide_all() -> void:
 		child._hide()
 	active_menu = ""
 	active_menu_index = -1
+	emit_signal("menu_changed", -1)
 
 
 ## Change the active menu using the name of the node

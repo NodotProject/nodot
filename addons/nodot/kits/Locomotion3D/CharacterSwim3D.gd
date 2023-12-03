@@ -37,7 +37,6 @@ signal head_submerged
 signal head_surfaced
 
 var direction: Vector3 = Vector3.ZERO
-var camera: Camera3D
 var default_speed: float
 var submerged_water_area: WaterArea3D
 var is_submerged: bool = false
@@ -67,10 +66,6 @@ func _init():
 
 
 func ready():
-	if "camera" in character:
-		camera = character.camera
-		
-	
 	register_handled_states(["swim_idle", "swim", "surfaced"])
 	
 	swim_idle_state_id = sm.get_id_from_name("swim_idle")
@@ -154,11 +149,11 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 
 ## Check if the head (camera) is submerged
 func check_head_submerged() -> void:
-	if !is_head_submerged and camera.global_position.y < water_y_position:
+	if !is_head_submerged and character.camera.global_position.y < water_y_position:
 		is_head_submerged = true
 		submerged_water_area.water_mesh_instance.mesh.flip_faces = true
 		emit_signal("head_submerged")
-	elif is_head_submerged and camera.global_position.y >= water_y_position:
+	elif is_head_submerged and character.camera.global_position.y >= water_y_position:
 		is_head_submerged = false
 		submerged_water_area.water_mesh_instance.mesh.flip_faces = false
 		emit_signal("head_surfaced")

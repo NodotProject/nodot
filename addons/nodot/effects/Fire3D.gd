@@ -7,6 +7,8 @@ class_name Fire3D extends Node3D
 @export var enabled: bool = true
 ## The shape the fire will emit from
 @export var emission_shape: Shape3D: set = _emission_shape_set
+## The direction of the fire
+@export var emission_direction: Vector3 = Vector3.UP: set = _emission_direction_set
 ## The scale (size) of each particle
 @export var effect_scale: float = 1.0: set = _effect_scale_set
 ## The color of the fire
@@ -56,6 +58,15 @@ func _emission_shape_set(new_shape: Shape3D = emission_shape):
 	build_emission_shape(new_shape)
 	emission_shape = new_shape
 	
+func _emission_direction_set(new_direction: Vector3):
+	emission_direction = new_direction
+	if fire_particle.process_material:
+		fire_particle.process_material.direction = new_direction
+	if smoke_particle.process_material:
+		smoke_particle.process_material.direction = new_direction
+	if spark_particle.process_material:
+		spark_particle.process_material.direction = new_direction
+	
 func _effect_scale_set(new_effect_scale: float = effect_scale):
 	effect_scale = new_effect_scale
 	set_effect_scale()
@@ -93,7 +104,7 @@ func _setup_fire_particle():
 	particle_material.render_priority = render_priority
 	fire_particle.process_material = particle_material
 	
-	particle_material.direction = Vector3.UP
+	particle_material.direction = emission_direction
 	particle_material.spread = 0
 	particle_material.gravity = Vector3.ZERO
 	particle_material.initial_velocity_min = 0.1
@@ -159,7 +170,7 @@ func _setup_smoke_particle():
 	particle_material.render_priority = render_priority
 	smoke_particle.process_material = particle_material
 	
-	particle_material.direction = Vector3.UP
+	particle_material.direction = emission_direction
 	particle_material.spread = 0
 	particle_material.gravity = Vector3.ZERO
 	particle_material.initial_velocity_min = 0.5
@@ -226,7 +237,7 @@ func _setup_sparks_particle():
 	particle_material.render_priority = render_priority
 	spark_particle.process_material = particle_material
 	
-	particle_material.direction = Vector3.UP
+	particle_material.direction = emission_direction
 	particle_material.spread = 40
 	particle_material.flatness = 0.25
 	particle_material.gravity = Vector3.ZERO
