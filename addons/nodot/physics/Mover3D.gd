@@ -44,8 +44,8 @@ signal movement_ended
 )
 var transition_type: int = 0
 
-var original_position: Vector3
-var original_rotation: Vector3
+var original_position: Vector3 = Vector3.ZERO
+var original_rotation: Vector3 = Vector3.ZERO
 var activated: bool = false
 
 
@@ -79,7 +79,8 @@ func deactivate():
 
 func move_to_destination():
 	var final_destination_position = destination_position
-	original_position = target_node.position
+	if target_node:
+		original_position = target_node.position
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
 

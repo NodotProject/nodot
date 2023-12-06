@@ -48,7 +48,7 @@ resource_name = "loadbtn"
 script/source = "extends Button
 
 func _on_pressed():
-	SaveManager.load(0, true)
+	SaveManager.load(0)
 	%PauseNode.toggle()
 "
 

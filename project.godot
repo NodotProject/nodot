@@ -11,12 +11,11 @@ config_version=5
 [application]
 
 config/name="Nodot"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-WindowManager="*res://addons/nodot/autoload/WindowManager.gd"
 SaveManager="*res://addons/nodot/autoload/SaveManager.gd"
 GlobalSignal="*res://addons/nodot/autoload/GlobalSignal.gd"
 PlayerManager="*res://addons/nodot/autoload/PlayerManager.gd"

@@ -9,8 +9,8 @@ signal broken
 @export var replacement_node: Node3D
 ## A value to propel pieces away from the center when the object is broken
 @export var explosion_force: float = 1.0
-## Environmental damage (i.e fall damage) (lower is more fragile) (0.0 for no environmental damage)
-@export var environmental_damage: float = 0.0
+## Environmental damage minimum velocity (i.e fall damage) (lower is more fragile) (0.0 for no environmental damage)
+@export var environmental_damage_min_velocity: float = 0.0
 ## How much damage to deal based on the velocity (higher is more)
 @export var environmental_damage_multiplier: float = 1.0
 
@@ -40,20 +40,18 @@ func _enter_tree() -> void:
 			health = child
 			health.connect("health_depleted", action)
 
-	if environmental_damage > 0.0:
+	if environmental_damage_min_velocity > 0.0:
 		contact_monitor = true
 		if max_contacts_reported == 0:
 			max_contacts_reported = 1
 
 
 func _physics_process(delta: float) -> void:
-	if environmental_damage > 0 and contact_monitor and get_contact_count() > 0:
-		var total_velocity: float = (
-			abs(linear_velocity.x) + abs(linear_velocity.y) + abs(linear_velocity.z)
-		)
-		if total_velocity > environmental_damage:
-			var multiplier = total_velocity / environmental_damage
-			var damage = environmental_damage_multiplier * (environmental_damage * multiplier)
+	if environmental_damage_min_velocity > 0 and contact_monitor and get_contact_count() > 0:
+		var max_velocity: float = max(linear_velocity.x, linear_velocity.y, linear_velocity.z)
+		if max_velocity > environmental_damage_min_velocity:
+			var multiplier = max_velocity / environmental_damage_min_velocity
+			var damage = environmental_damage_multiplier * (environmental_damage_min_velocity * multiplier)
 			health.add_health(-damage)
 
 
