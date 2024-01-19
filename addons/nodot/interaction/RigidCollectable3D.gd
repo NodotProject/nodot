@@ -34,8 +34,6 @@ func _enter_tree():
 		actual_collectable_root_node = get_node(collectable_root_node)
 		
 	CollectableManager.add(self)
-	if collect_on_collision:
-		connect("character_collided", interact)
 
 func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 	if !enabled or disable_player_collect or !player_node.has_method("collect") or !player_node.collect(self):

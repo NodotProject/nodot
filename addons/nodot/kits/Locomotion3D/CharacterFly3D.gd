@@ -28,9 +28,16 @@ var direction: Vector3 = Vector3.ZERO
 var fly_doubletap_timeleft: float = 0.0
 
 func ready():
+	setup()
+	
+func _on_enabled_changed(new_value: bool):
+	enabled = new_value
+	setup()
+	
+func setup():
 	if !enabled:
 		return
-	
+		
 	InputManager.register_action(left_action, KEY_A)
 	InputManager.register_action(right_action, KEY_D)
 	InputManager.register_action(up_action, KEY_W)

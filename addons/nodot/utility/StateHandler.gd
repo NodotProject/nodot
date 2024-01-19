@@ -3,7 +3,7 @@
 class_name StateHandler extends Nodot
 
 ## Enable/disable this node.
-@export var enabled : bool = true
+@export var enabled : bool = true: set = _on_enabled_changed
 ## The StateMachine to attach this handler to
 @export var sm: StateMachine
 ## Run process/physics even when the state is unhandled
@@ -37,6 +37,9 @@ func _process(delta):
 	
 func _input(event: InputEvent) -> void:		
 	input(event)
+	
+func _on_enabled_changed(new_value: bool):
+	enabled = new_value
 
 ## Registers a set of states that the node handles
 func register_handled_states(new_states: Array[String]):

@@ -84,36 +84,30 @@ func update_text():
 	text = str(VideoManager.screen)
 "
 
-[sub_resource type="GDScript" id="GDScript_g05di"]
-resource_name = "fpslimit"
-script/source = "extends TextEdit
+[sub_resource type="GDScript" id="GDScript_j2da2"]
+script/source = "extends MenuButton
 
+@onready var popup = get_popup()
 
-# Called when the node enters the scene tree for the first time.
+var frame_rates = [0, 25, 30, 60, 144, 240, 360]
+
 func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _on_text_changed():
-	var regex = RegEx.new()
-	regex.compile(\"[0-9]\")
+	popup.connect(\"id_pressed\", _on_pressed)
+	update_text()
 	
-	var matches = regex.search_all(text)
-	var new_text: String = \"\"
-	if matches:
-		for r_match in matches:
-			new_text += r_match.get_string()
-	text = new_text
-	set_caret_column(text.length())
-	if text != \"\":
-		var fps_limit = int(text)
-		VideoManager.fps_limit = fps_limit
-	
+func _on_pressed(item_id: int):
+	match item_id:
+		0: VideoManager.fps_limit = frame_rates[0]
+		1: VideoManager.fps_limit = frame_rates[1]
+		2: VideoManager.fps_limit = frame_rates[2]
+		3: VideoManager.fps_limit = frame_rates[3]
+		4: VideoManager.fps_limit = frame_rates[4]
+		5: VideoManager.fps_limit = frame_rates[5]
+		6: VideoManager.fps_limit = frame_rates[6]
+	update_text()
+			
+func update_text():
+	text = popup.get_item_text(frame_rates.find(VideoManager.fps_limit))
 "
 
 [sub_resource type="GDScript" id="GDScript_f8lsk"]
@@ -424,11 +418,9 @@ script = SubResource("GDScript_61kd7")
 layout_mode = 2
 text = "FPS Limit"
 
-[node name="FPSLimitTextInput" type="TextEdit" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="FPSLimitMenuButton" type="MenuButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
 layout_mode = 2
-text = "0"
-scroll_fit_content_height = true
-script = SubResource("GDScript_g05di")
+script = SubResource("GDScript_j2da2")
 
 [node name="Label4" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
 layout_mode = 2
@@ -616,7 +608,6 @@ text = "Press Any Key..."
 
 [connection signal="tab_selected" from="Control/MarginContainer/VBoxContainer/HBoxContainer/TabBar" to="Control/MarginContainer/VBoxContainer/HBoxContainer/TabBar" method="_on_tab_selected"]
 [connection signal="pressed" from="Control/MarginContainer/VBoxContainer/HBoxContainer/CloseButton" to="Control/MarginContainer/VBoxContainer/HBoxContainer/CloseButton" method="_on_pressed"]
-[connection signal="text_changed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/FPSLimitTextInput" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/FPSLimitTextInput" method="_on_text_changed"]
 [connection signal="pressed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_pressed"]
 [connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" method="_on_value_changed"]
 [connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" method="_on_value_changed"]

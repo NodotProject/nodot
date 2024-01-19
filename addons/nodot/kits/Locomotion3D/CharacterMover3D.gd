@@ -164,3 +164,5 @@ func move_ground(delta: float) -> void:
 	if slide_distance > step_distance or !character._is_on_floor():
 		character.global_position = slide_position
 	# --- Step up logic ---
+	
+	character.velocity.y = lerp(character.velocity.y, 0.0, delta * 2.0)

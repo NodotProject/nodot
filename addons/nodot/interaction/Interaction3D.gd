@@ -21,9 +21,14 @@ signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_n
 @export var max_mass: float = 10.0
 ## The distance away from the raycast origin to carry the object
 @export var carry_distance: float = 2.0
+## The maximum distance away from the raycast origin before the object is dropped
+@export var max_carry_distance: float = 2.0
+## The force of throwing the carried body
+@export var throw_force: float = 250.0;
 
 # RigidBody3D or null being carried
 var carried_body: RigidBody3D
+var carried_body_gravity_scale: float = 1.0
 var carried_body_width: float = 0.0
 var label3d: Label3D
 var last_collider: Node3D
@@ -37,6 +42,9 @@ func _enter_tree():
 	label3d.font_size = font_size
 	label3d.modulate = font_color
 	label3d.position.z = -2
+	label3d.render_priority = 5
+	label3d.outline_render_priority = 4
+	label3d.no_depth_test = true
 	add_child(label3d)
 	
 func _ready():
@@ -66,6 +74,13 @@ func _physics_process(delta):
 		if not multiplayer.is_server(): return
 		
 		var carry_position = global_transform.origin - global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
+		var current_carry_distance = carried_body.global_position.distance_to(global_position)
+		if current_carry_distance > carry_distance + max_carry_distance:
+			carry_end();
+			return
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			throw();
+			return;
 		var speed = carried_body.global_position.distance_to(carry_position) * 500
 		carried_body.linear_velocity = carried_body.global_transform.origin.direction_to(carry_position) * speed * delta
 		var rotate_speed: float = 10.0 * delta
@@ -94,6 +109,7 @@ func _physics_process(delta):
 func carry_begin(collider: Node):
 	if enable_pickup and is_instance_valid(collider) and collider is RigidBody3D and collider.mass <= max_mass:
 		carried_body = collider
+		carried_body_gravity_scale = collider.gravity_scale
 		var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
 		if carried_body_mesh:
 			var mesh_size = carried_body_mesh.get_aabb().size
@@ -103,7 +119,15 @@ func carry_begin(collider: Node):
 		
 func carry_end():
 	if is_instance_valid(carried_body):
-		carried_body.gravity_scale = 1.0
+		carried_body.gravity_scale = carried_body_gravity_scale
+		emit_signal("carry_ended", carried_body)
+		carried_body = null
+
+func throw():
+	if is_instance_valid(carried_body):
+		carried_body.gravity_scale = carried_body_gravity_scale
+		
+		carried_body.apply_force(-global_transform.basis.z * throw_force);
 		emit_signal("carry_ended", carried_body)
 		carried_body = null
 

@@ -20,7 +20,13 @@ var health: Health
 var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
 var was_on_floor: bool = false
+# Velocity of the previous frame
 var previous_velocity: float = 0.0
+# Peak velocity of the last 0.1 seconds
+var peak_recent_velocity: Vector3 = Vector3.ZERO
+var peak_recent_velocity_timer: float = 0.0
+var character_colliders: UniqueSet = UniqueSet.new()
+var terminal_velocity := 190.0
 
 func _enter_tree() -> void:
 	if !sm:
@@ -67,12 +73,16 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_authority(): return
 	
-	var collision = get_last_slide_collision()
-	if collision:
-		for i in collision.get_collision_count():
-			var collider = collision.get_collider(i)
-			if collider and collider.has_method("_on_character_collide"):
-				collider._on_character_collide(self)
+	peak_recent_velocity_timer += delta
+	if peak_recent_velocity_timer > 0.1:
+		peak_recent_velocity_timer = 0.0
+	else:
+		var max_velocity = max(abs(velocity.x), abs(velocity.y), abs(velocity.z))
+		var old_max_velocity = max(abs(peak_recent_velocity.x), abs(peak_recent_velocity.y), abs(peak_recent_velocity.z))
+		if old_max_velocity < max_velocity:
+			peak_recent_velocity = cap_velocity(velocity)
+		else:
+			peak_recent_velocity = lerp(peak_recent_velocity, Vector3.ZERO, delta)
 	
 	if !health or fall_damage_multiplier <= 0.0:
 		return
@@ -89,6 +99,10 @@ func _physics_process(delta: float) -> void:
 			previous_velocity = velocity.y
 	was_on_floor = on_floor
 
+func _is_current_player_changed(new_value: bool):
+	is_current_player = new_value
+	input_enabled = new_value
+	
 ## Add collectables to collectable inventory
 func collect(node: Node3D) -> bool:
 	if not is_host(): return false
@@ -102,3 +116,12 @@ func set_current_player():
 	is_current_player = true
 	PlayerManager.node = self
 	set_current_camera(camera)
+
+func cap_velocity(velocity: Vector3) -> Vector3:
+	# Check if the velocity exceeds the terminal velocity
+	if velocity.length() > terminal_velocity:
+		# Cap the velocity to the terminal velocity, maintaining direction
+		return velocity.normalized() * terminal_velocity
+	else:
+		# If it's below terminal velocity, return it unchanged
+		return velocity
