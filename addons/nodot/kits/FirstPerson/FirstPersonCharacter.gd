@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 				emit_signal("fall_damage", damage)
 		else:
 			previous_velocity = velocity.y
-	was_on_floor = on_floor
+	was_on_floor = on_floor != null
 
 func _is_current_player_changed(new_value: bool):
 	is_current_player = new_value

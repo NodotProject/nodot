@@ -101,19 +101,6 @@ func change_item(new_index: int) -> void:
 	if active_item_index < item_count:
 		emit_signal("item_change", items[active_item_index])
 
-func activate_current_item():
-	is_item_active = true;
-	var items: Array = get_all_items();
-	if GameManager.has_item(active_item_index):
-		await (items[active_item_index] as FirstPersonItem).activate();
-
-func deactivate_current_item():
-	is_item_active = false;
-	var items: Array = get_all_items();
-	var item_count: int = items.size();
-	if active_item_index < item_count:
-		await (items[active_item_index] as FirstPersonItem).deactivate();
-		
 func unlock_item(item_index: int):
 	var items: Array = get_all_items()
 	if items.size() <= item_index: return
