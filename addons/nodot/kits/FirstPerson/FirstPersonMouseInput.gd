@@ -7,6 +7,7 @@ class_name FirstPersonMouseInput extends Nodot
 @export var enabled := true
 ## Custom mouse cursor
 @export var custom_cursor := false
+@export var fps_item_container: FirstPersonItemsContainer
 
 @export_category("Input Actions")
 ## The input action name for selecting the next item
@@ -19,20 +20,17 @@ class_name FirstPersonMouseInput extends Nodot
 @export var zoom_action: String = "zoom"
 
 @onready var character: FirstPersonCharacter = get_parent()
-@onready var fps_viewport: FirstPersonViewport
 
 var head: Node3D
 var is_editor: bool = Engine.is_editor_hint()
 var mouse_rotation: Vector2 = Vector2.ZERO
 var cursor_show_state = Input.MOUSE_MODE_VISIBLE
 
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !(get_parent() is FirstPersonCharacter):
 		warnings.append("Parent should be a FirstPersonCharacter")
 	return warnings
-
 
 func _init():
 	var action_names = [item_next_action, item_previous_action, action_action, zoom_action]
@@ -45,7 +43,6 @@ func _init():
 			InputMap.add_action(action_name)
 			InputManager.add_action_event_mouse(action_name, default_keys[i])
 
-
 func _ready() -> void:
 	if not character.is_authority(): return
 	
@@ -54,15 +51,9 @@ func _ready() -> void:
 
 	if custom_cursor:
 		cursor_show_state = Input.MOUSE_MODE_HIDDEN
-		
-	# If there is a viewport, set it
-	for child in character.get_children():
-		if child is FirstPersonViewport:
-			fps_viewport = child
 
 	if character.has_node("Head"):
 		head = character.get_node("Head")
-
 
 func _input(event: InputEvent) -> void:
 	if not character.is_authority_owner(): return
@@ -71,13 +62,12 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
 		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
-	
-	if fps_viewport:
-		if event.is_action_pressed(item_next_action):
-			fps_viewport.next_item()
-		elif event.is_action_pressed(item_previous_action):
-			fps_viewport.previous_item()
 
+	if fps_item_container:
+		if event.is_action_pressed(item_next_action):
+			fps_item_container.next_item()
+		elif event.is_action_pressed(item_previous_action):
+			fps_item_container.previous_item()
 
 func _physics_process(delta: float) -> void:
 	
@@ -97,20 +87,20 @@ func _physics_process(delta: float) -> void:
 	head.rotation.y = 0
 	mouse_rotation = Vector2.ZERO
 	
-	if fps_viewport:
+	if fps_item_container:
 		if Input.is_action_pressed(action_action):
-			fps_viewport.action()
+			fps_item_container.action()
+		if Input.is_action_just_released(action_action):
+			fps_item_container.release_action();
 		elif Input.is_action_just_pressed(zoom_action):
-			fps_viewport.zoom()
+			fps_item_container.zoom()
 		elif Input.is_action_just_released(zoom_action):
-			fps_viewport.zoomout()
-
+			fps_item_container.zoomout()
 
 ## Disable input and release mouse
 func disable() -> void:
 	Input.set_mouse_mode(cursor_show_state)
 	enabled = false
-
 
 ## Enable input and capture mouse
 func enable() -> void:

@@ -5,6 +5,7 @@ class_name Nodot extends Node
 
 ## Returns all children of a given type
 static func get_children_of_type(parent: Node, type: Variant) -> Array[Node]:
+	if !parent: return []
 	var found_children: Array[Node] = []
 	for child in parent.get_children():
 		if is_instance_of(child, type):

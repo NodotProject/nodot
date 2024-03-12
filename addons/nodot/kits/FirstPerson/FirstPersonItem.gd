@@ -3,6 +3,8 @@
 ## An item used in first person games. i.e sword, gun, hands.
 class_name FirstPersonItem extends Nodot3D
 
+## If the weapon is allowed to be used or not
+@export var unlocked: bool = true
 ## If the weapon is visible or not
 @export var active: bool = false
 ## (optional) The mesh of the weapon
@@ -18,16 +20,16 @@ class_name FirstPersonItem extends Nodot3D
 signal activated
 ## Triggered when the item is deactivated
 signal deactivated
+signal discharged
 
 ## Not exported as FirstPersonIronSight must be a child node of the FirstPersonItem
 var ironsight_node: FirstPersonIronSight
 var crosshair_node: CrossHair
 
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-	if !(get_parent() is FirstPersonViewport):
-		warnings.append("Parent should be a FirstPersonViewport")
+	if !(get_parent() is FirstPersonItemsContainer):
+		warnings.append("Parent should be a FirstPersonItemsContainer")
 	return warnings
 
 
@@ -52,7 +54,11 @@ func _ready() -> void:
 		activate()
 	else:
 		deactivate()
-
+		
+	if magazine_node:
+		magazine_node.connect("discharged", func() :
+			emit_signal("discharged")
+			)
 
 ## Async function to activate the weapon. i.e animate it onto the screen.
 func activate() -> void:
@@ -67,10 +73,10 @@ func activate() -> void:
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
 func deactivate() -> void:
 	active = false
-	visible = false
 	for child in get_children():
 		if child.has_method("deactivate"):
-			child.deactivate()
+			await child.deactivate()
+	visible = false
 	emit_signal("deactivated")
 
 
@@ -79,6 +85,14 @@ func action() -> void:
 	if magazine_node:
 		magazine_node.action()
 
+	for child in get_children():
+		if child.has_method("action_performed"):
+			await child.action_performed()
+
+## Triggered when the item fire is released (i.e on left click release)
+func release_action() -> void:
+	if magazine_node:
+		magazine_node.release_action()
 
 ## Triggered when the zoom/ironsight button is pressed
 func zoom() -> void:
@@ -103,7 +117,7 @@ func connect_magazine() -> void:
 	if magazine_node:
 		if hitscan_node:
 			magazine_node.connect("discharged", func ():
-				hitscan_node.action.rpc(magazine_node.discharge_count)
+				hitscan_node.action.rpc(magazine_node.discharge_count, magazine_node.charge_amount)
 				)
 		if projectile_emitter_node:
 			magazine_node.connect("discharged", projectile_emitter_node.action)

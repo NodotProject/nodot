@@ -8,16 +8,18 @@ class_name SFXArea3D extends Area3D
 @export var use_pause: bool = true
 
 var is_editor: bool = Engine.is_editor_hint()
-var player: SFXPlayer3D
+var player
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-	if !Nodot.get_first_child_of_type(self, SFXPlayer3D):
-		warnings.append("Should contain at least one SFXPlayer3D")
+	if !Nodot.get_first_child_of_type(self, SFXPlayer3D) and !Nodot.get_first_child_of_type(self, SFXPlayer):
+		warnings.append("Should contain at least one SFXPlayer3D or SFXPlayer")
 	return warnings
 
 func _enter_tree():
 	player = Nodot.get_first_child_of_type(self, SFXPlayer3D)
+	if !player:
+		player = Nodot.get_first_child_of_type(self, SFXPlayer)
 	if is_editor or !enabled or !player: return
 	
 	connect("body_entered", _detect_character_and_play)

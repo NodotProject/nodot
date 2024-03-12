@@ -38,33 +38,40 @@ var time: float
 
 
 func _enter_tree() -> void:	
-	var collider_shape  # TODO: Missing type
+	var collider_shape: Shape3D
+	var shape_extents: Vector3
+	
 	for child in get_children():
 		if child is CollisionShape3D:
 			collider_shape = child.shape
+			shape_extents = collider_shape.get_debug_mesh().get_aabb().size
 
-	var waterMesh = QuadMesh.new()
-	waterMesh.orientation = QuadMesh.FACE_Y
+	var water_mesh = QuadMesh.new()
+	water_mesh.orientation = QuadMesh.FACE_Y
 
 	if collider_shape is BoxShape3D:
-		waterMesh.size = Vector2(collider_shape.size.x, collider_shape.size.z)
-	if collider_shape is CylinderShape3D:
-		waterMesh.size = Vector2(collider_shape.radius * 2, collider_shape.radius * 2)
-
-	waterMesh.subdivide_width = 200
-	waterMesh.subdivide_depth = 200
-	waterMesh.material = water_shader
-	water_mesh_instance.mesh = waterMesh
+		water_mesh.size = Vector2(collider_shape.size.x, collider_shape.size.z)
+	elif collider_shape is CylinderShape3D:
+		water_mesh.size = Vector2(collider_shape.radius * 2, collider_shape.radius * 2)
+	else:
+		water_mesh.size = Vector2(shape_extents.x, shape_extents.z)
+	
+	water_mesh.subdivide_width = 200
+	water_mesh.subdivide_depth = 200
+	water_mesh.material = water_shader
+	water_mesh_instance.mesh = water_mesh
 	water_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	if collider_shape is BoxShape3D:
 		water_mesh_instance.position.y = collider_shape.size.y / 2
-	if collider_shape is CylinderShape3D:
+	elif collider_shape is CylinderShape3D:
 		water_mesh_instance.position.y = collider_shape.height / 2
+	else:
+		water_mesh_instance.position.y = shape_extents.y / 2
 
 	add_child(water_mesh_instance)
 
-	material = waterMesh.surface_get_material(0)
+	material = water_mesh.surface_get_material(0)
 	noise = material.get_shader_parameter("wave").noise.get_seamless_image(512, 512)
 	noise_scale = material.get_shader_parameter("noise_scale")
 	wave_speed = material.get_shader_parameter("wave_speed")

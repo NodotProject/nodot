@@ -10,6 +10,7 @@ signal body_lost(body: Node3D)
 
 var detected_bodies: Array[Node] = []
 
+
 func _physics_process(_delta):
 	if !enabled:
 		return
@@ -47,16 +48,16 @@ func _physics_process(_delta):
 					if body.has_method("detected"):
 						body.detected(self)
 					emit_signal("body_detected", body)
-	
-	if detected_bodies_this_pass.size() > 0:
-		var removed_bodies: Array[Node] = []
-		for detected_body in detected_bodies:
-			if !detected_bodies_this_pass.has(detected_body):
-				removed_bodies.append(detected_body)
-				
-		for removed_body in removed_bodies:
-			if removed_body.has_method("undetected"):
-				removed_body.undetected(self)
-			emit_signal("body_lost", removed_body)
-			var i = detected_bodies.find(removed_body)
-			detected_bodies.remove_at(i)
+
+
+	var removed_bodies: Array[Node] = []
+	for detected_body in detected_bodies:
+		if !detected_bodies_this_pass.has(detected_body):
+			removed_bodies.append(detected_body)
+			
+	for removed_body in removed_bodies:
+		if removed_body.has_method("undetected"):
+			removed_body.undetected(self)
+		emit_signal("body_lost", removed_body)
+		var i = detected_bodies.find(removed_body)
+		detected_bodies.remove_at(i)
