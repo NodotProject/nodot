@@ -19,16 +19,18 @@ class_name HitScan3D extends Nodot3D
 ## Reverses the damage to heal instead
 @export var healing: bool = false
 
-signal target_hit(hit_target: HitTarget)
+signal target_hit(hit_target: HitTarget);
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
+var charge_amount: float = 0.0;
 
 ## Execute the hitscan
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 @rpc("any_peer", "call_local")
-func action(dispatch_count: int = 1) -> void:
+func action(dispatch_count: int = 1, _charge_amount: float = 0.0) -> void:
 	if enabled:
+		charge_amount = _charge_amount;
 		for i in dispatch_count:
 			if accuracy > 0.0:
 				aim_raycast()
@@ -83,7 +85,7 @@ func get_hit_target():
 				final_damage = -final_damage
 			collider_health.add_health(final_damage)
 	
-	emit_signal("target_hit", hit_target)
+	emit_signal("target_hit", hit_target);
 	return hit_target
 
 

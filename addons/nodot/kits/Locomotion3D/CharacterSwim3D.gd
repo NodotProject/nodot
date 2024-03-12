@@ -57,7 +57,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _init():
 	var action_names = [ascend_action, descend_action]
-	var default_keys = [KEY_SPACE, KEY_C]
+	var default_keys = [KEY_SPACE, KEY_CTRL]
 	for i in action_names.size():
 		var action_name = action_names[i]
 		if not InputMap.has_action(action_name):
@@ -115,8 +115,9 @@ func swim(delta: float) -> void:
 		sm.set_state(swim_state_id)
 	else:
 		sm.set_state(swim_idle_state_id)
-		
-	character.velocity.y -= submerged_gravity * delta
+	
+	var new_y_velocity = clamp(character.velocity.y - submerged_gravity * delta, -3.0, 3.0)
+	character.velocity.y = lerp(character.velocity.y, new_y_velocity, 0.025)
 	var jump_pressed: bool = Input.is_action_pressed(ascend_action)
 	if jump_pressed:
 		character.velocity.y = lerp(character.velocity.y, submerge_speed, delta)
@@ -144,6 +145,10 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 	if is_submerged:
 		emit_signal("submerged")
 	else:
+		is_head_submerged = false
+		submerged_water_area.water_mesh_instance.mesh.flip_faces = false
+		emit_signal("head_surfaced")
+		sm.set_state(surfaced_state_id)
 		emit_signal("surfaced")
 
 

@@ -31,7 +31,6 @@ func _enter_tree() -> void:
 	elif !trigger_node.is_connected(trigger_signal, action):
 		trigger_node.connect(trigger_signal, action)
 
-
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:
 	var sfx_size: int = sfx.size()

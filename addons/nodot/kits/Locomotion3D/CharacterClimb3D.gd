@@ -67,6 +67,6 @@ func physics(delta: float):
 		if is_on_floor and was_on_floor == false:
 			sm.set_state(state_ids["idle"])
 		
-		was_on_floor = is_on_floor
+		was_on_floor = is_on_floor != null
 			
 		character.move_and_slide()

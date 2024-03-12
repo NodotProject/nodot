@@ -21,7 +21,7 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 ## The name of the signal
 var trigger_signal: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-var original_volume = volume_db
+var original_volume: float
 
 func _enter_tree() -> void:
 	if trigger_signal == "": return
@@ -30,7 +30,9 @@ func _enter_tree() -> void:
 		trigger_node.connect(trigger_signal, action.unbind(unbind_count))
 	elif !trigger_node.is_connected(trigger_signal, action):
 		trigger_node.connect(trigger_signal, action)
-
+		
+func _ready():
+	original_volume = volume_db
 
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:

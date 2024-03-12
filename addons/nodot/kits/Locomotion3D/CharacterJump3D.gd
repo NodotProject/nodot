@@ -43,4 +43,5 @@ func physics(delta: float) -> void:
 		sm.set_state(state_ids["jump"])
 	elif sm.state == state_ids["jump"]:
 		sm.set_state(state_ids["land"])
-		
+	elif sm.state == state_ids["land"]:
+		sm.set_state(state_ids["idle"])

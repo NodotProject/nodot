@@ -80,6 +80,7 @@ script = SubResource("GDScript_ymbmu")
 menu_container = NodePath("../../../..")
 
 [node name="StartGameButton" type="Button" parent="Control/CenterContainer/VBoxContainer/StartGameButton" node_paths=PackedStringArray("menu_container")]
+layout_mode = 0
 text = "Start Game"
 script = SubResource("GDScript_ymbmu")
 menu_container = NodePath("../../../../..")

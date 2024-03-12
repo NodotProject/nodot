@@ -1,6 +1,10 @@
 ## A magazine (for example, a gun magazine or crossbow) that can be used to manage ammunition and fire rates
 class_name Magazine extends Nodot
 
+## For weapons with charging
+@export var charge_weapon: bool = false;
+## How fast a weapon charges
+@export var charge_speed: float = 50;
 ## Total rounds per magazine
 @export var capacity: int = 10
 ## Rounds available other than the loaded rounds (-1 for infinite)
@@ -18,6 +22,11 @@ class_name Magazine extends Nodot
 ## Number of rounds currently loaded
 @export var rounds_left: int = capacity
 
+
+## Emitted when a charge is started (When charge weapon)
+signal charge_started(speed: float)
+## Emitted when a charge is released (When charge weapon)
+signal charge_released(amount: float)
 ## Emitted when there are no rounds left in the chamber
 signal magazine_depleted
 ## Emitted when there is no supply left at all
@@ -30,8 +39,14 @@ signal discharged
 var time_since_last_fired: float = fire_rate
 var time_since_last_reload: float = reload_time
 
+var charge_amount: float = 0.0;
+var is_charging: bool = false;
+
 
 func _physics_process(delta: float) -> void:
+	if is_charging:
+		charge_amount += charge_speed * delta;
+	
 	# Safely limit how big these numbers can get
 	if time_since_last_fired < fire_rate * 2:
 		time_since_last_fired += delta
@@ -41,12 +56,20 @@ func _physics_process(delta: float) -> void:
 
 ## Dispatches a round
 func action() -> void:
+	if charge_weapon:
+		if time_since_last_fired < fire_rate: return;
+		if not is_charging:
+			GlobalSignal.trigger_signal("charge_started", charge_speed);
+			is_charging = true;
+			time_since_last_fired = 0
+		return;
+	
 	# Return if reloading
 	if time_since_last_reload < reload_time:
 		return
 
 	# If there are enough rounds left in the chamber
-	if rounds_left - discharge_count < 0:
+	if capacity > -1 and rounds_left - discharge_count < 0:
 		if auto_reload:
 			reload()
 		emit_signal("magazine_depleted")
@@ -57,6 +80,15 @@ func action() -> void:
 		if supply_count != -1 and supply_count < discharge_count:
 			emit_signal("supply_depleted")
 		time_since_last_fired = 0
+
+
+## When charge is released
+func release_action():
+	if is_charging:
+		is_charging = false;
+		emit_signal("charge_released", charge_amount)
+		emit_signal("discharged")
+		charge_amount = 0;
 
 
 ## Initiates a reload of the magazine
