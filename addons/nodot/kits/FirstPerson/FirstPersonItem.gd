@@ -44,9 +44,7 @@ func _ready() -> void:
 	connect_magazine()
 
 	if mesh:
-		var camera_cull_mask_layer: int = get_parent().camera_cull_mask_layer
 		var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-		mesh_instance.layers = camera_cull_mask_layer
 		mesh_instance.mesh = mesh
 		add_child(mesh_instance)
 

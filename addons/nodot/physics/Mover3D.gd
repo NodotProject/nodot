@@ -88,10 +88,10 @@ func deactivate():
 
 func move_to_destination():
 	var final_destination_position = destination_position
-	if relative_destination_position != null:
+	if relative_destination_position:
 		final_destination_position = original_position + destination_position
 
-	if final_destination_position == target_node.position:
+	if final_destination_position == position:
 		return
 
 	activated = true
@@ -101,7 +101,7 @@ func move_to_destination():
 		deg_to_rad(destination_rotation.y),
 		deg_to_rad(destination_rotation.z)
 	)
-	if final_destination_position != null:
+	if final_destination_position:
 		(
 			destination_tween
 			. parallel()
@@ -124,12 +124,12 @@ func move_to_destination():
 
 
 func move_to_origin():
-	if target_node.position == original_position:
+	if position == original_position:
 		return
 
 	activated = false
 	origin_tween = _create_tween(_on_origin_reached)
-	if original_position != null:
+	if original_position:
 		(
 			origin_tween
 			. parallel()
