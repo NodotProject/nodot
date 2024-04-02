@@ -59,7 +59,7 @@ func action() -> void:
 	if charge_weapon:
 		if time_since_last_fired < fire_rate: return;
 		if not is_charging:
-			GlobalSignal.trigger_signal("charge_started", charge_speed);
+			emit_signal("charge_started", charge_speed);
 			is_charging = true;
 			time_since_last_fired = 0
 		return;

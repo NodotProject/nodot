@@ -69,6 +69,17 @@ func get_special_id(input_node: Node):
 func set_value(key: String, value: Variant):
 	custom_values[key] = value
 	
+## Get a custom value
+func get_value(key: String):
+	if custom_values.has(key):
+		return custom_values[key]
+	else:
+		return null
+		
+## Remove a custom value
+func remove_value(key: String):
+	custom_values.erase(key)
+	
 ## Resets the save data to default
 func reset():
 	savers = []

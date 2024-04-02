@@ -5,8 +5,6 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 @export var input_enabled := true
 ## The camera field of view
 @export var fov := 75.0
-## The head position
-@export var head_position := Vector3.ZERO
 ## Minimum amount of fall damage before it is actually applied
 @export var minimum_fall_damage: float = 5.0
 ## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
@@ -55,14 +53,6 @@ func _ready() -> void:
 	if has_node("Head"):
 		head = get_node("Head")
 		camera = get_node("Head/Camera3D")
-
-	if has_node("HeadPosition"):
-		var head_position_node: Node = get_node("HeadPosition")
-		head.position = head_position_node.position
-		head_position = head.position
-		head_position_node.queue_free()
-	else:
-		head.position = head_position
 	
 	if is_authority() and is_current_player:
 		set_current_player()
@@ -86,7 +76,7 @@ func _physics_process(delta: float) -> void:
 	
 	if !health or fall_damage_multiplier <= 0.0:
 		return
-		
+	
 	var on_floor = _is_on_floor()
 	if !was_on_floor:
 		if on_floor:
@@ -97,7 +87,7 @@ func _physics_process(delta: float) -> void:
 				emit_signal("fall_damage", damage)
 		else:
 			previous_velocity = velocity.y
-	was_on_floor = on_floor != null
+	was_on_floor = on_floor
 
 func _is_current_player_changed(new_value: bool):
 	is_current_player = new_value

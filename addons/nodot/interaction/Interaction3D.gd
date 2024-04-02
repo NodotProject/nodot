@@ -27,17 +27,22 @@ signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_n
 @export var throw_force: float = 250.0;
 ## The Close Carry body position Node
 @export var carry_position_node: Node3D;
+## Carry collision layer
+@export_flags_3d_physics var carry_collision_layer: int = 1
+## Carry collision mask
+@export_flags_3d_physics var carry_collision_mask: int = 1
 
 
 # RigidBody3D or null being carried
 var carried_body: RigidBody3D
-var carried_body_gravity_scale: float = 1.0
 var carried_body_width: float = 0.0
 var is_close_body_carry: bool = false;
 var label3d: Label3D
 var last_collider: Node3D
 var last_focussed_collider: Node3D;
 var carried_body_prev_mask: int = 1;
+var carried_body_prev_layer: int = 1;
+var carried_body_physics_material: PhysicsMaterial
 
 func _enter_tree():
 	label3d = Label3D.new()
@@ -82,6 +87,7 @@ func _physics_process(delta):
 	if is_instance_valid(carried_body):
 		if not multiplayer.is_server(): return
 		if not is_close_body_carry:
+			var point = get_collision_point()
 			var carry_position = global_transform.origin - global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
 			var current_carry_distance = carried_body.global_position.distance_to(global_position)
 			if current_carry_distance > carry_distance + max_carry_distance:
@@ -94,13 +100,10 @@ func _physics_process(delta):
 			carried_body.linear_velocity = carried_body.global_transform.origin.direction_to(carry_position) * speed * delta
 		else:
 			var carry_position = carry_position_node.global_position;
-			carried_body.set_collision_layer_value(1, false);
 			carried_body.global_position = carry_position;
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 				var prev_carried_body = carried_body;
 				throw();
-				await get_tree().create_timer(0.35).timeout;
-				prev_carried_body.set_collision_layer_value(1, carried_body_prev_mask);
 				return;
 		var rotate_speed: float = 10.0 * delta
 		carried_body.global_rotation.x = lerp_angle(carried_body.global_rotation.x, 0.0, rotate_speed)
@@ -116,8 +119,8 @@ func _physics_process(delta):
 				last_focussed_collider = collider;
 				collider.focussed();
 		else:
-			if last_focussed_collider and last_focussed_collider.has_method("unfocussed"):
-					last_focussed_collider.unfocussed();
+			if is_instance_valid(last_focussed_collider) and last_focussed_collider.has_method("unfocussed"):
+				last_focussed_collider.unfocussed();
 	else:
 		if not is_multiplayer_authority(): return
 		
@@ -142,22 +145,25 @@ func carry_begin(collider: Node):
 	if enable_pickup and is_instance_valid(collider) and collider is RigidBody3D and collider.mass <= max_mass:
 		carried_body = collider
 		is_close_body_carry = carried_body.has_meta("carry_close") and carried_body.get_meta("carry_close")
-		carried_body_gravity_scale = collider.gravity_scale
 		var carried_body_mesh: MeshInstance3D = Nodot.get_first_child_of_type(carried_body, MeshInstance3D)
 		if carried_body_mesh:
 			var mesh_size = carried_body_mesh.get_aabb().size
 			carried_body_width = max(mesh_size.x * carried_body_mesh.scale.x, mesh_size.y * carried_body_mesh.scale.y, mesh_size.z * carried_body_mesh.scale.z)
-		carried_body.gravity_scale = 0.0
-		carried_body_prev_mask = carried_body.get_collision_mask_value(1);
+		carried_body_prev_layer = carried_body.collision_layer
+		carried_body_prev_mask = carried_body.collision_mask
+		carried_body_physics_material = carried_body.physics_material_override
+		carried_body.physics_material_override = null
+		carried_body.collision_layer = carry_collision_layer
+		carried_body.collision_mask = carry_collision_mask
 		emit_signal("carry_started", carried_body)
 		GlobalSignal.trigger_signal("carry_started", carried_body);
 
 
 func carry_end():
 	if is_instance_valid(carried_body):
-		if is_close_body_carry:
-			carried_body.set_collision_layer_value(1, carried_body_prev_mask);
-		carried_body.gravity_scale = carried_body_gravity_scale
+		carried_body.collision_layer = carried_body_prev_layer
+		carried_body.collision_mask = carried_body_prev_mask
+		carried_body.physics_material_override = carried_body_physics_material
 		emit_signal("carry_ended", carried_body)
 		GlobalSignal.trigger_signal("carry_ended", carried_body);
 		carried_body = null
@@ -165,12 +171,8 @@ func carry_end():
 
 func throw():
 	if is_instance_valid(carried_body):
-		carried_body.gravity_scale = carried_body_gravity_scale
 		carried_body.apply_force(-global_transform.basis.z * throw_force);
-		emit_signal("carry_ended", carried_body);
-		GlobalSignal.trigger_signal("carry_ended", carried_body);
-		carried_body = null
-
+		carry_end()
 
 func collide_ended(body: Node3D):
 	label3d.text = ""
