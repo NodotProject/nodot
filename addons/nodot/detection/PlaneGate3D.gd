@@ -32,8 +32,8 @@ func _ready():
 		debug_draw()
 	
 func _on_body_exited(body: Node):	
-	var direction = (body.transform.origin - transform.origin).normalized()
-	var forward_vector = -transform.basis.z.normalized()
+	var direction = (body.global_transform.origin - global_transform.origin).normalized()
+	var forward_vector = -global_transform.basis.z.normalized()
 	var dot = direction.dot(forward_vector)
 	if dot > 0:
 		emit_signal("gate_entered", body)

@@ -15,7 +15,7 @@ signal movement_started
 signal movement_ended
 
 ## The node to move
-@export var target_node: Node
+@export var target_node: Node3D
 ## Automatically start movement
 @export var auto_start: bool = false
 ## The destination position

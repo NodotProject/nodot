@@ -45,8 +45,8 @@ func _set_sfx_volume(new_volume: float):
 	for bus in sfx_audiobus: _set_bus_volume(bus, sfx_volume)
 	emit_signal("sfx_volume_changed", sfx_volume)
 	
-func _convert_decimal_volume(decimal: float):
-	return -80 + (86 * decimal)
+func _convert_decimal_volume(volume: float):
+	return 20 * log(volume) if volume > 0 else -80
 	
 func _convert_volume(volume: float):
 	return (volume + 80) / 86

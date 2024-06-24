@@ -3,8 +3,6 @@ class_name CharacterClimb3D extends CharacterExtensionBase3D
 
 ## How high the character can climb
 @export var climb_velocity := 4.0
-## First person mouse input to enable view direction based control (look up to ascend, look down to descend)
-@export var first_person_mouse_input: FirstPersonMouseInput
 
 @export_subgroup("Input Actions")
 ## The input action name for climbing
@@ -44,8 +42,8 @@ func physics(delta: float):
 		var ascend_velocity = climb_velocity
 		var descend_velocity = -climb_velocity
 		
-		if first_person_mouse_input:
-			var view_angle = first_person_mouse_input.head.rotation.x
+		if character:
+			var view_angle = character.head.rotation.x
 			if view_angle < 0.0:
 				ascend_velocity = -climb_velocity
 				descend_velocity = climb_velocity
@@ -63,7 +61,7 @@ func physics(delta: float):
 		character.velocity.x = lerp(character.velocity.x, 0.0, delta * 10.0)
 		character.velocity.z = lerp(character.velocity.z, 0.0, delta * 10.0)
 	
-		var is_on_floor = character._is_on_floor()
+		var is_on_floor = character.was_on_floor
 		if is_on_floor and was_on_floor == false:
 			sm.set_state(state_ids["idle"])
 		

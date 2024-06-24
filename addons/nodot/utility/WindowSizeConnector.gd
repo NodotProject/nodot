@@ -17,6 +17,6 @@ func _ready() -> void:
 	
 func _on_window_resized(new_size: Vector2) -> void:
 	for node in target_nodes:
-		if "size" in node:
+		if node and "size" in node:
 			node.set_deferred("size", new_size * size_multiplier)
 	emit_signal("window_size_updated", new_size)

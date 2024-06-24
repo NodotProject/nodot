@@ -1,6 +1,7 @@
 class_name NodotStaticBody3D extends StaticBody3D
 
 
+
 func focussed() -> void:
 	for child in get_children():
 		if child.has_method("focussed"):

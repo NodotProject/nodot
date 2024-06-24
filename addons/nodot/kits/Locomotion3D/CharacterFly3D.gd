@@ -75,7 +75,7 @@ func physics(delta: float) -> void:
 				fly_doubletap_timeleft = double_tap_time
 	else:				
 		if sm.state == state_ids["fly"]:
-			if land_on_ground and character.is_on_floor():
+			if land_on_ground and character.was_on_floor:
 				sm.set_state(state_ids["land"])
 				
 			if Input.is_action_just_pressed(ascend_action):

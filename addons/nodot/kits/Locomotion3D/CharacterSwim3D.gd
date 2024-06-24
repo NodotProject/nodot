@@ -8,6 +8,8 @@ class_name CharacterSwim3D extends CharacterExtensionBase3D
 @export var submerge_speed := 1.0
 ## The depth to allow before setting the character to swim
 @export var submerge_offset := 1.0
+## Detect changing water heights (more performance intensive)
+@export var water_height_change_detection := false
 
 @export_subgroup("Third Person Controls")
 ## Turn rate. If strafing is disabled, define how fast the character will turn.
@@ -60,9 +62,12 @@ func _init():
 	var default_keys = [KEY_SPACE, KEY_CTRL]
 	for i in action_names.size():
 		var action_name = action_names[i]
-		if not InputMap.has_action(action_name):
-			InputMap.add_action(action_name)
-			InputManager.add_action_event_key(action_name, default_keys[i])
+		InputManager.register_action(action_name, default_keys[i])
+		
+	var joy_default_keys = [JOY_BUTTON_A, JOY_BUTTON_B]
+	for i in action_names.size():
+		var action_name = action_names[i]
+		InputManager.register_action(action_name, joy_default_keys[i], 2)
 
 
 func ready():
@@ -152,7 +157,7 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 		emit_signal("submerged")
 	else:
 		is_head_submerged = false
-		submerged_water_area.water_mesh_instance.mesh.flip_faces = false
+		submerged_water_area.revert()
 		emit_signal("head_surfaced")
 		sm.set_state(surfaced_state_id)
 		emit_signal("surfaced")
@@ -160,11 +165,17 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 
 ## Check if the head (camera) is submerged
 func check_head_submerged() -> void:
-	if !is_head_submerged and character.camera.global_position.y < water_y_position:
+	var final_water_y_position: float = water_y_position
+	
+	if water_height_change_detection and submerged_water_area:
+		final_water_y_position = submerged_water_area.water_mesh_instance.global_position.y
+		
+	if !is_head_submerged and character.camera.global_position.y < final_water_y_position:
 		is_head_submerged = true
-		submerged_water_area.water_mesh_instance.mesh.flip_faces = true
+		submerged_water_area.invert()
 		emit_signal("head_submerged")
-	elif is_head_submerged and character.camera.global_position.y >= water_y_position:
+	elif is_head_submerged and character.camera.global_position.y >= final_water_y_position:
 		is_head_submerged = false
-		submerged_water_area.water_mesh_instance.mesh.flip_faces = false
+		submerged_water_area.revert()
 		emit_signal("head_surfaced")
+

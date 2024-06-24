@@ -18,6 +18,7 @@ var health: Health
 var submerge_handler: CharacterSwim3D
 var inventory: CollectableInventory
 var was_on_floor: bool = false
+var floor_body: Node3D;
 # Velocity of the previous frame
 var previous_velocity: float = 0.0
 # Peak velocity of the last 0.1 seconds
@@ -25,6 +26,8 @@ var peak_recent_velocity: Vector3 = Vector3.ZERO
 var peak_recent_velocity_timer: float = 0.0
 var character_colliders: UniqueSet = UniqueSet.new()
 var terminal_velocity := 190.0
+var direction := Vector2.ZERO
+var look_angle := Vector2.ZERO
 
 func _enter_tree() -> void:
 	if !sm:
@@ -64,7 +67,7 @@ func _physics_process(delta: float) -> void:
 	if not is_authority(): return
 	
 	peak_recent_velocity_timer += delta
-	if peak_recent_velocity_timer > 0.1:
+	if peak_recent_velocity_timer > 0.05:
 		peak_recent_velocity_timer = 0.0
 	else:
 		var max_velocity = max(abs(velocity.x), abs(velocity.y), abs(velocity.z))
@@ -74,11 +77,14 @@ func _physics_process(delta: float) -> void:
 		else:
 			peak_recent_velocity = lerp(peak_recent_velocity, Vector3.ZERO, delta)
 	
+	var on_floor = _is_on_floor() != null
 	if !health or fall_damage_multiplier <= 0.0:
+		was_on_floor = on_floor
+		floor_body = _is_on_floor();
 		return
 	
-	var on_floor = _is_on_floor()
 	if !was_on_floor:
+		floor_body = null;
 		if on_floor:
 			var falling_velocity = abs(previous_velocity)
 			var damage = falling_velocity * fall_damage_multiplier

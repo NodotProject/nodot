@@ -37,8 +37,8 @@ func _ready():
 			callback = Callable(callback.unbind(unbind_count))
 		trigger_node.connect(trigger_signal, callback)
 
-func _callback():
-	GlobalSignal.trigger_signal(global_signal)
+func _callback(arg = null):
+	GlobalSignal.trigger_signal(global_signal, arg)
 
 func _get_property_list() -> Array[Dictionary]:
 	var property_list: Array[Dictionary] = [{

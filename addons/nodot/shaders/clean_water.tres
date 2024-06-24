@@ -2,6 +2,7 @@
 
 [sub_resource type="Shader" id="Shader_ty6yi"]
 code = "shader_type spatial;
+render_mode cull_disabled;
 
 uniform vec3 albedo : source_color;
 uniform vec3 albedo2 : source_color;
@@ -121,7 +122,7 @@ seamless = true
 noise = SubResource("FastNoiseLite_pg80e")
 
 [resource]
-render_priority = 0
+render_priority = 1
 shader = SubResource("Shader_ty6yi")
 shader_parameter/albedo = Color(0.376471, 0.603922, 1, 1)
 shader_parameter/albedo2 = Color(0.203922, 0.266667, 1, 1)

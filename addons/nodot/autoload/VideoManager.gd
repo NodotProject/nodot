@@ -11,9 +11,15 @@ var vsync: bool = DisplayServer.window_get_vsync_mode(0): set = _set_vsync
 var msaa: Viewport.MSAA = 0: set = _set_msaa
 var brightness: float = 1.0: set = _set_brightness
 var contrast: float = 1.0: set = _set_contrast
+var low_spec: bool = false: set = _set_low_spec;
+var post_process: String = "n" : set = _set_post_process;
 
 ## Triggered when the window is resized
 signal window_resized
+## Triggered When Low Spec Mode Is Toggled
+signal low_spec_toggled
+## Triggered When Post Process is changed
+signal post_process_changed
 
 func _ready() -> void:
 	get_tree().root.connect("size_changed", _on_window_resized)
@@ -34,7 +40,11 @@ func _ready() -> void:
 		brightness = SaveManager.config.getItem("brightness")
 	if SaveManager.config.hasItem("contrast"):
 		contrast = SaveManager.config.getItem("contrast")
-	
+	if SaveManager.config.hasItem("low_spec"):
+		low_spec = SaveManager.config.getItem("low_spec")
+	if SaveManager.config.hasItem("post_process"):
+		post_process = SaveManager.config.getItem("post_process")
+
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
 	emit_signal("window_resized", new_size)
@@ -87,7 +97,20 @@ func _set_contrast(new_value: float):
 	contrast = new_value
 	for world_environment in world_environments:
 		world_environment.environment.adjustment_contrast = new_value
-	
+
+
+## Set Low Spec
+func _set_low_spec(new_value: bool):
+	low_spec = new_value;
+	emit_signal("low_spec_toggled")
+
+
+## Set Low Spec
+func _set_post_process(new_value: String):
+	post_process = new_value;
+	emit_signal("post_process_changed")
+
+
 ## Forces VideoManager to redeclare the window size
 func bump() -> void:
 	_on_window_resized()
@@ -116,4 +139,6 @@ func save_config():
 	SaveManager.config.setItem("msaa", msaa)
 	SaveManager.config.setItem("brightness", brightness)
 	SaveManager.config.setItem("contrast", contrast)
+	SaveManager.config.setItem("low_spec", low_spec)
+	SaveManager.config.setItem("post_process", post_process)
 	SaveManager.save_config()

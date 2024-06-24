@@ -46,10 +46,11 @@ func _on_pressed():
 	get_tree().quit(0)
 "
 
-[node name="MainMenuContainer" type="Node2D"]
+[node name="MainMenuContainer" type="Node2D" node_paths=PackedStringArray("selectable_items")]
 process_mode = 3
 visible = false
 script = ExtResource("1_17ji3")
+selectable_items = [NodePath("Control/CenterContainer/VBoxContainer/StartGameButton"), NodePath("Control/CenterContainer/VBoxContainer/MultiplayerButton"), NodePath("Control/CenterContainer/VBoxContainer/OptionsButton"), NodePath("Control/CenterContainer/VBoxContainer/QuitButton")]
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -79,12 +80,6 @@ text = "Start Game"
 script = SubResource("GDScript_ymbmu")
 menu_container = NodePath("../../../..")
 
-[node name="StartGameButton" type="Button" parent="Control/CenterContainer/VBoxContainer/StartGameButton" node_paths=PackedStringArray("menu_container")]
-layout_mode = 0
-text = "Start Game"
-script = SubResource("GDScript_ymbmu")
-menu_container = NodePath("../../../../..")
-
 [node name="MultiplayerButton" type="Button" parent="Control/CenterContainer/VBoxContainer" node_paths=PackedStringArray("menu_container")]
 layout_mode = 2
 text = "Multiplayer"
@@ -103,7 +98,6 @@ text = "Quit"
 script = SubResource("GDScript_uguho")
 
 [connection signal="pressed" from="Control/CenterContainer/VBoxContainer/StartGameButton" to="Control/CenterContainer/VBoxContainer/StartGameButton" method="_on_pressed"]
-[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/StartGameButton/StartGameButton" to="Control/CenterContainer/VBoxContainer/StartGameButton/StartGameButton" method="_on_pressed"]
 [connection signal="pressed" from="Control/CenterContainer/VBoxContainer/MultiplayerButton" to="Control/CenterContainer/VBoxContainer/MultiplayerButton" method="_on_pressed"]
 [connection signal="pressed" from="Control/CenterContainer/VBoxContainer/OptionsButton" to="Control/CenterContainer/VBoxContainer/OptionsButton" method="_on_pressed"]
 [connection signal="pressed" from="Control/CenterContainer/VBoxContainer/QuitButton" to="Control/CenterContainer/VBoxContainer/QuitButton" method="_on_pressed"]

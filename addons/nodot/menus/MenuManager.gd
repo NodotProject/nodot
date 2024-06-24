@@ -20,7 +20,8 @@ func _ready():
 ## Hide all menus
 func hide_all() -> void:
 	for child in get_children():
-		child._hide()
+		if child.has_method("_hide"):
+			child._hide()
 	active_menu = ""
 	active_menu_index = -1
 	emit_signal("menu_changed", -1)
@@ -43,7 +44,8 @@ func change_to(menu_name: String) -> void:
 ## Change the active menu using the index
 func change_to_index(menu_index: int) -> void:
 	hide_all()
-	var menu_node: MenuContainer = get_child(menu_index)
+	var menu_containers = Nodot.get_children_of_type(self, MenuContainer)
+	var menu_node: MenuContainer = menu_containers[menu_index]
 	menu_node._show()
 	active_menu_index = menu_index
 	previous_menu = active_menu

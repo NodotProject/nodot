@@ -1,5 +1,7 @@
 class_name FirstPersonItemsContainer extends Node3D
 
+## Whether the ItemContainer is enabled
+@export var enabled: bool = true
 ## The character the viewport is attached to
 @export var character: FirstPersonCharacter
 ## The input action name for reloading the current active weapon
@@ -12,6 +14,7 @@ signal item_actioned(cooldown: float)
 var item_changing: bool = false
 var is_item_active: bool = true
 var active_item_index: int = 0
+var carry_ended: bool = false
 
 func _ready() -> void:
 	# Move existing children to be a child of the camera
@@ -20,6 +23,8 @@ func _ready() -> void:
 			child.connect("discharged", func ():
 				emit_signal("item_actioned", child.magazine_node.fire_rate)
 				)
+				
+	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
 	
 func _input(event: InputEvent) -> void:
 	if not character.is_authority(): return
@@ -55,6 +60,12 @@ func iterate_item(direction: int) -> int:
 		checked_items += 1
 
 	return -1  # Return -1 if no unlocked item is found after checking all items
+	
+func on_carry_ended(_body):
+	if !enabled: return
+	carry_ended = true
+	await get_tree().create_timer(0.5).timeout
+	carry_ended = false
 
 ## Get the active item if there is one
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
@@ -124,7 +135,11 @@ func lock_item(item_index: int):
 	if items.size() <= item_index: return
 	items[item_index].unlocked = false
 
+
 func action() -> void:
+	if !enabled: return
+	if carry_ended: return
+	
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()
@@ -132,6 +147,10 @@ func action() -> void:
 		(active_item as FirstPersonItem).action()
 
 func release_action() -> void:
+	if !enabled: return
+	if carry_ended:
+		carry_ended = false
+	
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()
@@ -140,6 +159,8 @@ func release_action() -> void:
 
 
 func zoom() -> void:
+	if !enabled: return
+	
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()
@@ -147,6 +168,8 @@ func zoom() -> void:
 		(active_item as FirstPersonItem).zoom()
 
 func zoomout() -> void:
+	if !enabled: return
+	
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()
@@ -154,6 +177,8 @@ func zoomout() -> void:
 		(active_item as FirstPersonItem).zoomout()
 
 func reload() -> void:
+	if !enabled: return
+	
 	# TODO: Typehint this when nullable static types are supported.
 	# https://github.com/godotengine/godot-proposals/issues/162
 	var active_item = get_active_item()

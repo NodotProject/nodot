@@ -1,4 +1,4 @@
-## A node to manage WASD and Jump movement of a NodotCharacter3D
+## A node to manage WASD of a NodotCharacter3D
 class_name CharacterMover3D extends CharacterExtensionBase3D
 
 ## Gravity for the character
@@ -15,6 +15,8 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 @export var sprint_speed_multiplier := 2.0
 ## The maximum speed a character can fall
 @export var terminal_velocity := 190.0
+## Handled states
+@export var handle_states: Array[String] = ["idle", "walk", "sprint", "jump", "land", "crouch", "prone"]
 
 @export_subgroup("Third Person Controls")
 ## Strafing enabled. Otherwise the character will turn to face the movement direction
@@ -23,14 +25,6 @@ class_name CharacterMover3D extends CharacterExtensionBase3D
 @export var turn_rate: float = 0.1
 
 @export_subgroup("Input Actions")
-## The input action name for strafing left
-@export var left_action: String = "left"
-## The input action name for strafing right
-@export var right_action: String = "right"
-## The input action name for moving forward
-@export var up_action: String = "up"
-## The input action name for moving backwards
-@export var down_action: String = "down"
 ## The input action name for sprinting
 @export var sprint_action: String = "sprint"
 
@@ -45,13 +39,9 @@ func ready():
 	if !enabled:
 		return
 	
-	InputManager.register_action(left_action, KEY_A)
-	InputManager.register_action(right_action, KEY_D)
-	InputManager.register_action(up_action, KEY_W)
-	InputManager.register_action(down_action, KEY_S)
 	InputManager.register_action(sprint_action, KEY_SHIFT)
 	
-	register_handled_states(["idle", "walk", "sprint", "jump", "land", "crouch", "prone"])
+	register_handled_states(handle_states)
 		
 	sm.add_valid_transition("idle", ["walk", "sprint"])
 	sm.add_valid_transition("walk", ["idle", "walk", "sprint"])
@@ -82,25 +72,45 @@ func get_movement_speed(delta: float) -> float:
 func physics(delta: float) -> void:
 	if not is_authority(): return
 	
-	if character.input_enabled:
-		var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
-		var basis: Basis
-		if third_person_camera:
-			basis = character.current_camera.global_transform.basis
-		else:
-			basis = character.transform.basis
-		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var basis: Basis
+	if third_person_camera:
+		basis = character.current_camera.global_transform.basis
+	else:
+		basis = character.transform.basis
+	direction = (basis * Vector3(character.direction.x, 0, character.direction.y))
 		
-		if direction != Vector3.ZERO:
-			if Input.is_action_pressed(sprint_action):
-				sm.set_state(state_ids["sprint"])
-			else:
-				sm.set_state(state_ids["walk"])
-		
-		if !character._is_on_floor():
-			move_air(delta)
+	if character.input_enabled and direction != Vector3.ZERO:
+		if Input.is_action_pressed(sprint_action):
+			sm.set_state(state_ids["sprint"])
 		else:
-			move_ground(delta)
+			sm.set_state(state_ids["walk"])
+		
+	if !character.was_on_floor:
+		move_air(delta)
+	else:
+		move_ground(delta)
+	
+	set_rigid_interaction();
+
+
+func set_rigid_interaction():
+	for i in character.get_slide_collision_count():
+		var c = character.get_slide_collision(i);
+		if c.get_collider() is RigidBody3D:
+			var lin_vel: Vector3 = c.get_collider().linear_velocity;
+			var char_basis: Vector3 = character.transform.basis.z
+			
+			if sign(char_basis.x) == sign(lin_vel.x) and sign(char_basis.z) == sign(lin_vel.z):
+				c.get_collider().linear_velocity.x *= -0.1;
+				c.get_collider().linear_velocity.z *= -0.1;
+			elif sign(char_basis.x) == sign(lin_vel.x):
+				c.get_collider().linear_velocity.x *= -0.1;
+			elif sign(char_basis.z) == sign(lin_vel.z):
+				c.get_collider().linear_velocity.z *= -0.1;
+			
+			c.get_collider().apply_central_impulse(-c.get_normal() * 0.25 * c.get_collider().mass)
+
+
 
 func move_air(delta: float) -> void:
 	character.velocity.y = min(terminal_velocity, character.velocity.y - gravity * delta)
@@ -134,7 +144,8 @@ func move_ground(delta: float) -> void:
 	
 	# Start by moving our character body by its normal velocity.
 	character.move_and_slide()
-	if sm.state == state_ids["jump"] or !stepping_enabled or !character._is_on_floor(): return
+	if sm.state == state_ids["jump"] or !stepping_enabled or !character.was_on_floor:
+		return
 	
 	# Next, we store the resulting position for later, and reset our character's
 	#    position and velocity values.
@@ -159,7 +170,7 @@ func move_ground(delta: float) -> void:
 	#    movement if we were to only step.
 	var slide_distance: float = starting_position.distance_to(slide_position)
 	var step_distance: float = starting_position.distance_to(character.global_position)
-	if slide_distance > step_distance or !character._is_on_floor():
+	if slide_distance > step_distance or !character.was_on_floor:
 		character.global_position = slide_position
 	# --- Step up logic ---
 	

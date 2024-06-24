@@ -36,11 +36,12 @@ func jump() -> void:
 func physics(delta: float) -> void:
 	if not is_authority_owner(): return
 	
-	if !character._is_on_floor():
+	if !character.was_on_floor:
 		return
 		
 	if Input.is_action_pressed(jump_action):
-		sm.set_state(state_ids["jump"])
+		if not character.floor_body.has_meta("soft_floor") or character.floor_body.has_meta("can_jump"):
+			sm.set_state(state_ids["jump"])
 	elif sm.state == state_ids["jump"]:
 		sm.set_state(state_ids["land"])
 	elif sm.state == state_ids["land"]:

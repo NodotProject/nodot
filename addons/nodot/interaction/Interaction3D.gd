@@ -1,4 +1,3 @@
-@tool
 ## A raycast for interacting with, picking up, carrying and re-orienting objects
 class_name Interaction3D extends RayCast3D
 
@@ -8,13 +7,11 @@ signal carry_started(carried_node: Node3D)
 signal carry_ended(carried_node: Node3D)
 ## Triggered when the interact function on an object was fired
 signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_normal: Vector3)
+## Interaction label updated
+signal interaction_label_updated(message: String)
 
 ## The interact input action name
 @export var interact_action: String = "interact"
-## The font color of the interaction label
-@export var font_color: Color = Color.WHITE
-## The font size of the interaction label
-@export var font_size: int = 18
 ## Enable the pick up functionality
 @export var enable_pickup: bool = true
 ## The maximum mass (weight) that can be carried
@@ -24,9 +21,9 @@ signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_n
 ## The maximum distance away from the raycast origin before the object is dropped
 @export var max_carry_distance: float = 2.0
 ## The force of throwing the carried body
-@export var throw_force: float = 250.0;
+@export var throw_force: float = 250.0
 ## The Close Carry body position Node
-@export var carry_position_node: Node3D;
+@export var carry_position_node: Node3D
 ## Carry collision layer
 @export_flags_3d_physics var carry_collision_layer: int = 1
 ## Carry collision mask
@@ -36,27 +33,13 @@ signal interacted(interacted_node: Node3D, collision_point: Vector3, collision_n
 # RigidBody3D or null being carried
 var carried_body: RigidBody3D
 var carried_body_width: float = 0.0
-var is_close_body_carry: bool = false;
-var label3d: Label3D
+var is_close_body_carry: bool = false
 var last_collider: Node3D
 var last_focussed_collider: Node3D;
-var carried_body_prev_mask: int = 1;
-var carried_body_prev_layer: int = 1;
+var carried_body_prev_mask: int = 1
+var carried_body_prev_layer: int = 1
 var carried_body_physics_material: PhysicsMaterial
-
-func _enter_tree():
-	label3d = Label3D.new()
-	label3d.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label3d.fixed_size = true
-	label3d.pixel_size = 0.001
-	label3d.no_depth_test = true
-	label3d.font_size = font_size
-	label3d.modulate = font_color
-	label3d.position.z = -2
-	label3d.render_priority = 5
-	label3d.outline_render_priority = 4
-	label3d.no_depth_test = true
-	add_child(label3d)
+var is_action_pressed: bool = false;
 	
 func _ready():
 	if not is_multiplayer_authority(): return
@@ -65,8 +48,10 @@ func _ready():
 
 func _input(event: InputEvent):
 	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
-		
+	if is_action_pressed: return;
+	
 	var collider = get_collider()
+	if collider and collider.has_meta("NonPickable") and collider.get_meta("NonPickable"): return
 	if !is_instance_valid(collider):
 		if is_instance_valid(carried_body):
 			carry_end();
@@ -83,7 +68,8 @@ func _input(event: InputEvent):
 			carry_begin(collider)
 
 
-func _physics_process(delta):	
+func _physics_process(delta):
+	is_action_pressed = Input.is_action_pressed("action");
 	if is_instance_valid(carried_body):
 		if not multiplayer.is_server(): return
 		if not is_close_body_carry:
@@ -93,7 +79,7 @@ func _physics_process(delta):
 			if current_carry_distance > carry_distance + max_carry_distance:
 				carry_end();
 				return
-			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			if is_action_pressed:
 				throw();
 				return;
 			var speed = carried_body.global_position.distance_to(carry_position) * 600
@@ -101,7 +87,7 @@ func _physics_process(delta):
 		else:
 			var carry_position = carry_position_node.global_position;
 			carried_body.global_position = carry_position;
-			if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			if is_action_pressed:
 				var prev_carried_body = carried_body;
 				throw();
 				return;
@@ -114,13 +100,13 @@ func _physics_process(delta):
 		if is_instance_valid(collider):
 			if is_instance_valid(last_focussed_collider) and collider != last_focussed_collider:
 				if last_focussed_collider.has_method("unfocussed"):
-					last_focussed_collider.unfocussed();
+					last_focussed_collider.unfocussed()
 			if collider.has_method("focussed"):
-				last_focussed_collider = collider;
-				collider.focussed();
+				last_focussed_collider = collider
+				collider.focussed()
 		else:
 			if is_instance_valid(last_focussed_collider) and last_focussed_collider.has_method("unfocussed"):
-				last_focussed_collider.unfocussed();
+				last_focussed_collider.unfocussed()
 	else:
 		if not is_multiplayer_authority(): return
 		
@@ -131,17 +117,20 @@ func _physics_process(delta):
 
 		if is_instance_valid(collider):
 			if collider.has_method("label"):
-				label3d.text = collider.label()
+				emit_signal("interaction_label_updated", collider.label())
 			else:
-				label3d.text = ""
+				emit_signal("interaction_label_updated", "")
 
 			if collider.has_method("focussed"):
 				collider.focussed()
+				if collider is RigidBody3D and collider.mass <= max_mass:
+					emit_signal("interaction_label_updated", "Carry")
 		else:
-			label3d.text = ""
+			emit_signal("interaction_label_updated", "")
 
 
 func carry_begin(collider: Node):
+	emit_signal("interaction_label_updated", "")
 	if enable_pickup and is_instance_valid(collider) and collider is RigidBody3D and collider.mass <= max_mass:
 		carried_body = collider
 		is_close_body_carry = carried_body.has_meta("carry_close") and carried_body.get_meta("carry_close")
@@ -156,25 +145,47 @@ func carry_begin(collider: Node):
 		carried_body.collision_layer = carry_collision_layer
 		carried_body.collision_mask = carry_collision_mask
 		emit_signal("carry_started", carried_body)
-		GlobalSignal.trigger_signal("carry_started", carried_body);
+		GlobalSignal.trigger_signal("carry_started", carried_body)
 
 
 func carry_end():
 	if is_instance_valid(carried_body):
-		carried_body.collision_layer = carried_body_prev_layer
-		carried_body.collision_mask = carried_body_prev_mask
-		carried_body.physics_material_override = carried_body_physics_material
-		emit_signal("carry_ended", carried_body)
-		GlobalSignal.trigger_signal("carry_ended", carried_body);
-		carried_body = null
+		if is_close_body_carry:
+			var prev_carried_body = carried_body;
+			carried_body.physics_material_override = carried_body_physics_material
+			carried_body.apply_force(-global_transform.basis.z * throw_force);
+			emit_signal("carry_ended", carried_body)
+			GlobalSignal.trigger_signal("carry_ended", carried_body);
+			carried_body = null;
+			await get_tree().create_timer(0.5).timeout
+			if is_instance_valid(prev_carried_body):
+				prev_carried_body.collision_layer = carried_body_prev_layer
+				prev_carried_body.collision_mask = carried_body_prev_mask
+			
+		else:
+			carried_body.angular_velocity = Vector3.ZERO
+			carried_body.collision_layer = carried_body_prev_layer
+			carried_body.collision_mask = carried_body_prev_mask
+			carried_body.physics_material_override = carried_body_physics_material
+			emit_signal("carry_ended", carried_body)
+			GlobalSignal.trigger_signal("carry_ended", carried_body);
+			carried_body = null;
 
+func _carry_body_end():
+	carried_body.collision_layer = carried_body_prev_layer
+	carried_body.collision_mask = carried_body_prev_mask
+	carried_body.physics_material_override = carried_body_physics_material
+	emit_signal("carry_ended", carried_body)
+	GlobalSignal.trigger_signal("carry_ended", carried_body);
+	carried_body = null;
 
 func throw():
 	if is_instance_valid(carried_body):
+		carried_body.angular_velocity = Vector3.ZERO
 		carried_body.apply_force(-global_transform.basis.z * throw_force);
 		carry_end()
 
 func collide_ended(body: Node3D):
-	label3d.text = ""
+	emit_signal("interaction_label_updated", "")
 	if body.has_method("unfocussed"):
 		body.unfocussed()

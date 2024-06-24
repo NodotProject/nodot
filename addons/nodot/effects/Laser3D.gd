@@ -68,9 +68,10 @@ func _realign_laser_mesh() -> void:
 	laser_mesh_instance.mesh.top_radius = (1.0 / 100.0) * float(thickness)
 	laser_mesh_instance.mesh.bottom_radius = (1.0 / 100.0) * float(thickness)
 	laser_mesh_instance.mesh.height = Vector3.ZERO.distance_to(target_position)
-	var newtransform: Transform3D = laser_mesh_instance.transform.looking_at(target_position, Vector3.UP).rotated_local(Vector3.LEFT, deg_to_rad(90))
-	laser_mesh_instance.transform = newtransform
-	laser_mesh_instance.position = target_position * 0.5;
+	if !laser_mesh_instance.transform.origin.is_equal_approx(target_position):
+		var newtransform: Transform3D = laser_mesh_instance.transform.looking_at(target_position, Vector3.UP).rotated_local(Vector3.LEFT, deg_to_rad(90))
+		laser_mesh_instance.transform = newtransform
+	laser_mesh_instance.position = target_position * 0.5
 
 ## Sets the laser thickness value
 func set_laser_thickness(new_thickness: int) -> void:
