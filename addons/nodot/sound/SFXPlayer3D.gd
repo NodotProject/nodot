@@ -2,6 +2,8 @@
 ## A sound effect player with randomization and trigger options
 class_name SFXPlayer3D extends AudioStreamPlayer3D
 
+@export var enabled: bool = true
+
 ## An array of audiostreams chosen at random on action
 @export var sfx: Array[AudioStream] = []
 
@@ -17,6 +19,8 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 @export var unbind_count: int = 0
 ## Fade speed
 @export var fade_speed: float = 1.0
+## Tweak the pitch a bit to add variety
+@export var tweak_pitch: float = 0.0
 
 ## The name of the signal
 var trigger_signal: String = ""
@@ -33,9 +37,13 @@ func _enter_tree() -> void:
 		
 func _ready():
 	original_volume = volume_db
+	
+func _tweak_pitch():
+	pitch_scale = rng.randf_range(1.0 - tweak_pitch, 1.0 + tweak_pitch)
 
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:
+	if !enabled: return
 	var sfx_size: int = sfx.size()
 	if sfx_size <= 0: return
 	
@@ -47,10 +55,13 @@ func action(index: int = -1) -> void:
 		stream = sfx[random_index]
 
 	set_stream(stream)
+	if tweak_pitch > 0.0:
+		_tweak_pitch()
 	play()
 
 ## Fade the sound effect in
 func fade_in(index: int = -1):
+	if !enabled: return
 	if !stream_paused and playing == false: action()
 	var tween = get_tree().create_tween()
 	tween.tween_property(self, "volume_db", original_volume, fade_speed)
@@ -59,6 +70,7 @@ func fade_in(index: int = -1):
 
 ## Fade the sound effect out
 func fade_out(pause_on_finish: bool = false, index: int = -1):
+	if !enabled: return
 	if playing == false: return
 	var tween = get_tree().create_tween()
 	if pause_on_finish:

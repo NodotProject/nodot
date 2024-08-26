@@ -40,10 +40,11 @@ func ready():
 		
 	if character_mover:
 		initial_movement_speed = character_mover.movement_speed
+		
+	initial_head_position = character.head_position
 
 func state_updated(old_state: int, new_state: int) -> void:
 	if new_state == state_ids["prone"]:
-		initial_head_position = character.head.position
 		collision_shape.rotation.x = PI / 2
 		target_head_position = Vector3(character.head.position.x, 0.0, -(collider_height / 2))
 		character.velocity = Vector3.ZERO

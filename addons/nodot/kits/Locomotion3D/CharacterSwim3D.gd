@@ -168,7 +168,7 @@ func check_head_submerged() -> void:
 	var final_water_y_position: float = water_y_position
 	
 	if water_height_change_detection and submerged_water_area:
-		final_water_y_position = submerged_water_area.water_mesh_instance.global_position.y
+		final_water_y_position = submerged_water_area.water_mesh_instance.global_position.y + 0.15
 		
 	if !is_head_submerged and character.camera.global_position.y < final_water_y_position:
 		is_head_submerged = true
@@ -178,4 +178,3 @@ func check_head_submerged() -> void:
 		is_head_submerged = false
 		submerged_water_area.revert()
 		emit_signal("head_surfaced")
-

@@ -42,6 +42,8 @@ func _ready():
 	
 	if trigger_signal == "" or !is_instance_valid(trigger_node): return
 	
+	if !target_node.has_method(target_method): return
+	
 	var callback = target_node[target_method]
 	if method_unbind_count > 0:
 		callback = Callable(target_node[target_method].unbind(method_unbind_count))

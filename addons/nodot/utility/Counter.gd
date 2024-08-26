@@ -1,6 +1,7 @@
 ## A node to manage and monitor a numeric value.
 class_name Counter extends Nodot
 
+## Use the minimum and maximum values to forcefully limit the value
 @export var limit_values: bool = false
 ## The minimum value.
 @export var min_value: float = 0.0

@@ -17,6 +17,8 @@ class_name SFXPlayer extends AudioStreamPlayer
 @export var unbind_count: int = 0
 ## Fade speed
 @export var fade_speed: float = 1.0
+## Tweak the pitch a bit to add variety
+@export var tweak_pitch: float = 0.0
 
 ## The name of the signal
 var trigger_signal: String = ""
@@ -31,6 +33,9 @@ func _enter_tree() -> void:
 	elif !trigger_node.is_connected(trigger_signal, action):
 		trigger_node.connect(trigger_signal, action)
 
+func _tweak_pitch():
+	pitch_scale = rng.randf_range(1.0 - tweak_pitch, 1.0 + tweak_pitch)
+	
 ## Loads, caches and plays the audio file at the path argument. Use `sfx_root_path` to prefix the path.
 func action(index: int = -1) -> void:
 	var sfx_size: int = sfx.size()
@@ -44,6 +49,9 @@ func action(index: int = -1) -> void:
 		stream = sfx[random_index]
 
 	set_stream(stream)
+	if tweak_pitch > 0.0:
+		_tweak_pitch()
+		
 	play()
 
 ## Fade the sound effect in

@@ -40,7 +40,7 @@ func physics(delta: float) -> void:
 		return
 		
 	if Input.is_action_pressed(jump_action):
-		if !character.floor_body or !character.floor_body.has_meta("soft_floor") or character.floor_body.has_meta("can_jump"):
+		if not character.floor_body.has_meta("soft_floor") or character.floor_body.has_meta("can_jump"):
 			sm.set_state(state_ids["jump"])
 	elif sm.state == state_ids["jump"]:
 		sm.set_state(state_ids["land"])
