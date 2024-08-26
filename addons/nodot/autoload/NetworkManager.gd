@@ -33,5 +33,3 @@ func reset():
 	multiplayer_peer.close_connection()
 	multiplayer_peer = ENetMultiplayerPeer.new()
 	is_host = false
-
-

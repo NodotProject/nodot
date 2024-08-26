@@ -24,4 +24,3 @@ func _hide() -> void:
 	emit_signal("hiding")
 	if !custom_transition:
 		set_visible(false)
-

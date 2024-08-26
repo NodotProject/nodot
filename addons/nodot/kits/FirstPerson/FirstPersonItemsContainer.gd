@@ -115,8 +115,6 @@ func change_item(new_index: int) -> void:
 func activate_current_item():
 	is_item_active = true;
 	var items: Array = get_all_items();
-	if GameManager.has_item(active_item_index):
-		await (items[active_item_index] as FirstPersonItem).activate();
 
 func deactivate_current_item():
 	is_item_active = false;
