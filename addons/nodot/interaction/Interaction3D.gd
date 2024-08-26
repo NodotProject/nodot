@@ -69,6 +69,8 @@ func _input(event: InputEvent):
 
 
 func _physics_process(delta):
+	if !InputMap.has_action("action"): return
+	
 	is_action_pressed = Input.is_action_pressed("action");
 	if is_instance_valid(carried_body):
 		if not multiplayer.is_server(): return

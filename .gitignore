@@ -21,3 +21,5 @@ mono_crash.*.json
 docs/*
 build
 *.tmp
+.vscode/settings.json
+.vscode/settings.json

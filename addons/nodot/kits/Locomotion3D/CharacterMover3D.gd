@@ -129,6 +129,8 @@ func move_ground(delta: float) -> void:
 		var final_friction = friction if friction >= 0 else final_speed
 		character.velocity.x = move_toward(character.velocity.x, 0, friction)
 		character.velocity.z = move_toward(character.velocity.z, 0, friction)
+		if character.velocity.length() < 1.0:
+			sm.set_state(state_ids["idle"])
 	else:
 		character.velocity.x = direction.x * final_speed
 		character.velocity.z = direction.z * final_speed
