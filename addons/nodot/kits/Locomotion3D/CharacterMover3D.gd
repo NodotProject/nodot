@@ -70,6 +70,7 @@ func get_movement_speed(delta: float) -> float:
 	return final_speed * delta * 100
 
 func physics(delta: float) -> void:
+	character.input_states["sprint"] = get_input()
 	action(delta)
 
 func action(delta: float):
@@ -82,7 +83,7 @@ func action(delta: float):
 	direction = (basis * Vector3(character_direction.x, 0, character_direction.y))
 		
 	if character.input_enabled and direction != Vector3.ZERO:
-		if Input.is_action_pressed(sprint_action):
+		if get_input():
 			sm.set_state(state_ids["sprint"])
 		else:
 			sm.set_state(state_ids["walk"])
@@ -97,6 +98,8 @@ func action(delta: float):
 	
 	set_rigid_interaction()
 
+func get_input():
+	return Input.is_action_pressed(sprint_action)
 
 func set_rigid_interaction():
 	for i in character.get_slide_collision_count():

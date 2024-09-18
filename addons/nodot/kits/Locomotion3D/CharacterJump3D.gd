@@ -38,6 +38,7 @@ func input(event: InputEvent):
 		character.input_states["jump"] = true
 
 func physics(_delta) -> void:
+	character.input_states["jump"] = get_input()
 	action()
 
 func can_jump():

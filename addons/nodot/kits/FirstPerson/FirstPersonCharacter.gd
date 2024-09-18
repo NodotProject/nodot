@@ -86,7 +86,7 @@ func _physics_process(delta: float) -> void:
 			var damage = falling_velocity * fall_damage_multiplier
 			if damage > minimum_fall_damage:
 				health.add_health(-damage)
-				emit_signal("fall_damage", damage)
+				fall_damage.emit(damage)
 		else:
 			previous_velocity = velocity.y
 	was_on_floor = on_floor
