@@ -8,6 +8,8 @@ class_name Smoke3D extends Node3D
 @export var emission_shape: Shape3D: set = _emission_shape_set
 ## The scale (size) of each particle
 @export var effect_scale: float = 1.0: set = _effect_scale_set
+## The scale speed of each particle
+@export var effect_speed: float = 1.0: set = _effect_scale_speed
 ## The color of the smoke
 @export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
 ## Lock global rotation
@@ -41,7 +43,11 @@ func _emission_shape_set(new_shape: Shape3D = emission_shape):
 func _effect_scale_set(new_effect_scale: float = effect_scale):
 	effect_scale = new_effect_scale
 	set_effect_scale()
-	
+
+func _effect_scale_speed(new_effect_speed: float = effect_speed):
+	effect_speed = new_effect_speed
+	set_effect_speed()
+
 func _smoke_color_set(new_value: Color):
 	smoke_color = new_value
 	set_colors()
@@ -115,7 +121,7 @@ func _clamp_lifetime(new_lifetime: float):
 	
 ## Converts the emission shape into particle material values
 func build_emission_shape(shape: Shape3D = emission_shape) -> void:
-	if  !smoke_particle.process_material: return
+	if !smoke_particle.process_material: return
 	
 	if !shape:
 		smoke_particle.process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
@@ -128,11 +134,17 @@ func build_emission_shape(shape: Shape3D = emission_shape) -> void:
 		smoke_particle.process_material.emission_box_extents = shape.size
 
 func set_effect_scale():
-	if  !smoke_particle.process_material: return
+	if !smoke_particle.process_material: return
 	
 	smoke_particle.process_material.scale_min = smoke_scale_min * effect_scale
 	smoke_particle.process_material.scale_max = smoke_scale_max * effect_scale
-	
+
+func set_effect_speed():
+	if !smoke_particle.process_material: return
+	smoke_particle.process_material.initial_velocity_min = 0.1 * effect_speed
+	smoke_particle.process_material.initial_velocity_max = 5.0 * effect_speed
+	smoke_particle.speed_scale = effect_speed
+
 func set_colors():
 	if  !smoke_particle.process_material: return
 	
@@ -144,4 +156,3 @@ func set_colors():
 	smoke_gradient.colors = [Color(Color.BLACK, smoke_color_alpha), smoke_next_hue, smoke_color, smoke_next_hue, Color(Color.BLACK, smoke_color_alpha)]
 	smoke_gradient_texture.gradient = smoke_gradient
 	smoke_particle.process_material.color_ramp = smoke_gradient_texture
-

@@ -70,14 +70,16 @@ func get_movement_speed(delta: float) -> float:
 	return final_speed * delta * 100
 
 func physics(delta: float) -> void:
-	if not is_authority(): return
-	
+	action(delta)
+
+func action(delta: float):
 	var basis: Basis
 	if third_person_camera:
 		basis = character.current_camera.global_transform.basis
 	else:
 		basis = character.transform.basis
-	direction = (basis * Vector3(character.direction.x, 0, character.direction.y))
+	var character_direction: Vector2 = character.input_states["direction"]
+	direction = (basis * Vector3(character_direction.x, 0, character_direction.y))
 		
 	if character.input_enabled and direction != Vector3.ZERO:
 		if Input.is_action_pressed(sprint_action):
@@ -87,10 +89,13 @@ func physics(delta: float) -> void:
 		
 	if !character.was_on_floor:
 		move_air(delta)
+		character.move_and_slide()
 	else:
 		move_ground(delta)
+		stair_step()
+		character.velocity.y = lerp(character.velocity.y, 0.0, delta * 2.0)
 	
-	set_rigid_interaction();
+	set_rigid_interaction()
 
 
 func set_rigid_interaction():
@@ -119,8 +124,6 @@ func move_air(delta: float) -> void:
 		var final_speed = get_movement_speed(delta)
 		character.velocity.x = lerp(character.velocity.x, direction.x * final_speed, 0.025)
 		character.velocity.z = lerp(character.velocity.z, direction.z * final_speed, 0.025)
-	
-	character.move_and_slide()
 
 func move_ground(delta: float) -> void:
 	var final_speed = get_movement_speed(delta)
@@ -139,7 +142,8 @@ func move_ground(delta: float) -> void:
 			var cached_rotation = third_person_camera_container.global_rotation
 			face_target(character.position + direction, turn_rate)
 			third_person_camera_container.global_rotation = cached_rotation
-	
+
+func stair_step():
 	# --- Stairs logic ---
 	var starting_position: Vector3 = character.global_position
 	var starting_velocity: Vector3 = character.velocity
@@ -176,4 +180,3 @@ func move_ground(delta: float) -> void:
 		character.global_position = slide_position
 	# --- Step up logic ---
 	
-	character.velocity.y = lerp(character.velocity.y, 0.0, delta * 2.0)

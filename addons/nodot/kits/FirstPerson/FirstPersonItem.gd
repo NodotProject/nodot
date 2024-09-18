@@ -56,7 +56,7 @@ func _ready() -> void:
 	if magazine_node:
 		magazine_node.connect("discharged", func() :
 			emit_signal("discharged")
-			)
+		)
 
 ## Async function to activate the weapon. i.e animate it onto the screen.
 func activate() -> void:

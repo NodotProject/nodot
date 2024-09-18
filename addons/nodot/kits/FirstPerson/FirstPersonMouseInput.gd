@@ -25,6 +25,9 @@ var is_editor: bool = Engine.is_editor_hint()
 var mouse_rotation: Vector2 = Vector2.ZERO
 var cursor_show_state = Input.MOUSE_MODE_VISIBLE
 
+## Buffer for input events
+var input_buffer: Array = []
+
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !(get_parent() is FirstPersonCharacter):
@@ -39,7 +42,6 @@ func _init():
 	for i in action_names.size():
 		var action_name = action_names[i]
 		InputManager.register_action(action_name, default_keys[i], 1)
-			
 
 func _ready() -> void:
 	if not character.is_authority(): return
@@ -50,38 +52,62 @@ func _ready() -> void:
 	if custom_cursor:
 		cursor_show_state = Input.MOUSE_MODE_HIDDEN
 
+## Capture input and write to buffer
 func _input(event: InputEvent) -> void:
-	if not character.is_authority_owner(): return
-	
+	if not is_multiplayer_authority(): return
 	if !enabled or !character.input_enabled: return
+
 	if event is InputEventMouseMotion:
-		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
-		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
+		# Add mouse movement to buffer
+		input_buffer.append({"type": "mouse_motion", "event": event.relative})
 
-	if fps_item_container:
-		if event.is_action_pressed(item_next_action):
-			fps_item_container.next_item()
-		elif event.is_action_pressed(item_previous_action):
-			fps_item_container.previous_item()
+	if Input.is_action_pressed(item_next_action):
+		input_buffer.append({"type": "mouse_action", "action": "next_item"})
+	elif Input.is_action_pressed(item_previous_action):
+		input_buffer.append({"type": "mouse_action", "action": "previous_item"})
+	elif Input.is_action_pressed(action_action):
+		input_buffer.append({"type": "mouse_action", "action": "action"})
+	elif Input.is_action_just_released(action_action):
+		input_buffer.append({"type": "mouse_action", "action": "release_action"})
+	elif Input.is_action_pressed(zoom_action):
+		input_buffer.append({"type": "mouse_action", "action": "zoom"})
+	elif Input.is_action_just_released(zoom_action):
+		input_buffer.append({"type": "mouse_action", "action": "zoomout"})
 
+## Process the buffered input during physics step (network tick)
 func _physics_process(delta: float) -> void:
-	
-	if is_editor or character and character.is_authority_owner() == false: return
-	
+	action(delta)
+
+func action(delta: float):
+	if not is_multiplayer_authority(): return
 	if !enabled or is_editor or !character.input_enabled: return
-	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
-	character.look_angle = Vector2(look_angle.y, look_angle.x)
-	mouse_rotation = Vector2.ZERO
 	
-	if fps_item_container:
-		if Input.is_action_pressed(action_action):
-			fps_item_container.action()
-		if Input.is_action_just_released(action_action):
-			fps_item_container.release_action();
-		elif Input.is_action_just_pressed(zoom_action):
-			fps_item_container.zoom()
-		elif Input.is_action_just_released(zoom_action):
-			fps_item_container.zoomout()
+	var input: Dictionary = get_input(delta)
+
+	character.input_states["mouse_action"] = input.mouse_action
+	character.input_states["look_angle"] = input.look_angle
+
+## Process the buffered input and get the look_angle
+func get_input(delta: float) -> Dictionary:
+	var look_angle: Vector2 = Vector2.ZERO
+	var mouse_action: String = ""
+	
+	for entry in input_buffer:
+		if entry["type"] == "mouse_motion":
+			var mouse_movement: Vector2 = entry["event"]
+			look_angle.y -= mouse_movement.x * InputManager.mouse_sensitivity * delta
+			look_angle.x -= mouse_movement.y * InputManager.mouse_sensitivity * delta
+		elif entry["type"] == "mouse_action":
+			mouse_action = entry["action"]
+
+	# Clear the buffer after processing
+	input_buffer.clear()
+
+	# Return final processed input
+	return {
+		"look_angle": Vector2(look_angle.y, look_angle.x),
+		"mouse_action": mouse_action
+	}
 
 ## Disable input and release mouse
 func disable() -> void:

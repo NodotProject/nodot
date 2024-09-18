@@ -10,6 +10,7 @@ class_name NodotCharacter3D extends CharacterBody3D
 signal current_camera_changed(old_camera: Camera3D, new_camera: Camera3D)
 
 var current_camera: Camera3D
+var input_states: Dictionary = {} 
 
 func _is_on_floor() -> Node:
 	var collision_info: KinematicCollision3D = move_and_collide(Vector3(0,-0.1,0),true)
@@ -23,10 +24,7 @@ func _is_current_player_changed(new_value: bool):
 	is_current_player = new_value
 
 ## Change the active camera
-func set_current_camera(camera3d: Camera3D):
-	if !is_current_player:
-		return
-	
+func set_current_camera(camera3d: Camera3D):	
 	if current_camera != camera3d:
 	
 		emit_signal("current_camera_changed", current_camera, camera3d)
@@ -36,21 +34,10 @@ func set_current_camera(camera3d: Camera3D):
 			
 		current_camera = camera3d
 		current_camera.current = true
-		
-		toggle_viewport_camera(camera3d == camera)
 
 ## Reset the active camera to the character
 func reset_current_camera():
 	set_current_camera(camera)
-			
-## Toggle any viewport cameras
-func toggle_viewport_camera(set_current: bool):
-	var viewport = Nodot.get_first_child_of_type(camera, FirstPersonItemsContainer)
-	if viewport:
-		if set_current:
-			viewport.show()
-		else:
-			viewport.hide()
 
 ## Turn to face the target. Essentially lerping look_at
 func face_target(target_position: Vector3, weight: float) -> void:

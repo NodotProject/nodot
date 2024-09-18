@@ -6,7 +6,7 @@ var is_host = false
 signal host_started(id: int, display_name: String)
 signal peer_connected(id: int, display_name: String)
 
-var multiplayer_peer = ENetMultiplayerPeer.new()
+var multiplayer_peer := ENetMultiplayerPeer.new()
 
 func join(address: String, port: int, new_display_name: String = ""):
 	multiplayer_peer.create_client(address, port)
