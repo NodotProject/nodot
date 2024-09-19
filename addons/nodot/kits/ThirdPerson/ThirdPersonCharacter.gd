@@ -7,8 +7,6 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 var submerge_handler: CharacterSwim3D
 var floor_body: Node
 var was_on_floor: bool = false
-var direction := Vector2.ZERO
-var look_angle := Vector2.ZERO
 
 func _enter_tree() -> void:
 	# Set up camera container

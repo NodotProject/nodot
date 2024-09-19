@@ -37,9 +37,9 @@ class Collectable:
 
 	func _init(collectable_node: Node):
 		if collectable_node.actual_collectable_root_node:
-			node = collectable_node.actual_collectable_root_node.duplicate(15)
+			node = collectable_node.actual_collectable_root_node
 		else:
-			node = collectable_node.duplicate(15)
+			node = collectable_node
 		node.position = Vector3.ZERO
 		
 		icon = collectable_node.icon
