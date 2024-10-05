@@ -82,6 +82,9 @@ func action(delta: float):
 	if not is_multiplayer_authority(): return
 	if !enabled or is_editor or !character.input_enabled: return
 	
+	if Input.is_action_pressed(action_action):
+		input_buffer.append({"type": "mouse_action", "action": "action"})
+		
 	var input: Dictionary = get_input(delta)
 
 	character.input_states["mouse_action"] = input.mouse_action
@@ -91,6 +94,19 @@ func action(delta: float):
 func get_input(delta: float) -> Dictionary:
 	var look_angle: Vector2 = Vector2.ZERO
 	var mouse_action: String = ""
+	
+	if Input.is_action_pressed(item_next_action):
+		input_buffer.append({"type": "mouse_action", "action": "next_item"})
+	elif Input.is_action_pressed(item_previous_action):
+		input_buffer.append({"type": "mouse_action", "action": "previous_item"})
+	elif Input.is_action_pressed(action_action):
+		input_buffer.append({"type": "mouse_action", "action": "action"})
+	elif Input.is_action_just_released(action_action):
+		input_buffer.append({"type": "mouse_action", "action": "release_action"})
+	elif Input.is_action_pressed(zoom_action):
+		input_buffer.append({"type": "mouse_action", "action": "zoom"})
+	elif Input.is_action_just_released(zoom_action):
+		input_buffer.append({"type": "mouse_action", "action": "zoomout"})
 	
 	for entry in input_buffer:
 		if entry["type"] == "mouse_motion":
