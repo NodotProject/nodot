@@ -20,6 +20,8 @@ class_name SFXPlayer extends AudioStreamPlayer
 ## Tweak the pitch a bit to add variety
 @export var tweak_pitch: float = 0.0
 
+signal played
+
 ## The name of the signal
 var trigger_signal: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -53,6 +55,7 @@ func action(index: int = -1) -> void:
 		_tweak_pitch()
 		
 	play()
+	emit_signal("played")
 
 ## Fade the sound effect in
 func fade_in(index: int = -1):

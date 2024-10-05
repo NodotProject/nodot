@@ -25,24 +25,37 @@ func ready():
 	sm.add_valid_transition("prone", ["jump"])
 
 func state_updated(old_state: int, new_state: int) -> void:
-	if not is_authority_owner(): return
-	
 	if new_state == state_ids["jump"]:
 		jump()
 
 func jump() -> void:
 	character.velocity.y = jump_velocity
-
-func physics(delta: float) -> void:
+	
+func input(event: InputEvent):
 	if not is_authority_owner(): return
 	
-	if !character.was_on_floor:
-		return
-		
-	if Input.is_action_pressed(jump_action):
-		if not character.floor_body.has_meta("soft_floor") or character.floor_body.has_meta("can_jump"):
-			sm.set_state(state_ids["jump"])
+	if event.is_action_pressed(jump_action):
+		character.input_states["jump"] = true
+
+func physics(_delta) -> void:
+	character.input_states["jump"] = get_input()
+	action()
+
+func can_jump():
+	if character.was_on_floor:
+		return true
+	return false
+	
+func action():
+	if !can_jump(): return
+	
+	if character.input_states.get("jump"):
+		if character.floor_body and character.floor_body.has_meta("soft_floor"): return
+		sm.set_state(state_ids["jump"])
 	elif sm.state == state_ids["jump"]:
 		sm.set_state(state_ids["land"])
 	elif sm.state == state_ids["land"]:
 		sm.set_state(state_ids["idle"])
+
+func get_input():
+	return Input.is_action_pressed(jump_action)

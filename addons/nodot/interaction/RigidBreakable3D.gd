@@ -48,11 +48,14 @@ func _enter_tree() -> void:
 
 func _physics_process(delta: float) -> void:
 	if environmental_damage_min_velocity > 0 and contact_monitor and get_contact_count() > 0:
-		var max_velocity: float = max(linear_velocity.x, linear_velocity.y, linear_velocity.z)
-		if max_velocity > environmental_damage_min_velocity:
-			var multiplier = max_velocity / environmental_damage_min_velocity
-			var damage = environmental_damage_multiplier * (environmental_damage_min_velocity * multiplier)
-			health.add_health(-damage)
+		var colliders = get_colliding_bodies()
+		for collider in colliders:
+			if collider is not RigidBody3D: return
+			var max_velocity: float = collider.linear_velocity.length()
+			if max_velocity > environmental_damage_min_velocity:
+				var multiplier = max_velocity / environmental_damage_min_velocity
+				var damage = environmental_damage_multiplier * (environmental_damage_min_velocity * multiplier)
+				health.add_health(-damage)
 
 
 ## Perform the break

@@ -12,7 +12,7 @@ var msaa: Viewport.MSAA = 0: set = _set_msaa
 var brightness: float = 1.0: set = _set_brightness
 var contrast: float = 1.0: set = _set_contrast
 var low_spec: bool = false: set = _set_low_spec;
-var post_process: String = "n" : set = _set_post_process;
+var post_process: String = "n": set = _set_post_process;
 
 ## Triggered when the window is resized
 signal window_resized
@@ -26,24 +26,24 @@ func _ready() -> void:
 	set_minimum_window_size()
 	_on_window_resized()
 	
-	if SaveManager.config.hasItem("display_mode"):
-		display_mode = SaveManager.config.getItem("display_mode")
-	if SaveManager.config.hasItem("screen"):
-		screen = SaveManager.config.getItem("screen")
-	if SaveManager.config.hasItem("fps_limit"):
-		fps_limit = SaveManager.config.getItem("fps_limit")
-	if SaveManager.config.hasItem("vsync"):
-		vsync = SaveManager.config.getItem("vsync")
-	if SaveManager.config.hasItem("msaa"):
-		msaa = SaveManager.config.getItem("msaa")
-	if SaveManager.config.hasItem("brightness"):
-		brightness = SaveManager.config.getItem("brightness")
-	if SaveManager.config.hasItem("contrast"):
-		contrast = SaveManager.config.getItem("contrast")
-	if SaveManager.config.hasItem("low_spec"):
-		low_spec = SaveManager.config.getItem("low_spec")
-	if SaveManager.config.hasItem("post_process"):
-		post_process = SaveManager.config.getItem("post_process")
+	if SaveManager.config.has_item("display_mode"):
+		display_mode = SaveManager.config.get_item("display_mode")
+	if SaveManager.config.has_item("screen"):
+		screen = SaveManager.config.get_item("screen")
+	if SaveManager.config.has_item("fps_limit"):
+		fps_limit = SaveManager.config.get_item("fps_limit")
+	if SaveManager.config.has_item("vsync"):
+		vsync = SaveManager.config.get_item("vsync")
+	if SaveManager.config.has_item("msaa"):
+		msaa = SaveManager.config.get_item("msaa")
+	if SaveManager.config.has_item("brightness"):
+		brightness = SaveManager.config.get_item("brightness")
+	if SaveManager.config.has_item("contrast"):
+		contrast = SaveManager.config.get_item("contrast")
+	if SaveManager.config.has_item("low_spec"):
+		low_spec = SaveManager.config.get_item("low_spec")
+	if SaveManager.config.has_item("post_process"):
+		post_process = SaveManager.config.get_item("post_process")
 
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
@@ -118,10 +118,26 @@ func bump() -> void:
 ## Get the number of monitors available
 func get_screen_count() -> int:
 	return DisplayServer.get_screen_count()
+	
+## Get the screen size
+func get_screen_size() -> Vector2:
+	return DisplayServer.screen_get_size(screen)
+	
+## Get the screen position
+func get_screen_position() -> Vector2:
+	return DisplayServer.screen_get_position(screen)
 
 ## Set minimum window size
 func set_minimum_window_size(size: Vector2 = Vector2(1152, 648)):
 	DisplayServer.window_set_min_size(size)
+	
+## Set window size
+func set_window_size(size: Vector2):
+	DisplayServer.window_set_size(size)
+	
+## Set window position
+func set_window_position(position: Vector2):
+	DisplayServer.window_set_position(position)
 
 ## Register a subviewport or worldenvironment for processing
 func register(node: Node):
@@ -132,13 +148,13 @@ func register(node: Node):
 
 ## Save the video settings to the config file
 func save_config():
-	SaveManager.config.setItem("display_mode", display_mode)
-	SaveManager.config.setItem("screen", screen)
-	SaveManager.config.setItem("fps_limit", fps_limit)
-	SaveManager.config.setItem("vsync", vsync)
-	SaveManager.config.setItem("msaa", msaa)
-	SaveManager.config.setItem("brightness", brightness)
-	SaveManager.config.setItem("contrast", contrast)
-	SaveManager.config.setItem("low_spec", low_spec)
-	SaveManager.config.setItem("post_process", post_process)
+	SaveManager.config.set_item("display_mode", display_mode)
+	SaveManager.config.set_item("screen", screen)
+	SaveManager.config.set_item("fps_limit", fps_limit)
+	SaveManager.config.set_item("vsync", vsync)
+	SaveManager.config.set_item("msaa", msaa)
+	SaveManager.config.set_item("brightness", brightness)
+	SaveManager.config.set_item("contrast", contrast)
+	SaveManager.config.set_item("low_spec", low_spec)
+	SaveManager.config.set_item("post_process", post_process)
 	SaveManager.save_config()

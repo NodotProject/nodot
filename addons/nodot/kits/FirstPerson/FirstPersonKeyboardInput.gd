@@ -33,10 +33,16 @@ func _ready():
 	InputManager.register_action(down_action, KEY_S)
 
 func _physics_process(delta: float) -> void:
+	action()
+	
+func action():
 	if not character.is_authority(): return
 	
 	if enabled and character.input_enabled:
-		character.direction = Input.get_vector(left_action, right_action, up_action, down_action)
+		character.input_states["direction"] = get_input()
+
+func get_input() -> Vector2:
+	return Input.get_vector(left_action, right_action, up_action, down_action)
 
 func enable():
 	enabled = true

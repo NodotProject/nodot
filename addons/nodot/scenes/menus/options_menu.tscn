@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dj1v33w5ffysa"]
+[gd_scene load_steps=27 format=3 uid="uid://dj1v33w5ffysa"]
 
 [ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
 [ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_ffg2c"]
@@ -8,40 +8,21 @@
 resource_name = "optionsmenucontrol"
 script/source = "extends Node
 
+@onready var menu_container: MenuContainer = get_parent()
 @onready var menu_manager: MenuManager = get_parent().get_parent()
 
+func _input(event: InputEvent):
+	if menu_container.visible and event.is_action_pressed(\"escape\"):
+		menu_manager.go_back()
 "
 
-[sub_resource type="GDScript" id="GDScript_kbupf"]
-resource_name = "optiontabs"
-script/source = "extends TabBar
+[sub_resource type="GDScript" id="GDScript_55485"]
+script/source = "extends TextureRect
 
-@export var tab_contents: Array[VBoxContainer] = []
+@export var menu_container: MenuContainer;
 
 func _ready():
-	hide_contents()
-	tab_contents[0].visible = true
-
-func _on_tab_selected(tab_index: int):
-	hide_contents()
-	tab_contents[tab_index].visible = true
-
-func hide_contents():
-	for tab in tab_contents:
-		tab.visible = false
-"
-
-[sub_resource type="GDScript" id="GDScript_yprk4"]
-resource_name = "closebtn"
-script/source = "extends Button
-
-@onready var menu_manager: MenuManager = %OptionsMenuControl.menu_manager
-
-func _on_pressed():
-	AudioManager.save_config()
-	VideoManager.save_config()
-	InputManager.save_config()
-	menu_manager.go_back()
+	menu_container.connect(\"hiding\", hide)
 "
 
 [sub_resource type="GDScript" id="GDScript_l8cix"]
@@ -55,13 +36,41 @@ const display_mode_names = [\"Windowed\", \"x\", \"x\", \"Fullscreen\", \"Exclus
 func _ready():
 	popup.connect(\"id_pressed\", _on_pressed)
 	update_text()
-	
+
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed(item_id: int):
-	VideoManager.display_mode = item_id
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	VideoManager.display_mode = item_id as DisplayServer.WindowMode
 	update_text()
 			
 func update_text():
 	text = display_mode_names[VideoManager.display_mode]
+"
+
+[sub_resource type="GDScript" id="GDScript_2sg1u"]
+resource_name = "postprocess"
+script/source = "extends MenuButton
+
+@onready var popup = get_popup()
+
+const post_processes = {\"n\" : \"None\", \"o\": \"Outline\",\"p\": \"Posterize\",\"s\": \"Sobel\",\"c\": \"Combine\"}
+
+func _ready():
+	popup.connect(\"id_pressed\", _on_pressed)
+	update_text()
+
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
+func _on_pressed(item_id: int):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	VideoManager.post_process = post_processes.keys()[item_id]
+	update_text()
+			
+func update_text():
+	text = post_processes[VideoManager.post_process]
 "
 
 [sub_resource type="GDScript" id="GDScript_61kd7"]
@@ -76,7 +85,11 @@ func _ready():
 		popup.add_item(str(i), i)
 	update_text()
 	
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed(item_id: int):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	VideoManager.screen = item_id
 	update_text()
 			
@@ -84,7 +97,7 @@ func update_text():
 	text = str(VideoManager.screen)
 "
 
-[sub_resource type="GDScript" id="GDScript_j2da2"]
+[sub_resource type="GDScript" id="GDScript_h7hm4"]
 script/source = "extends MenuButton
 
 @onready var popup = get_popup()
@@ -95,7 +108,11 @@ func _ready():
 	popup.connect(\"id_pressed\", _on_pressed)
 	update_text()
 	
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed(item_id: int):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	match item_id:
 		0: VideoManager.fps_limit = frame_rates[0]
 		1: VideoManager.fps_limit = frame_rates[1]
@@ -117,7 +134,11 @@ script/source = "extends CheckButton
 func _ready():
 	button_pressed = VideoManager.vsync
 
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	VideoManager.vsync = button_pressed
 "
 
@@ -131,7 +152,11 @@ func _ready():
 	popup.connect(\"id_pressed\", _on_pressed)
 	update_text()
 	
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed(item_id: int):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	match item_id:
 		0: VideoManager.msaa = Viewport.MSAA_DISABLED
 		1: VideoManager.msaa = Viewport.MSAA_2X
@@ -147,16 +172,9 @@ func update_text():
 resource_name = "brightness"
 script/source = "extends HSlider
 
-func _on_value_changed(value):
-	VideoManager.brightness = value
-"
-
-[sub_resource type="GDScript" id="GDScript_kevlo"]
-resource_name = "contrast"
-script/source = "extends HSlider
-
-func _on_value_changed(value):
-	VideoManager.contrast = value
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	VideoManager.brightness = new_value
 "
 
 [sub_resource type="GDScript" id="GDScript_2332y"]
@@ -167,8 +185,9 @@ func _ready():
 	var converted_volume = AudioManager._convert_volume(AudioManager.master_volume)
 	value = converted_volume * 100
 	
-func _on_value_changed(value):
-	AudioManager.set_master_volume_decimal(value / 100)
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	AudioManager.set_master_volume_decimal(new_value / 100)
 "
 
 [sub_resource type="GDScript" id="GDScript_ninhr"]
@@ -179,8 +198,9 @@ func _ready():
 	var converted_volume = AudioManager._convert_volume(AudioManager.music_volume)
 	value = converted_volume * 100
 	
-func _on_value_changed(value):
-	AudioManager.set_music_volume_decimal(value / 100)
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	AudioManager.set_music_volume_decimal(new_value / 100)
 "
 
 [sub_resource type="GDScript" id="GDScript_bjj28"]
@@ -191,8 +211,9 @@ func _ready():
 	var converted_volume = AudioManager._convert_volume(AudioManager.sfx_volume)
 	value = converted_volume * 100
 	
-func _on_value_changed(value):
-	AudioManager.set_sfx_volume_decimal(value / 100)
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	AudioManager.set_sfx_volume_decimal(new_value / 100)
 "
 
 [sub_resource type="GDScript" id="GDScript_tnn2v"]
@@ -202,9 +223,9 @@ script/source = "extends Button
 @export var nodes: Array[Node] = []
 
 var default_values: Dictionary = {
-	\"HSlider\": 95,
-	\"HSlider2\": 95,
-	\"HSlider3\": 95
+	\"HSlider\": 90,
+	\"HSlider2\": 90,
+	\"HSlider3\": 90
 }
 
 func revert():
@@ -212,7 +233,11 @@ func revert():
 		if \"value\" in node:
 			node.value = default_values[node.name]
 
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
 func _on_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	revert()
 "
 
@@ -223,8 +248,9 @@ script/source = "extends HSlider
 func _ready():
 	value = InputManager.mouse_sensitivity
 	
-func _on_value_changed(value):
-	InputManager.mouse_sensitivity = value
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	InputManager.mouse_sensitivity = new_value
 "
 
 [sub_resource type="GDScript" id="GDScript_ljq8r"]
@@ -271,8 +297,13 @@ func populate_controls():
 			input_button.connect(\"pressed\", _input_button_clicked.bind(action, input_button))
 			add_child(input_button)
 
-			var c_input_label: Label = Label.new()
-			add_child(c_input_label)
+			var joy_input_button: Button = Button.new()
+			joy_input_button.flat = true
+			joy_input_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			joy_input_button.focus_mode = Control.FOCUS_NONE
+			joy_input_button.text = _clean_key_name_text(InputManager.get_action_joy(action))
+			joy_input_button.connect(\"pressed\", _input_button_clicked.bind(action, joy_input_button))
+			add_child(joy_input_button)
 			
 func _input(event: InputEvent):
 	if target_action_name != \"\":
@@ -287,23 +318,109 @@ func _input(event: InputEvent):
 		if event is InputEventJoypadButton:
 			InputManager.add_action(target_action_name, event.button_index, 2)
 			
-		target_button.text = InputManager.get_action_key(target_action_name)
+		target_button.text = _clean_key_name_text(InputManager.get_action_key(target_action_name))
 		
 		target_action_name = \"\"
 		target_key_name = \"\"
 		%InputEntryPanel.visible = false
 		
-
 func _input_button_clicked(action_name: String, button: Button):
 	target_action_name = action_name
 	target_key_name = button.text
 	target_button = button
 	%InputEntryPanel.visible = true
+
+func _clean_key_name_text(key_name: String):
+	return key_name.get_slice(\"(\", 0)
 "
 
-[node name="OptionsMenuContainer" type="Node2D"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f47jc"]
+bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.431373)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6rt3"]
+bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.431373)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0kid"]
+bg_color = Color(0.0901961, 0.0901961, 0.0901961, 0.431373)
+
+[sub_resource type="GDScript" id="GDScript_yprk4"]
+resource_name = "closebtn"
+script/source = "extends Button
+
+@onready var menu_manager: MenuManager = %OptionsMenuControl.menu_manager
+
+func _ready():
+	connect(\"focus_entered\", hover)
+	connect(\"mouse_entered\", hover)
+	connect(\"pressed\", action)
+	connect(\"gui_input\", func(event: InputEvent):
+		if event.is_action_pressed(\"ui_select\"):
+			action()
+	)
+	
+func hover():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
+func action():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	AudioManager.save_config()
+	VideoManager.save_config()
+	InputManager.save_config()
+	menu_manager.go_back()
+"
+
+[sub_resource type="GDScript" id="GDScript_vqvxb"]
+script/source = "extends HBoxContainer
+
+@export var menus: Array[Container];
+
+func hide_all():
+	for c in menus:
+		c.hide();
+
+func _on_mouse_entered():
+	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
+
+
+func _on_video_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	hide_all();
+	menus[0].show();
+
+
+func _on_audio_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	hide_all();
+	menus[1].show();
+
+
+func _on_controls_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	hide_all();
+	menus[2].show();
+
+func _on_game_pressed():
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	hide_all();
+	menus[3].show();
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bw13l"]
+bg_color = Color(0.0470588, 0.0470588, 0.0470588, 0.431373)
+skew = Vector2(-0.2, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sp650"]
+bg_color = Color(0.0784314, 0.0784314, 0.0784314, 0.431373)
+skew = Vector2(-0.2, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6qco"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 0.431373)
+skew = Vector2(-0.2, 0)
+
+[node name="OptionsMenuContainer" type="Node2D" node_paths=PackedStringArray("selectable_items")]
 process_mode = 3
 script = ExtResource("1_0h6t2")
+selectable_items = [NodePath("Control/CloseButton")]
 
 [node name="OptionsMenuControl" type="Node" parent="."]
 unique_name_in_owner = true
@@ -327,11 +444,15 @@ target_node = NodePath("../AudioStreamPlayer")
 trigger_signal = "hiding"
 target_method = "stop"
 
-[node name="BackDrop" type="ColorRect" parent="."]
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-color = Color(0, 0, 0, 0.984314)
+[node name="SFX" type="Node" parent="OptionsMenuControl"]
+
+[node name="HoverTick" type="AudioStreamPlayer" parent="OptionsMenuControl/SFX"]
+
+[node name="ClickTick" type="AudioStreamPlayer" parent="OptionsMenuControl/SFX"]
+
+[node name="WindowSizeConnector" type="Node" parent="." node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("2_ffg2c")
+target_nodes = [NodePath("../Control")]
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -339,9 +460,25 @@ anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 
-[node name="WindowSizeConnector" type="Node" parent="Control" node_paths=PackedStringArray("target_nodes")]
-script = ExtResource("2_ffg2c")
-target_nodes = [NodePath("../../BackDrop"), NodePath(".."), NodePath("../MarginContainer")]
+[node name="Background" type="TextureRect" parent="Control" node_paths=PackedStringArray("menu_container")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_55485")
+menu_container = NodePath("../..")
+
+[node name="BackDrop" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.490196)
 
 [node name="MarginContainer" type="MarginContainer" parent="Control"]
 layout_mode = 1
@@ -350,54 +487,35 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 130
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="VideoOptions" type="BoxContainer" parent="Control/MarginContainer"]
 layout_mode = 2
+alignment = 1
+vertical = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VideoOptions"]
 layout_mode = 2
-
-[node name="TabBar" type="TabBar" parent="Control/MarginContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("tab_contents")]
-layout_mode = 2
-size_flags_horizontal = 3
-tab_count = 3
-tab_0/title = "Video"
-tab_1/title = "Audio"
-tab_2/title = "Controls"
-script = SubResource("GDScript_kbupf")
-tab_contents = [NodePath("../../VideoOptions"), NodePath("../../AudioOptions"), NodePath("../../InputOptions")]
-
-[node name="CloseButton" type="Button" parent="Control/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Close"
-script = SubResource("GDScript_yprk4")
-
-[node name="VideoOptions" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VBoxContainer/VideoOptions"]
-layout_mode = 2
-theme_override_constants/h_separation = 30
-theme_override_constants/v_separation = 15
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 230
+theme_override_constants/v_separation = 30
 columns = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Display Mode"
 vertical_alignment = 1
 
-[node name="DisplayModeMenuButton" type="MenuButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="DisplayModeMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Exclusive Fullscreen"
 item_count = 3
 popup/item_0/text = "Windowed"
-popup/item_0/id = 0
 popup/item_1/text = "Fullscreen"
 popup/item_1/id = 3
 popup/item_2/text = "Exclusive Fullscreen"
@@ -405,42 +523,78 @@ popup/item_2/checked = true
 popup/item_2/id = 4
 script = SubResource("GDScript_l8cix")
 
-[node name="Label2" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label9" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Post Processing"
+vertical_alignment = 1
+
+[node name="PostProcessMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "None"
+alignment = 0
+item_count = 5
+popup/item_0/text = "None"
+popup/item_1/text = "Outline"
+popup/item_1/id = 1
+popup/item_2/text = "Posterize"
+popup/item_2/id = 2
+popup/item_3/text = "Sobel"
+popup/item_3/id = 3
+popup/item_4/text = "Combine"
+popup/item_4/id = 4
+script = SubResource("GDScript_2sg1u")
+
+[node name="Label2" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Monitor"
 
-[node name="ScreenMenuButton" type="MenuButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="ScreenMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 script = SubResource("GDScript_61kd7")
 
-[node name="Label3" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label3" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "FPS Limit"
 
-[node name="FPSLimitMenuButton" type="MenuButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="FPSLimitMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
-script = SubResource("GDScript_j2da2")
+item_count = 7
+popup/item_0/text = "No Limit"
+popup/item_1/text = "25"
+popup/item_1/id = 1
+popup/item_2/text = "30"
+popup/item_2/id = 2
+popup/item_3/text = "60"
+popup/item_3/id = 3
+popup/item_4/text = "144"
+popup/item_4/id = 4
+popup/item_5/text = "240"
+popup/item_5/id = 5
+popup/item_6/text = "360"
+popup/item_6/id = 6
+script = SubResource("GDScript_h7hm4")
 
-[node name="Label4" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label4" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Vertical Sync"
 
-[node name="VSyncCheckButton" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="VSyncCheckButton" type="CheckButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 script = SubResource("GDScript_f8lsk")
 
-[node name="Label5" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label5" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Anti-Aliasing (MSAA)"
 
-[node name="MSAAMenuButton" type="MenuButton" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="MSAAMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 item_count = 4
 popup/item_0/text = "Disabled"
-popup/item_0/id = 0
 popup/item_1/text = "2x"
 popup/item_1/id = 1
 popup/item_2/text = "4x"
@@ -449,145 +603,221 @@ popup/item_3/text = "8x"
 popup/item_3/id = 3
 script = SubResource("GDScript_knrud")
 
-[node name="Label6" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label6" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Brightness"
 
-[node name="BrightnessHSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="BrightnessHSlider" type="HSlider" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 max_value = 8.0
 step = 0.1
 value = 1.0
 script = SubResource("GDScript_j2ipi")
 
-[node name="Label7" type="Label" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
+[node name="Label7" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Contrast"
 
-[node name="ContrastHSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer"]
-layout_mode = 2
-max_value = 8.0
-step = 0.1
-value = 1.0
-script = SubResource("GDScript_kevlo")
-
-[node name="AudioOptions" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="AudioOptions" type="BoxContainer" parent="Control/MarginContainer"]
 visible = false
 layout_mode = 2
+alignment = 1
+vertical = true
 
-[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VBoxContainer/AudioOptions"]
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/AudioOptions"]
 layout_mode = 2
-theme_override_constants/h_separation = 30
-theme_override_constants/v_separation = 15
+theme_override_constants/h_separation = 230
+theme_override_constants/v_separation = 30
 columns = 2
 
-[node name="SliderLabel" type="Label" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="SliderLabel" type="Label" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "Master Volume"
 
-[node name="HSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider" type="HSlider" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-value = 95.0
+value = 90.0
 script = SubResource("GDScript_2332y")
 
-[node name="SliderLabel2" type="Label" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="SliderLabel2" type="Label" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "Music Volume"
 
-[node name="HSlider2" type="HSlider" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider2" type="HSlider" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-value = 95.0
+value = 90.0
 script = SubResource("GDScript_ninhr")
 
-[node name="SliderLabel3" type="Label" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="SliderLabel3" type="Label" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 text = "SFX Volume"
 
-[node name="HSlider3" type="HSlider" parent="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer"]
+[node name="HSlider3" type="HSlider" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-value = 95.0
+value = 90.0
 script = SubResource("GDScript_bjj28")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/AudioOptions"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/AudioOptions/GridContainer"]
 layout_mode = 2
-alignment = 2
+alignment = 1
 
-[node name="RevertButton" type="Button" parent="Control/MarginContainer/VBoxContainer/AudioOptions/HBoxContainer" node_paths=PackedStringArray("nodes")]
+[node name="RevertButton" type="Button" parent="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer" node_paths=PackedStringArray("nodes")]
 layout_mode = 2
 text = "Restore Defaults"
 script = SubResource("GDScript_tnn2v")
-nodes = [NodePath("../../GridContainer/HSlider"), NodePath("../../GridContainer/HSlider2"), NodePath("../../GridContainer/HSlider3")]
+nodes = [NodePath("../../HSlider"), NodePath("../../HSlider2"), NodePath("../../HSlider3")]
 
-[node name="InputOptions" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="InputOptions" type="BoxContainer" parent="Control/MarginContainer"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
 theme_override_constants/separation = 15
+alignment = 1
+vertical = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/InputOptions"]
 layout_mode = 2
 theme_override_constants/separation = 22
 alignment = 1
 
-[node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer"]
+[node name="Label" type="Label" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
 layout_mode = 2
 text = "Mouse Sensitivity"
 
-[node name="MouseHSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer"]
+[node name="MouseHSlider" type="HSlider" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-max_value = 1.0
-step = 0.05
-value = 0.5
+max_value = 0.5
+step = 0.025
+value = 0.1
 script = SubResource("GDScript_iaxat")
 
-[node name="ResetSettings" type="Button" parent="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer"]
+[node name="ResetSettings" type="Button" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
 layout_mode = 2
 text = "Reset to default"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/InputOptions"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer" node_paths=PackedStringArray("reset_btn")]
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/InputOptions/ScrollContainer" node_paths=PackedStringArray("reset_btn")]
 layout_mode = 2
 theme_override_constants/h_separation = 30
 columns = 3
 script = SubResource("GDScript_ljq8r")
 reset_btn = NodePath("../../HBoxContainer/ResetSettings")
-ignored_actions = Array[String](["escape", "sprint", "zoom"])
+ignored_actions = Array[String](["escape", "sprint"])
 
-[node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer/GridContainer"]
+[node name="Label" type="Label" parent="Control/MarginContainer/InputOptions/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Action"
 
-[node name="Label2" type="Label" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer/GridContainer"]
+[node name="Label2" type="Label" parent="Control/MarginContainer/InputOptions/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Keyboard"
 
-[node name="Label3" type="Label" parent="Control/MarginContainer/VBoxContainer/InputOptions/ScrollContainer/GridContainer"]
+[node name="Label3" type="Label" parent="Control/MarginContainer/InputOptions/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Controller"
 
+[node name="GameOptions" type="BoxContainer" parent="Control/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = -103.0
+offset_right = 141.0
+offset_bottom = -41.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 28
+theme_override_styles/hover = SubResource("StyleBoxFlat_f47jc")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_f6rt3")
+theme_override_styles/normal = SubResource("StyleBoxFlat_w0kid")
+text = "Back"
+script = SubResource("GDScript_yprk4")
+
+[node name="TabsContainer" type="HBoxContainer" parent="Control" node_paths=PackedStringArray("menus")]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 85.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+alignment = 1
+script = SubResource("GDScript_vqvxb")
+menus = [NodePath("../MarginContainer/VideoOptions"), NodePath("../MarginContainer/AudioOptions"), NodePath("../MarginContainer/InputOptions"), NodePath("../MarginContainer/GameOptions")]
+
+[node name="Video" type="Button" parent="Control/TabsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+text = "Video"
+
+[node name="Audio" type="Button" parent="Control/TabsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+text = "Audio
+"
+
+[node name="Controls" type="Button" parent="Control/TabsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+text = "Controls"
+
+[node name="Game" type="Button" parent="Control/TabsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+text = "Game"
+
 [node name="InputEntryPanel" type="Panel" parent="Control"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -606,13 +836,25 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Press Any Key..."
 
-[connection signal="tab_selected" from="Control/MarginContainer/VBoxContainer/HBoxContainer/TabBar" to="Control/MarginContainer/VBoxContainer/HBoxContainer/TabBar" method="_on_tab_selected"]
-[connection signal="pressed" from="Control/MarginContainer/VBoxContainer/HBoxContainer/CloseButton" to="Control/MarginContainer/VBoxContainer/HBoxContainer/CloseButton" method="_on_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_pressed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/BrightnessHSlider" method="_on_value_changed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" to="Control/MarginContainer/VBoxContainer/VideoOptions/GridContainer/ContrastHSlider" method="_on_value_changed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider" to="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider" method="_on_value_changed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" to="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" to="Control/MarginContainer/VBoxContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
-[connection signal="pressed" from="Control/MarginContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" to="Control/MarginContainer/VBoxContainer/AudioOptions/HBoxContainer/RevertButton" method="_on_pressed"]
-[connection signal="value_changed" from="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer/MouseHSlider" to="Control/MarginContainer/VBoxContainer/InputOptions/HBoxContainer/MouseHSlider" method="_on_value_changed"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/DisplayModeMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/DisplayModeMenuButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/PostProcessMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/PostProcessMenuButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/ScreenMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/ScreenMenuButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/FPSLimitMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/FPSLimitMenuButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_pressed"]
+[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/MSAAMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/MSAAMenuButton" method="_on_mouse_entered"]
+[connection signal="value_changed" from="Control/MarginContainer/VideoOptions/GridContainer/BrightnessHSlider" to="Control/MarginContainer/VideoOptions/GridContainer/BrightnessHSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider2" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
+[connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
+[connection signal="mouse_entered" from="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" to="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" to="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" method="_on_pressed"]
+[connection signal="value_changed" from="Control/MarginContainer/InputOptions/HBoxContainer/MouseHSlider" to="Control/MarginContainer/InputOptions/HBoxContainer/MouseHSlider" method="_on_value_changed"]
+[connection signal="mouse_entered" from="Control/TabsContainer/Video" to="Control/TabsContainer" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/TabsContainer/Video" to="Control/TabsContainer" method="_on_video_pressed"]
+[connection signal="mouse_entered" from="Control/TabsContainer/Audio" to="Control/TabsContainer" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/TabsContainer/Audio" to="Control/TabsContainer" method="_on_audio_pressed"]
+[connection signal="mouse_entered" from="Control/TabsContainer/Controls" to="Control/TabsContainer" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/TabsContainer/Controls" to="Control/TabsContainer" method="_on_controls_pressed"]
+[connection signal="mouse_entered" from="Control/TabsContainer/Game" to="Control/TabsContainer" method="_on_mouse_entered"]
+[connection signal="pressed" from="Control/TabsContainer/Game" to="Control/TabsContainer" method="_on_game_pressed"]

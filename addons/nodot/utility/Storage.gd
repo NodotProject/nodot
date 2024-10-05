@@ -11,22 +11,22 @@ signal value_changed(key, new_value)
 signal key_deleted(key)
 
 ## Method to set a value for a given key
-func setItem(key, value):
+func set_item(key, value):
 	data[key] = value
 	emit_signal("value_changed", key, value)
 	trigger_signal(key, value)
 
 ## Method to get the value for a given key
-func getItem(key):
+func get_item(key):
 	return data.get(key)
 
 ## Method to check if a key exists
-func hasItem(key):
+func has_item(key):
 	return data.has(key)
 
 ## Method to delete a key-value pair
-func deleteItem(key):
-	if hasItem(key):
+func delete_item(key):
+	if has_item(key):
 		var value = data[key]
 		data.erase(key)
 		emit_signal("key_deleted", key)

@@ -50,14 +50,16 @@ func _physics_process(delta) -> void:
 	if !current:
 		return
 	
+	var look_angle = character.input_states["look_angle"]
+	
 	# Handle look left and right
 	if lock_character_rotation:
-		character.rotate_object_local(Vector3(0, 1, 0), character.look_angle.y)
+		character.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
 	else:
-		camera_container.rotate_object_local(Vector3(0, 1, 0), character.look_angle.y)
+		camera_container.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
 	
 	# Handle look up and down
-	rotate_object_local(Vector3(1, 0, 0), character.look_angle.x)
+	rotate_object_local(Vector3(1, 0, 0), look_angle.x)
 
 	rotation.x = clamp(rotation.x, vertical_clamp.x, vertical_clamp.y)
 	

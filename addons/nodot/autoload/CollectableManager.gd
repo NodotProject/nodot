@@ -36,12 +36,6 @@ class Collectable:
 	var node: Node
 
 	func _init(collectable_node: Node):
-		if collectable_node.actual_collectable_root_node:
-			node = collectable_node.actual_collectable_root_node.duplicate(15)
-		else:
-			node = collectable_node.duplicate(15)
-		node.position = Vector3.ZERO
-		
 		icon = collectable_node.icon
 		display_name = collectable_node.display_name
 		description = collectable_node.description

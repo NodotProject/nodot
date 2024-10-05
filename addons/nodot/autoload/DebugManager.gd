@@ -34,7 +34,7 @@ func process_other(node: NodotDebug):
 	var custom_fields = node.custom_watch_fields
 	var target_node = node.target_node
 	var values = get_custom_field_values(target_node, custom_fields)
-	data.setItem(uid, values)
+	data.set_item(uid, values)
 
 func process_state_machine(node: NodotDebug):
 	var uid = str(node.get_path())
@@ -43,7 +43,7 @@ func process_state_machine(node: NodotDebug):
 	var values = get_custom_field_values(target_node, custom_fields)
 	values.current_state = target_node.get_name_from_id(target_node.current_state)
 	values.node_type = "StateMachine"
-	data.setItem(uid, values)
+	data.set_item(uid, values)
 	
 func get_custom_field_values(node: Node, keys: Array[String]):
 	var values: Dictionary = {}
