@@ -25,14 +25,10 @@ func _ready() -> void:
 				)
 				
 	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
-	
-func _input(event: InputEvent) -> void:
-	if not character.is_authority(): return
-	
-	if get_input():
-		reload()
 		
 func _physics_process(delta: float) -> void:
+	if get_input():
+		reload()
 	action()
 		
 func get_input():
@@ -154,6 +150,9 @@ func action():
 			zoom()
 		"zoomout":
 			zoomout()
+			
+	if character.input_states["reload"]:
+		reload()
 
 func discharge() -> void:
 	if !enabled: return
