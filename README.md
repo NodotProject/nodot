@@ -1,12 +1,14 @@
-![logo](logo.png)
+<p align="center">
+  <img src="logo.png" />
+</p>
 
 # Nodot
 
 **A node composition library for Godot 4**
 
-[![](https://dcbadge.vercel.app/api/server/Rx9CZX4sjG)](https://discord.gg/Rx9CZX4sjG)
-[![](https://img.shields.io/mastodon/follow/110106863700290562?domain=https%3A%2F%2Fmastodon.gamedev.place&label=MASTODON&style=for-the-badge)](https://mastodon.gamedev.place/@krazyjakee)
-[![](https://img.shields.io/youtube/channel/subscribers/UColWkNMgHseKyU7D1QGeoyQ?label=YOUTUBE&style=for-the-badge)](https://www.youtube.com/@GodotNodot)
+[![](https://dcbadge.vercel.app/api/server/Rx9CZX4sjG)](https://discord.gg/Rx9CZX4sjG) [![](https://img.shields.io/mastodon/follow/110106863700290562?domain=https%3A%2F%2Fmastodon.gamedev.place&label=MASTODON&style=for-the-badge)](https://mastodon.gamedev.place/@krazyjakee) [![](https://img.shields.io/youtube/channel/subscribers/UColWkNMgHseKyU7D1QGeoyQ?label=YOUTUBE&style=for-the-badge)](https://www.youtube.com/@GodotNodot)
+
+![Alt](https://repobeats.axiom.co/api/embed/e94cf75addd3d7d044e40d07d5d2dcddae95ca4b.svg "Repobeats analytics image")
 
 ## What is Nodot?
 
@@ -40,6 +42,7 @@ https://nodotproject.github.io/nodot
 ## Asset Credits
 
 Example model asset credits:
+
 - https://quaternius.com ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
 - https://www.kenney.nl ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
 - https://loafbrr.itch.io ([CC0](https://creativecommons.org/share-your-work/public-domain/cc0/))
