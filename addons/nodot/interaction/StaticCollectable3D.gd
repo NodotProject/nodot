@@ -35,7 +35,7 @@ func _init():
 func interact(player_node: CharacterBody3D) -> void:
 	if player_node.has_method("collect"):
 		player_node.collect(self)
-		emit_signal("collected")
+		collected.emit()
 		queue_free()
 
 func label() -> String:

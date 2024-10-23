@@ -7,7 +7,7 @@ func _init():
 
 func _input(event):
 	if event is InputEventMouseButton:
-		emit_signal("click", event.position)
+		click.emit(event.position)
 	elif event is InputEventMouseMotion:
 		position = event.position
 		

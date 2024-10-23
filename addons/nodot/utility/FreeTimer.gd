@@ -24,7 +24,9 @@ func action():
 	var tree = get_tree()
 	if !tree:
 		return
-		
+	
 	await tree.create_timer(wait_time, false).timeout
+	if target.has_method("pre_queue_free"):
+		target.pre_queue_free();
 	target.queue_free()
 	

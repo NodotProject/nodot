@@ -20,23 +20,19 @@ func _ready() -> void:
 	# Move existing children to be a child of the camera
 	for child in get_children():
 		if child is FirstPersonItem:
-			child.connect("discharged", func ():
-				emit_signal("item_actioned", child.magazine_node.fire_rate)
-				)
-				
+			child.connect("discharged", func():
+				item_actioned.emit(child.magazine_node.fire_rate)
+			)
+	
+	InputManager.register_action(reload_action, KEY_R)
+	
 	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
 	
 func _input(event: InputEvent) -> void:
 	if not character.is_authority(): return
 	
-	if get_input():
+	if event.is_action_pressed(reload_action):
 		reload()
-		
-func _physics_process(delta: float) -> void:
-	action()
-		
-func get_input():
-	return InputMap.has_action(reload_action) and Input.is_action_pressed(reload_action)
 
 ## Select the next item
 func next_item() -> void:
@@ -65,7 +61,7 @@ func iterate_item(direction: int) -> int:
 		current_index = (current_index + direction + items_size) % items_size
 		checked_items += 1
 
-	return -1  # Return -1 if no unlocked item is found after checking all items
+	return -1 # Return -1 if no unlocked item is found after checking all items
 	
 func on_carry_ended(_body):
 	if !enabled: return
@@ -89,7 +85,7 @@ func get_all_items() -> Array:
 
 ## Change which item is active.
 func change_item(new_index: int) -> void:
-	if new_index == active_item_index: return;
+	if new_index == active_item_index: return ;
 	var items: Array = get_all_items()
 	var item_count: int = items.size()
 	if item_count == 0: return
@@ -116,11 +112,12 @@ func change_item(new_index: int) -> void:
 
 	item_changing = false
 	if active_item_index < item_count:
-		emit_signal("item_change", items[active_item_index])
+		item_change.emit(items[active_item_index])
 
 func activate_current_item():
 	is_item_active = true;
 	var items: Array = get_all_items();
+	await (items[active_item_index] as FirstPersonItem).activate();
 
 func deactivate_current_item():
 	is_item_active = false;
@@ -139,23 +136,8 @@ func lock_item(item_index: int):
 	if items.size() <= item_index: return
 	items[item_index].unlocked = false
 
-func action():
-	var mouse_action = character.input_states.get("mouse_action")
-	match mouse_action:
-		"next_item":
-			next_item()
-		"previous_item":
-			previous_item()
-		"action":
-			discharge()
-		"release_action":
-			release_action();
-		"zoom":
-			zoom()
-		"zoomout":
-			zoomout()
 
-func discharge() -> void:
+func action() -> void:
 	if !enabled: return
 	if carry_ended: return
 	

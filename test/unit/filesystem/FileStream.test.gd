@@ -10,8 +10,6 @@ func before_each():
 	add_child(file_stream)
 	# Delete the test file if it exists
 	file_stream.delete()
-	# Connect to write_error signal
-	file_stream.connect("write_error", _on_write_error)
 	write_error_occurred = false
 
 func _on_write_error(message):

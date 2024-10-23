@@ -26,6 +26,9 @@ var peak_recent_velocity: Vector3 = Vector3.ZERO
 var peak_recent_velocity_timer: float = 0.0
 var character_colliders: UniqueSet = UniqueSet.new()
 var terminal_velocity := 190.0
+var direction := Vector2.ZERO
+var look_angle := Vector2.ZERO
+var input_states: Dictionary = {}
 
 func _enter_tree() -> void:
 	if !sm:
@@ -45,7 +48,7 @@ func _enter_tree() -> void:
 	
 	PlayerManager.players.add(self)
 	if NetworkManager.enabled:
-		set_multiplayer_authority(1)
+		set_multiplayer_authority(int(str(name)), true)
 
 
 func _ready() -> void:
@@ -62,6 +65,8 @@ func _ready() -> void:
 		call("_after_ready")
 
 func _physics_process(delta: float) -> void:
+	if not is_authority(): return
+	
 	peak_recent_velocity_timer += delta
 	if peak_recent_velocity_timer > 0.05:
 		peak_recent_velocity_timer = 0.0
@@ -103,6 +108,8 @@ func collect(node: Node3D) -> bool:
 
 ## Set the character as the current player
 func set_current_player():
+	if not is_authority(): return
+	
 	is_current_player = true
 	PlayerManager.node = self
 	set_current_camera(camera)

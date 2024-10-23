@@ -169,8 +169,8 @@ func get_wave_height(world_position: Vector3) -> float:
 
 ## Used to invert the water effect when the player is submerged
 func invert():
-	water_mesh_instance.transparency = 0.1
+	water_mesh_instance.mesh.flip_faces = true
 
 ## Used to revert the water effect when the player has emerged
 func revert():
-	water_mesh_instance.transparency = 0.0
+	water_mesh_instance.mesh.flip_faces = false

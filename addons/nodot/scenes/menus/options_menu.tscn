@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dj1v33w5ffysa"]
+[gd_scene load_steps=26 format=3 uid="uid://dj1v33w5ffysa"]
 
 [ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
 [ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_ffg2c"]
@@ -47,30 +47,6 @@ func _on_pressed(item_id: int):
 			
 func update_text():
 	text = display_mode_names[VideoManager.display_mode]
-"
-
-[sub_resource type="GDScript" id="GDScript_2sg1u"]
-resource_name = "postprocess"
-script/source = "extends MenuButton
-
-@onready var popup = get_popup()
-
-const post_processes = {\"n\" : \"None\", \"o\": \"Outline\",\"p\": \"Posterize\",\"s\": \"Sobel\",\"c\": \"Combine\"}
-
-func _ready():
-	popup.connect(\"id_pressed\", _on_pressed)
-	update_text()
-
-func _on_mouse_entered():
-	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
-
-func _on_pressed(item_id: int):
-	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
-	VideoManager.post_process = post_processes.keys()[item_id]
-	update_text()
-			
-func update_text():
-	text = post_processes[VideoManager.post_process]
 "
 
 [sub_resource type="GDScript" id="GDScript_61kd7"]
@@ -523,29 +499,6 @@ popup/item_2/checked = true
 popup/item_2/id = 4
 script = SubResource("GDScript_l8cix")
 
-[node name="Label9" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Post Processing"
-vertical_alignment = 1
-
-[node name="PostProcessMenuButton" type="MenuButton" parent="Control/MarginContainer/VideoOptions/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "None"
-alignment = 0
-item_count = 5
-popup/item_0/text = "None"
-popup/item_1/text = "Outline"
-popup/item_1/id = 1
-popup/item_2/text = "Posterize"
-popup/item_2/id = 2
-popup/item_3/text = "Sobel"
-popup/item_3/id = 3
-popup/item_4/text = "Combine"
-popup/item_4/id = 4
-script = SubResource("GDScript_2sg1u")
-
 [node name="Label2" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Monitor"
@@ -837,7 +790,6 @@ grow_vertical = 2
 text = "Press Any Key..."
 
 [connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/DisplayModeMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/DisplayModeMenuButton" method="_on_mouse_entered"]
-[connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/PostProcessMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/PostProcessMenuButton" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/ScreenMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/ScreenMenuButton" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/FPSLimitMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/FPSLimitMenuButton" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_mouse_entered"]

@@ -18,7 +18,7 @@ func _set_timescale(new_timescale: float):
 		
 	timescale = new_timescale
 	Engine.time_scale = timescale
-	emit_signal("timescale_changed", timescale)
+	timescale_changed.emit(timescale)
 
 ## Set the timescale
 func set_timescale(new_timescale: float):
@@ -28,4 +28,3 @@ func set_timescale(new_timescale: float):
 func smooth_timescale_to(new_timescale: float, step: float = 0.01):
 	target_timescale = new_timescale
 	smooth_step = step
-	

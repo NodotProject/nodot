@@ -15,12 +15,12 @@ func _init():
 	
 func _on_body_entered(body: Node3D):
 	if enabled and body is NodotCharacter3D:
-		emit_signal("character_body_entered", body)
+		character_body_entered.emit(body)
 		if "is_current_player" in body and body.is_current_player:
-			emit_signal("current_player_body_entered", body)
+			current_player_body_entered.emit(body)
 	
 func _on_body_exited(body: Node3D):
 	if enabled and body is NodotCharacter3D:
-		emit_signal("character_body_exited", body)
+		character_body_exited.emit(body)
 		if "is_current_player" in body and body.is_current_player:
-			emit_signal("current_player_body_exited", body)
+			current_player_body_exited.emit(body)

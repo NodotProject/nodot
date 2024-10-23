@@ -28,4 +28,4 @@ func action():
 		var health = Nodot.get_first_child_of_type(collider, Health)
 		if health:
 			health.add_health(-damage)
-			emit_signal("damage_given")
+			damage_given.emit()

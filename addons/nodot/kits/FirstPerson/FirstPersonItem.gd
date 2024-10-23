@@ -54,9 +54,9 @@ func _ready() -> void:
 		deactivate()
 		
 	if magazine_node:
-		magazine_node.connect("discharged", func() :
-			emit_signal("discharged")
-		)
+		magazine_node.connect("discharged", func():
+			discharged.emit()
+			)
 
 ## Async function to activate the weapon. i.e animate it onto the screen.
 func activate() -> void:
@@ -65,7 +65,7 @@ func activate() -> void:
 	for child in get_children():
 		if child.has_method("activate"):
 			child.activate()
-	emit_signal("activated")
+	activated.emit()
 
 
 ## Async function to deactivate the weapon. i.e animate it off of the screen.
@@ -75,7 +75,7 @@ func deactivate() -> void:
 		if child.has_method("deactivate"):
 			await child.deactivate()
 	visible = false
-	emit_signal("deactivated")
+	deactivated.emit()
 
 
 ## Triggered when the item is fired (i.e on left click to fire weapon)
@@ -114,7 +114,7 @@ func reload():
 func connect_magazine() -> void:
 	if magazine_node:
 		if hitscan_node:
-			magazine_node.connect("discharged", func ():
+			magazine_node.connect("discharged", func():
 				hitscan_node.action.rpc(magazine_node.discharge_count, magazine_node.charge_amount)
 				)
 		if projectile_emitter_node:

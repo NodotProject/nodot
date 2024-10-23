@@ -71,9 +71,9 @@ func state_updated(old_state: int, new_state: int) -> void:
 	if not is_authority(): return
 	
 	if new_state == state_ids["zerog"]:
-		emit_signal("submerged")
+		submerged.emit()
 	elif old_state == state_ids["zerog"]:
-		emit_signal("surfaced")
+		surfaced.emit()
 
 func physics(delta: float) -> void:
 	if sm.state == zerog_state_id:

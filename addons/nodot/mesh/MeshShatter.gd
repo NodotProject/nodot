@@ -39,6 +39,7 @@ func create_collider(piece: MeshInstance3D) -> CollisionShape3D:
 	var collision_shape = CollisionShape3D.new()
 	var convex_shape = piece.mesh.create_convex_shape()
 	collision_shape.shape = convex_shape
+	collision_shape.scale *= 0.8;
 	return collision_shape
 
 func action():

@@ -129,7 +129,7 @@ func swim(delta: float) -> void:
 		if is_head_submerged:
 			character.velocity.y = lerp(character.velocity.y, submerge_speed, delta)
 		else:
-			character.velocity.y = lerp(character.velocity.y, submerge_speed*7, delta)
+			character.velocity.y = lerp(character.velocity.y, submerge_speed * 7, delta)
 	elif descend_pressed:
 		character.velocity.y = lerp(character.velocity.y, -submerge_speed, delta)
 	
@@ -154,13 +154,13 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 	is_submerged = input_submerged
 
 	if is_submerged:
-		emit_signal("submerged")
+		submerged.emit()
 	else:
 		is_head_submerged = false
 		submerged_water_area.revert()
-		emit_signal("head_surfaced")
+		head_surfaced.emit()
 		sm.set_state(surfaced_state_id)
-		emit_signal("surfaced")
+		surfaced.emit()
 
 
 ## Check if the head (camera) is submerged
@@ -173,8 +173,8 @@ func check_head_submerged() -> void:
 	if !is_head_submerged and character.camera.global_position.y < final_water_y_position:
 		is_head_submerged = true
 		submerged_water_area.invert()
-		emit_signal("head_submerged")
+		head_submerged.emit()
 	elif is_head_submerged and character.camera.global_position.y >= final_water_y_position:
 		is_head_submerged = false
 		submerged_water_area.revert()
-		emit_signal("head_surfaced")
+		head_surfaced.emit()

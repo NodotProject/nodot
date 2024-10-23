@@ -57,12 +57,12 @@ func _physics_process(delta: float) -> void:
 ## Dispatches a round
 func action() -> void:
 	if charge_weapon:
-		if time_since_last_fired < fire_rate: return;
+		if time_since_last_fired < fire_rate: return ;
 		if not is_charging:
-			emit_signal("charge_started", charge_speed);
+			charge_started.emit(charge_speed);
 			is_charging = true;
 			time_since_last_fired = 0
-		return;
+		return ;
 	
 	# Return if reloading
 	if time_since_last_reload < reload_time:
@@ -72,13 +72,13 @@ func action() -> void:
 	if capacity > -1 and rounds_left - discharge_count < 0:
 		if auto_reload:
 			reload()
-		emit_signal("magazine_depleted")
+		magazine_depleted.emit()
 	# Otherwise fire
 	elif time_since_last_fired >= fire_rate:
 		rounds_left -= discharge_count
-		emit_signal("discharged")
+		discharged.emit()
 		if supply_count != -1 and supply_count < discharge_count:
-			emit_signal("supply_depleted")
+			supply_depleted.emit()
 		time_since_last_fired = 0
 
 
@@ -86,8 +86,8 @@ func action() -> void:
 func release_action():
 	if is_charging:
 		is_charging = false;
-		emit_signal("charge_released", charge_amount)
-		emit_signal("discharged")
+		charge_released.emit(charge_amount)
+		discharged.emit()
 		charge_amount = 0;
 
 
@@ -100,7 +100,7 @@ func reload() -> void:
 		supply_count -= rounds_required
 	rounds_left = capacity
 	time_since_last_reload = 0
-	emit_signal("reloading")
+	reloading.emit()
 
 
 ## Adds rounds to the supply and returns rejected rounds if the supply_count_limit has been reached

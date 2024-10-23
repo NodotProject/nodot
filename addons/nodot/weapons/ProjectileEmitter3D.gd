@@ -51,11 +51,11 @@ func action() -> void:
 		var new_projectile: Projectile3D = projectile.duplicate(15)
 		get_tree().root.add_child(new_projectile)
 		new_projectile.connect("destroyed", _on_projectile_destroyed)
-		emit_signal("projectile_spawned", new_projectile)
+		projectile_spawned.emit(new_projectile)
 		new_projectile.global_position = global_position
 		new_projectile.global_rotation = global_rotation
 		new_projectile.propel()
 		
 ## Triggered when a projectile is destroyed
 func _on_projectile_destroyed(position: Vector3, rotation: Vector3):
-	emit_signal("projectile_destroyed", position, rotation)
+	projectile_destroyed.emit(position, rotation)

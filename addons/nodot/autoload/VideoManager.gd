@@ -8,46 +8,25 @@ var display_mode: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_WINDOWED:
 var screen: int = DisplayServer.window_get_current_screen(0): set = _set_screen
 var fps_limit: int = Engine.max_fps: set = _set_fps_limit
 var vsync: bool = DisplayServer.window_get_vsync_mode(0): set = _set_vsync
-var msaa: Viewport.MSAA = 0: set = _set_msaa
+var msaa: Viewport.MSAA = 2: set = _set_msaa
 var brightness: float = 1.0: set = _set_brightness
 var contrast: float = 1.0: set = _set_contrast
-var low_spec: bool = false: set = _set_low_spec;
-var post_process: String = "n": set = _set_post_process;
+var low_spec: bool = false: set = _set_low_spec
 
 ## Triggered when the window is resized
 signal window_resized
 ## Triggered When Low Spec Mode Is Toggled
 signal low_spec_toggled
-## Triggered When Post Process is changed
-signal post_process_changed
 
 func _ready() -> void:
 	get_tree().root.connect("size_changed", _on_window_resized)
 	set_minimum_window_size()
 	_on_window_resized()
-	
-	if SaveManager.config.has_item("display_mode"):
-		display_mode = SaveManager.config.get_item("display_mode")
-	if SaveManager.config.has_item("screen"):
-		screen = SaveManager.config.get_item("screen")
-	if SaveManager.config.has_item("fps_limit"):
-		fps_limit = SaveManager.config.get_item("fps_limit")
-	if SaveManager.config.has_item("vsync"):
-		vsync = SaveManager.config.get_item("vsync")
-	if SaveManager.config.has_item("msaa"):
-		msaa = SaveManager.config.get_item("msaa")
-	if SaveManager.config.has_item("brightness"):
-		brightness = SaveManager.config.get_item("brightness")
-	if SaveManager.config.has_item("contrast"):
-		contrast = SaveManager.config.get_item("contrast")
-	if SaveManager.config.has_item("low_spec"):
-		low_spec = SaveManager.config.get_item("low_spec")
-	if SaveManager.config.has_item("post_process"):
-		post_process = SaveManager.config.get_item("post_process")
+	load_config()
 
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
-	emit_signal("window_resized", new_size)
+	window_resized.emit(new_size)
 
 func _set_display_mode(new_value: int):
 	display_mode = new_value
@@ -102,14 +81,7 @@ func _set_contrast(new_value: float):
 ## Set Low Spec
 func _set_low_spec(new_value: bool):
 	low_spec = new_value;
-	emit_signal("low_spec_toggled")
-
-
-## Set Low Spec
-func _set_post_process(new_value: String):
-	post_process = new_value;
-	emit_signal("post_process_changed")
-
+	low_spec_toggled.emit()
 
 ## Forces VideoManager to redeclare the window size
 func bump() -> void:
@@ -146,6 +118,29 @@ func register(node: Node):
 	if node is SubViewport and !subviewports.has(node):
 		subviewports.append(node)
 
+## Load the video settings from the config file
+func load_config():
+	if SaveManager.config.is_empty():
+		save_config()
+		load_config()
+	else:
+		if SaveManager.config.has_item("display_mode"):
+			display_mode = SaveManager.config.get_item("display_mode")
+		if SaveManager.config.has_item("screen"):
+			screen = SaveManager.config.get_item("screen")
+		if SaveManager.config.has_item("fps_limit"):
+			fps_limit = SaveManager.config.get_item("fps_limit")
+		if SaveManager.config.has_item("vsync"):
+			vsync = SaveManager.config.get_item("vsync")
+		if SaveManager.config.has_item("msaa"):
+			msaa = SaveManager.config.get_item("msaa")
+		if SaveManager.config.has_item("brightness"):
+			brightness = SaveManager.config.get_item("brightness")
+		if SaveManager.config.has_item("contrast"):
+			contrast = SaveManager.config.get_item("contrast")
+		if SaveManager.config.has_item("low_spec"):
+			low_spec = SaveManager.config.get_item("low_spec")
+		
 ## Save the video settings to the config file
 func save_config():
 	SaveManager.config.set_item("display_mode", display_mode)
@@ -156,5 +151,4 @@ func save_config():
 	SaveManager.config.set_item("brightness", brightness)
 	SaveManager.config.set_item("contrast", contrast)
 	SaveManager.config.set_item("low_spec", low_spec)
-	SaveManager.config.set_item("post_process", post_process)
 	SaveManager.save_config()

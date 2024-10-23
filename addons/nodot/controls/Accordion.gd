@@ -71,15 +71,15 @@ func _process(delta):
 func expand():
 	set_height(get_full_height())
 	collapsed = false
-	emit_signal("expand_started", self)
-	emit_signal("animation_started", self)
+	expand_started.emit(self)
+	animation_started.emit(self)
 	
 ## Collapse the accordion
 func collapse():
 	set_height(get_collapsed_height())
 	collapsed = true
-	emit_signal("collapse_started", self)
-	emit_signal("animation_started", self)
+	collapse_started.emit(self)
+	animation_started.emit(self)
 
 ## Expand if the accordion is collapsed and visa versa
 func toggle():

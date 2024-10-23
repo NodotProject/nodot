@@ -47,6 +47,7 @@ func _ready():
 	var callback = target_node[target_method]
 	if method_unbind_count > 0:
 		callback = Callable(target_node[target_method].unbind(method_unbind_count))
+	if trigger_node.is_connected(trigger_signal, callback): return
 	trigger_node.connect(trigger_signal, callback)
 
 func _get_property_list() -> Array[Dictionary]:

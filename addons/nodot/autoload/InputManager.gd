@@ -3,7 +3,7 @@ extends Node
 
 signal input_actions_update
 
-var mouse_sensitivity: float = 0.5
+var mouse_sensitivity: float = 0.1
 var default_input_actions: Dictionary
 var INPUT_KEY_SOURCE = {
 	KEYBOARD = 0,
@@ -69,14 +69,15 @@ func remove_action(action_name: String, key: String):
 			InputMap.action_erase_event(action_name, event)
 			break
 			
-	emit_signal("input_actions_update")
+	input_actions_update.emit()
 
 func get_action_key(action: String) -> String:
 	var evs = InputMap.action_get_events(action)
 	for ev in evs:
 		if ev is InputEventKey:
-			var text = ev.as_text()
-			return text
+			return ev.as_text()
+		if ev is InputEventMouse:
+			return ev.as_text()
 	return ""
 	
 func get_action_joy(action: String) -> String:
@@ -91,7 +92,7 @@ func save_config():
 	var input_actions = get_all_input_actions()
 	SaveManager.config.set_item("input_actions", input_actions)
 	SaveManager.save_config()
-	emit_signal("input_actions_update")
+	input_actions_update.emit()
 
 func reset_to_defaults():
 	set_all_input_actions(default_input_actions)
@@ -103,7 +104,7 @@ func set_all_input_actions(input_actions: Dictionary):
 		for key_code in input_actions[action_name]:
 			var value = key_code[2] if key_code.size() > 2 else 0
 			add_action(action_name, key_code[1], key_code[0], value)
-	emit_signal("input_actions_update")
+	input_actions_update.emit()
 				
 func get_all_input_actions() -> Dictionary:
 	var input_actions = {}

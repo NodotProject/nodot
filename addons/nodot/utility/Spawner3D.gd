@@ -68,7 +68,7 @@ func _enter_tree() -> void:
 func action() -> void:
 	if !enabled or (spawn_limit > 0 and spawns_left == 0):
 		if spawns_left == 0:
-			emit_signal("spawn_limit_reached")
+			spawn_limit_reached.emit()
 		return
 
 	if spawn_delay > 0:
@@ -80,14 +80,14 @@ func action() -> void:
 		new_child.global_position = global_position
 		new_child.global_rotation = global_rotation
 	spawns_left -= 1
-	emit_signal("spawned")
-	emit_signal("spawns_left_updated", spawns_left)
+	spawned.emit()
+	spawns_left_updated.emit(spawns_left)
 
 
 ## Reset the spawn limit
 func reset() -> void:
 	spawns_left = spawn_limit
-	emit_signal("spawns_left_updated", spawns_left)
+	spawns_left_updated.emit(spawns_left)
 
 
 ## Check the current number of spawned objects
@@ -96,11 +96,11 @@ func check() -> void:
 		Nodot.get_children_of_type(self, Node3D).size() / saved_children.size()
 	)
 	if current_spawns < (spawn_limit - spawns_left):
-		emit_signal("despawned")
+		despawned.emit()
 	if current_spawns < spawn_limit:
 		spawns_left = spawn_limit - current_spawns
 		if auto_spawn_all:
 			action()
 	else:
 		spawns_left = 0
-	emit_signal("spawns_left_updated", spawns_left)
+	spawns_left_updated.emit(spawns_left)

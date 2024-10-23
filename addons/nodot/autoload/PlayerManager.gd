@@ -14,4 +14,4 @@ var players: UniqueSet = UniqueSet.new()
 
 func _settings_set(new_settings: Dictionary):
 	settings = new_settings
-	emit_signal("settings_changed", settings)
+	settings_changed.emit(settings)
