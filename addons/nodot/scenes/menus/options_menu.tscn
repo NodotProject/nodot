@@ -328,6 +328,8 @@ trigger_signal = "hiding"
 target_method = "stop"
 
 [node name="BackDrop" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1

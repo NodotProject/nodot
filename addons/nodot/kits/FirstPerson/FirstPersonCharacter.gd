@@ -28,6 +28,7 @@ var character_colliders: UniqueSet = UniqueSet.new()
 var terminal_velocity := 190.0
 var direction := Vector2.ZERO
 var look_angle := Vector2.ZERO
+var input_states: Dictionary = {}
 
 func _enter_tree() -> void:
 	if !sm:

@@ -20,9 +20,9 @@ class_name BulletHole extends Nodot3D
 ## For decal name given to raycast
 @export var decal_name: String = "";
 
-@export_flags_3d_render var decal_mask;
+@export_flags_3d_render var decal_mask := 1;
 
-@export_flags_3d_render var decal_layer;
+@export_flags_3d_render var decal_layer := 1;
 
 signal decal_added(decal: Decal)
 
@@ -46,8 +46,8 @@ func action(hit_target: HitTarget) -> void:
 		decal_node.texture_normal = material.normal_texture
 		
 		
-		decal_node.cull_mask = decal_mask;
-		decal_node.layers = decal_layer;
+		decal_node.cull_mask = decal_mask
+		decal_node.layers = decal_layer
 		
 		if random_size:
 			decal_node.size = Vector3(randf_range(0.1, 0.8), randf_range(0.1, 0.8), randf_range(0.1, 0.8));

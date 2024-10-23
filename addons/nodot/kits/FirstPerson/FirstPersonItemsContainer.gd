@@ -23,15 +23,15 @@ func _ready() -> void:
 			child.connect("discharged", func():
 				item_actioned.emit(child.magazine_node.fire_rate)
 			)
-			if child.unlocked:
-				child.activate()
-				
+	
+	InputManager.register_action(reload_action, KEY_R)
+	
 	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
 	
 func _input(event: InputEvent) -> void:
 	if not character.is_authority(): return
 	
-	if InputMap.has_action(reload_action) and event.is_action_pressed(reload_action):
+	if event.is_action_pressed(reload_action):
 		reload()
 
 ## Select the next item
@@ -117,8 +117,7 @@ func change_item(new_index: int) -> void:
 func activate_current_item():
 	is_item_active = true;
 	var items: Array = get_all_items();
-	if GameManager.has_item(active_item_index):
-		await (items[active_item_index] as FirstPersonItem).activate();
+	await (items[active_item_index] as FirstPersonItem).activate();
 
 func deactivate_current_item():
 	is_item_active = false;

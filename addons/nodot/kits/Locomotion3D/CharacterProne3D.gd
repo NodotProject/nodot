@@ -14,6 +14,7 @@ class_name CharacterProne3D extends CharacterExtensionBase3D
 ## The input action name for proning
 @export var prone_action: String = "prone"
 
+var head: Node3D
 var initial_movement_speed: float = 5.0
 var initial_head_position: Vector3
 var target_head_position: Vector3
@@ -40,13 +41,14 @@ func ready():
 		
 	if character_mover:
 		initial_movement_speed = character_mover.movement_speed
-		
-	initial_head_position = character.head_position
+	
+	head = character.get_node("Head")
+	initial_head_position = head.position
 
 func state_updated(old_state: int, new_state: int) -> void:
 	if new_state == state_ids["prone"]:
 		collision_shape.rotation.x = PI / 2
-		target_head_position = Vector3(character.head.position.x, 0.0, -(collider_height / 2))
+		target_head_position = Vector3(head.position.x, 0.0, -(collider_height / 2))
 		character.velocity = Vector3.ZERO
 		if character_mover:
 			character_mover.movement_speed = movement_speed
@@ -54,7 +56,7 @@ func state_updated(old_state: int, new_state: int) -> void:
 		collision_shape.rotation.x = 0.0
 		if character_mover:
 			character_mover.movement_speed = initial_movement_speed
-		character.head.position = initial_head_position
+		head.position = initial_head_position
 		sm.set_state(state_ids["idle"])
 
 func physics(delta: float) -> void:
@@ -64,6 +66,6 @@ func physics(delta: float) -> void:
 		sm.set_state(state_ids["stand"])
 		
 	if sm.state == state_ids["prone"]:
-		character.head.position = lerp(character.head.position, target_head_position, 0.1)
+		head.position = lerp(head.position, target_head_position, 0.1)
 		character.move_and_slide()
 		

@@ -57,8 +57,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
 		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
-		if GameManager.invert_y_axis:
-			mouse_rotation.x = -event.relative.y * InputManager.mouse_sensitivity
 
 	if fps_item_container:
 		if event.is_action_pressed(item_next_action):
