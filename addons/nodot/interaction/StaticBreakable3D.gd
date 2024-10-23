@@ -46,7 +46,7 @@ func action() -> void:
 			closest_child.apply_impulse(
 				saved_impulse_direction, saved_impulse_position - closest_child.global_position
 			)
-	emit_signal("broken")
+	broken.emit()
 	queue_free()
 
 

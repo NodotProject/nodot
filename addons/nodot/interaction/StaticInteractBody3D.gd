@@ -12,7 +12,7 @@ class_name StaticInteractBody3D extends NodotStaticBody3D
 signal interacted
 
 func interact() -> void:
-	emit_signal("interacted")
+	interacted.emit()
 
 func label() -> String:
 	return label_text

@@ -11,7 +11,7 @@ signal interacted
 
 
 func interact() -> void:
-	emit_signal("interacted")
+	interacted.emit()
 
 
 func label() -> String:

@@ -70,36 +70,28 @@ func get_movement_speed(delta: float) -> float:
 	return final_speed * delta * 100
 
 func physics(delta: float) -> void:
-	character.input_states["sprint"] = get_input()
-	action(delta)
-
-func action(delta: float):
+	if not is_authority(): return
+	
 	var basis: Basis
 	if third_person_camera:
 		basis = character.current_camera.global_transform.basis
 	else:
 		basis = character.transform.basis
-	var character_direction: Vector2 = character.input_states["direction"]
-	direction = (basis * Vector3(character_direction.x, 0, character_direction.y))
+	direction = (basis * Vector3(character.direction.x, 0, character.direction.y))
 		
 	if character.input_enabled and direction != Vector3.ZERO:
-		if get_input():
+		if Input.is_action_pressed(sprint_action):
 			sm.set_state(state_ids["sprint"])
 		else:
 			sm.set_state(state_ids["walk"])
 		
 	if !character.was_on_floor:
 		move_air(delta)
-		character.move_and_slide()
 	else:
 		move_ground(delta)
-		stair_step()
-		character.velocity.y = lerp(character.velocity.y, 0.0, delta * 2.0)
 	
-	set_rigid_interaction()
+	set_rigid_interaction();
 
-func get_input():
-	return Input.is_action_pressed(sprint_action)
 
 func set_rigid_interaction():
 	for i in character.get_slide_collision_count():
@@ -127,6 +119,8 @@ func move_air(delta: float) -> void:
 		var final_speed = get_movement_speed(delta)
 		character.velocity.x = lerp(character.velocity.x, direction.x * final_speed, 0.025)
 		character.velocity.z = lerp(character.velocity.z, direction.z * final_speed, 0.025)
+	
+	character.move_and_slide()
 
 func move_ground(delta: float) -> void:
 	var final_speed = get_movement_speed(delta)
@@ -135,8 +129,6 @@ func move_ground(delta: float) -> void:
 		var final_friction = friction if friction >= 0 else final_speed
 		character.velocity.x = move_toward(character.velocity.x, 0, friction)
 		character.velocity.z = move_toward(character.velocity.z, 0, friction)
-		if character.velocity.length() < 1.0:
-			sm.set_state(state_ids["idle"])
 	else:
 		character.velocity.x = direction.x * final_speed
 		character.velocity.z = direction.z * final_speed
@@ -145,8 +137,7 @@ func move_ground(delta: float) -> void:
 			var cached_rotation = third_person_camera_container.global_rotation
 			face_target(character.position + direction, turn_rate)
 			third_person_camera_container.global_rotation = cached_rotation
-
-func stair_step():
+	
 	# --- Stairs logic ---
 	var starting_position: Vector3 = character.global_position
 	var starting_velocity: Vector3 = character.velocity
@@ -183,3 +174,4 @@ func stair_step():
 		character.global_position = slide_position
 	# --- Step up logic ---
 	
+	character.velocity.y = lerp(character.velocity.y, 0.0, delta * 2.0)

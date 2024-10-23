@@ -22,7 +22,7 @@ func _on_state_changed(new_state: int):
 	
 	old_state = state
 	state = new_state
-	emit_signal("state_updated", old_state, new_state)
+	state_updated.emit(old_state, new_state)
 
 func _check_transition_valid(old_state: int, new_state: int) -> bool:
 	if old_state == new_state:
@@ -83,7 +83,7 @@ func register_state(new_state_name: String) -> int:
 		state_names.append(new_state_name)
 		valid_transitions.append([])
 		return valid_transitions.size() - 1
-	return existing_id 
+	return existing_id
 
 func get_id_from_name(state_name: String) -> int:
 	var id = state_names.find(state_name)

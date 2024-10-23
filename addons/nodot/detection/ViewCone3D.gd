@@ -27,7 +27,7 @@ func _physics_process(_delta):
 			continue
 
 		var cam_facing = -global_transform.basis.z
-		var cam_to_body =  cam_pos.direction_to(body_pos)
+		var cam_to_body = cam_pos.direction_to(body_pos)
 		var cam_to_body_norm = cam_to_body.normalized()
 		var cos_angle = cam_to_body_norm.dot(cam_facing)
 		var angle = acos(cos_angle)
@@ -47,7 +47,7 @@ func _physics_process(_delta):
 					detected_bodies.append(body)
 					if body.has_method("detected"):
 						body.detected(self)
-					emit_signal("body_detected", body)
+					body_detected.emit(body)
 
 
 	var removed_bodies: Array[Node] = []
@@ -58,6 +58,6 @@ func _physics_process(_delta):
 	for removed_body in removed_bodies:
 		if removed_body.has_method("undetected"):
 			removed_body.undetected(self)
-		emit_signal("body_lost", removed_body)
+		body_lost.emit(removed_body)
 		var i = detected_bodies.find(removed_body)
 		detected_bodies.remove_at(i)

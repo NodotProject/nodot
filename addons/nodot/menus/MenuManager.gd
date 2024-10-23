@@ -8,7 +8,7 @@ class_name MenuManager extends Nodot2D
 ## Triggered when the active menu index changes
 signal menu_changed
 
-var active_menu_index: int = -1  ## The active menu node index (-1 if none active)
+var active_menu_index: int = -1 ## The active menu node index (-1 if none active)
 var previous_menu: String = active_menu
 
 func _ready():
@@ -24,7 +24,7 @@ func hide_all() -> void:
 			child._hide()
 	active_menu = ""
 	active_menu_index = -1
-	emit_signal("menu_changed", -1)
+	menu_changed.emit(-1)
 
 
 ## Change the active menu using the name of the node
@@ -38,7 +38,7 @@ func change_to(menu_name: String) -> void:
 	menu_node._show()
 	active_menu = menu_name
 	active_menu_index = menu_node.get_index()
-	emit_signal("menu_changed", active_menu_index)
+	menu_changed.emit(active_menu_index)
 
 
 ## Change the active menu using the index
@@ -50,7 +50,7 @@ func change_to_index(menu_index: int) -> void:
 	active_menu_index = menu_index
 	previous_menu = active_menu
 	active_menu = menu_node.name
-	emit_signal("menu_changed", active_menu_index)
+	menu_changed.emit(active_menu_index)
 
 ## Go back to the previous menu
 func go_back():

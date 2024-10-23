@@ -58,19 +58,19 @@ func _physics_process(delta):
 		if time_to_spread > burning_timer:
 			if !spreadable:
 				spreadable = true
-				emit_signal("spreading_enabled")
+				spreading_enabled.emit()
 			
 		if time_to_full_effect > burning_timer:
 			effect_scale_percentage = burning_timer / time_to_full_effect
 		elif time_to_burnout > burning_timer:
 			if !is_full_effect:
-				emit_signal("full_effect_reached")
+				full_effect_reached.emit()
 			if !permanent:
 				effect_scale_percentage = 1.0 - ((burning_timer - time_to_full_effect) / (time_to_burnout - time_to_full_effect))
 		elif !permanent:
 			enabled = false
 			reset()
-			emit_signal("burned_out")
+			burned_out.emit()
 			
 		if fire3d_node:
 			fire3d_node.effect_scale = full_effect_scale / 100 * (effect_scale_percentage * 100)
@@ -81,7 +81,7 @@ func _physics_process(delta):
 			health_node.add_health(-damage_per_second)
 		
 		if !permanent:
-			emit_signal("burn_progress", burning_timer / time_to_burnout)
+			burn_progress.emit(burning_timer / time_to_burnout)
 		
 	if ignited and (spreadable or permanent):
 		var bodies = target.get_colliding_bodies()
@@ -89,7 +89,7 @@ func _physics_process(delta):
 			if !non_burnables.has(body):
 				var burnable = Nodot.get_first_child_of_type(body, Burnable3D)
 				if burnable and burnable.enabled and !burnable.ignited:
-					emit_signal("spreading_to", body)
+					spreading_to.emit(body)
 					burnable.action()
 				else:
 					non_burnables.append(body)
@@ -97,7 +97,7 @@ func _physics_process(delta):
 func action():
 	if enabled:
 		ignited = true
-		emit_signal("ignite_started")
+		ignite_started.emit()
 
 func reset():
 	ignited = false

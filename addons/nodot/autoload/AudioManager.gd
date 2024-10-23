@@ -33,17 +33,17 @@ func _set_bus_volume(bus_name: String, volume: float):
 func _set_master_volume(new_volume: float):
 	master_volume = new_volume
 	for bus in master_audiobus: _set_bus_volume(bus, master_volume)
-	emit_signal("master_volume_changed", master_volume)
+	master_volume_changed.emit(master_volume)
 	
 func _set_music_volume(new_volume: float):
 	music_volume = new_volume
 	for bus in music_audiobus: _set_bus_volume(bus, music_volume)
-	emit_signal("music_volume_changed", music_volume)
+	music_volume_changed.emit(music_volume)
 	
 func _set_sfx_volume(new_volume: float):
 	sfx_volume = new_volume
 	for bus in sfx_audiobus: _set_bus_volume(bus, sfx_volume)
-	emit_signal("sfx_volume_changed", sfx_volume)
+	sfx_volume_changed.emit(sfx_volume)
 	
 func _convert_decimal_volume(volume: float):
 	return 20 * log(volume) if volume > 0 else -80

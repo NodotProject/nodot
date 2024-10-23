@@ -31,14 +31,14 @@ func _ready():
 		debug_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		debug_draw()
 	
-func _on_body_exited(body: Node):	
+func _on_body_exited(body: Node):
 	var direction = (body.global_transform.origin - global_transform.origin).normalized()
 	var forward_vector = -global_transform.basis.z.normalized()
 	var dot = direction.dot(forward_vector)
 	if dot > 0:
-		emit_signal("gate_entered", body)
+		gate_entered.emit(body)
 	else:
-		emit_signal("gate_exited", body)
+		gate_exited.emit(body)
 
 func _set_show_debug_shape(new_value: bool):
 	show_debug_shape = new_value
@@ -53,10 +53,10 @@ func debug_draw():
 	var x = size.x / 2
 	var y = size.y / 2
 	# Define the vertices of the plane
-	var v1 = Vector3(-x, -y, 0.0)  # Bottom left
-	var v2 = Vector3(x, -y, 0.0)   # Bottom right
-	var v3 = Vector3(x, y, 0.0)    # Top right
-	var v4 = Vector3(-x, y, 0.0)   # Top left
+	var v1 = Vector3(-x, -y, 0.0) # Bottom left
+	var v2 = Vector3(x, -y, 0.0) # Bottom right
+	var v3 = Vector3(x, y, 0.0) # Top right
+	var v4 = Vector3(-x, y, 0.0) # Top left
 
 	# Normal pointing up
 	var normal = Vector3(0.0, 1.0, 0.0)

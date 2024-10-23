@@ -56,11 +56,10 @@ func teleport(body: Node3D) -> void:
 			body.global_position = target_node.global_position
 		else:
 			body.global_position = target_position
-		emit_signal("teleported", body, body.global_position)
+		teleported.emit(body, body.global_position)
 	else:
 		if target_node:
 			body.position = target_node.position
 		else:
 			body.position = target_position
-		emit_signal("teleported", body, body.position)
-			
+		teleported.emit(body, body.position)

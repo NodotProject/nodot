@@ -12,21 +12,21 @@ signal items_updated
 
 func _set_items(value: Array[Variant]):
 	items = value
-	emit_signal("items_updated")
+	items_updated.emit()
 
 
 func add(item: Variant):
 	if !items.has(item):
 		items.append(item)
-		emit_signal("item_added", item)
-		emit_signal("items_updated")
+		item_added.emit(item)
+		items_updated.emit()
 
 
 func remove(item: Variant):
 	if items.has(item):
 		items.erase(item)
-		emit_signal("item_removed", item)
-		emit_signal("items_updated")
+		item_removed.emit(item)
+		items_updated.emit()
 
 func has(item: Variant):
 	return items.has(item)

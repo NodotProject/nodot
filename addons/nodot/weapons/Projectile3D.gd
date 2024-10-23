@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 		apply_central_force(force)
 
 	if destroy_on_impact and get_contact_count() > 0:
-		emit_signal("collision", position, rotation, get_colliding_bodies())
+		collision.emit(position, rotation, get_colliding_bodies())
 		destroy()
 
 
@@ -60,7 +60,7 @@ func get_propulsion_force() -> Vector3:
 
 func destroy() -> void:
 	if !is_instance_valid(self): return
-	emit_signal("destroyed", position, rotation)
+	destroyed.emit(position, rotation)
 	if explosion:
 		get_tree().root.add_child(explosion)
 		explosion.global_position = global_position

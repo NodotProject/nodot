@@ -19,12 +19,12 @@ func _ready():
 
 ## Selects this node.
 func select():
-	emit_signal("selected")
+	selected.emit()
 
 ## Deselects this node.
 func deselect():
-	emit_signal("deselected")
+	deselected.emit()
 
 ## Requests an action on this node.
 func action(collision: Dictionary):
-	emit_signal("actioned", collision)
+	actioned.emit(collision)

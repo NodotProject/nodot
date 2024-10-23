@@ -34,17 +34,17 @@ func set_value(new_value: float) -> void:
 		value = new_value
 
 	if value > old_value:
-		emit_signal("value_increased", value)
+		value_increased.emit(value)
 	elif value < old_value:
-		emit_signal("value_decreased", value)
+		value_decreased.emit(value)
 
 	if value != old_value:
-		emit_signal("value_changed", value)
+		value_changed.emit(value)
 		
 	if value == min_value:
-		emit_signal("min_value_reached", value)
+		min_value_reached.emit(value)
 	if value == max_value:
-		emit_signal("max_value_reached", value)
+		max_value_reached.emit(value)
 
 
 ## Add an amount to the value.

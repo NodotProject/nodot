@@ -24,12 +24,10 @@ func register_saver(saver_node: Saver):
 	if !savers.has(saver_node):
 		savers.append(saver_node)
 
-
 ## Unregister a saver node
 func unregister_saver(saver_node: Saver):
 	var index = savers.find(saver_node)
 	savers.remove_at(index)
-
 
 ## Saves the data in the current scene
 func save(slot: int = 0) -> void:
@@ -43,7 +41,7 @@ func save(slot: int = 0) -> void:
 
 	file.store_var(save_data)
 	file.close()
-	emit_signal("saved")
+	saved.emit()
 
 
 ## Loads a save file and applies it to the nodes in the current scene
@@ -60,7 +58,7 @@ func load(slot: int = 0) -> void:
 				if get_special_id(saver) == saver_id:
 					saver.load(save_data[saver_id])
 		file.close()
-		emit_signal("loaded")
+		loaded.emit()
 
 
 ## Generate a unique ID for the save component
@@ -96,7 +94,7 @@ func save_config():
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	file.store_var(config.data, true)
 	file.close()
-	emit_signal("config_saved")
+	config_saved.emit()
 	
 ## Load the configuration file
 func load_config() -> void:
@@ -107,4 +105,4 @@ func load_config() -> void:
 		if new_config:
 			config.data = new_config
 		file.close()
-	emit_signal("config_loaded")
+	config_loaded.emit()

@@ -57,7 +57,7 @@ func get_hit_target():
 		distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider
 	)
 	
-	if applied_force > 0:
+	if applied_force > 0 and not hit_target.target_node.has_meta("NonPunchable"):
 		var direction = raycast.global_position.direction_to(hit_target.collision_point)
 		var force = direction * applied_force
 		if collider is RigidBody3D:
@@ -85,7 +85,7 @@ func get_hit_target():
 				final_damage = -final_damage
 			collider_health.add_health(final_damage)
 	
-	emit_signal("target_hit", hit_target);
+	target_hit.emit(hit_target);
 	return hit_target
 
 

@@ -10,20 +10,16 @@ func ready():
 	if !enabled: return
 	
 	register_handled_states(handle_states)
-
+		
 func physics(delta: float) -> void:
-	action(delta)
-
-func action(delta: float) -> void:
+	if not is_authority(): return
 	if !character.input_enabled: return
 	
-	var character_look_angle: Vector2 = character.input_states["look_angle"]
-	
 		# Handle look left and right
-	character.rotate_object_local(Vector3(0, 1, 0), character_look_angle.x)
+	character.rotate_object_local(Vector3(0, 1, 0), character.look_angle.x)
 	
 	# Handle look up and down
-	head.rotate_object_local(Vector3(1, 0, 0), character_look_angle.y)
+	head.rotate_object_local(Vector3(1, 0, 0), character.look_angle.y)
 	
 	head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
 	head.rotation.z = 0

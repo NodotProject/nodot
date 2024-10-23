@@ -76,7 +76,7 @@ func get_selectable():
 		if rts_selectable_node:
 			rts_selectable_node.select()
 			selected_nodes.append(collision.collider)
-			emit_signal("selected", collision.collider)
+			selected.emit(collision.collider)
 	
 func get_selectables():
 	var top_left_collision = get_collision(selection_box.position)
@@ -99,7 +99,7 @@ func get_selectables():
 		if Geometry2D.is_point_in_polygon(selectable_position, selection_box_geometry):
 			selected_nodes.append(selectable)
 			Nodot.get_first_child_of_type(selectable, RTSSelectable).select()
-	emit_signal("selected_multiple", selected_nodes)
+	selected_multiple.emit(selected_nodes)
 	
 func get_collision(target_position: Vector2):
 	var projected_position = get_3d_position(target_position)
@@ -118,7 +118,7 @@ func action():
 			var rts_selectable = Nodot.get_first_child_of_type(selected_node, RTSSelectable)
 			if rts_selectable:
 				rts_selectable.action(collision)
-		emit_signal("action_requested", collision)
+		action_requested.emit(collision)
 		
 func deselect():
 	for selected_node in selected_nodes:

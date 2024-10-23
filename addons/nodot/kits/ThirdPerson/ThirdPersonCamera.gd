@@ -9,19 +9,11 @@ class_name ThirdPersonCamera extends Camera3D
 @export var raycast_offset: Vector3 = Vector3.ZERO
 ## Move the camera to the initial position after some inactivity (0.0 to disable)
 @export var time_to_reset: float = 2.0
-## Restrict vertical look angle
-@export var vertical_clamp := Vector2(-1.36, 1.4)
-## Enable camera movement only while camera_rotate_action input action is pressed
-@export var lock_camera_rotation := false
-## Rotate the ThirdPersonCharacter with the camera
-@export var lock_character_rotation := false
 
 var parent: Node3D
 var raycast: RayCast3D
 var time_since_last_move: float = 0.0
 
-@onready var camera_container: Node3D = get_parent()
-@onready var character: ThirdPersonCharacter = camera_container.get_parent()
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -33,7 +25,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _enter_tree() -> void:
 	if always_in_front:
 		raycast = RayCast3D.new()
-		raycast.hit_back_faces = false
 		get_parent().add_child.call_deferred(raycast)
 
 
@@ -49,20 +40,7 @@ func _ready() -> void:
 func _physics_process(delta) -> void:
 	if !current:
 		return
-	
-	var look_angle = character.input_states["look_angle"]
-	
-	# Handle look left and right
-	if lock_character_rotation:
-		character.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
-	else:
-		camera_container.rotate_object_local(Vector3(0, 1, 0), look_angle.y)
-	
-	# Handle look up and down
-	rotate_object_local(Vector3(1, 0, 0), look_angle.x)
-
-	rotation.x = clamp(rotation.x, vertical_clamp.x, vertical_clamp.y)
-	
+		
 	if raycast:
 		if raycast.is_colliding() and !raycast.hit_from_inside:
 			var collider = raycast.get_collider()

@@ -61,7 +61,7 @@ func physics(delta: float):
 		character.velocity.x = lerp(character.velocity.x, 0.0, delta * 10.0)
 		character.velocity.z = lerp(character.velocity.z, 0.0, delta * 10.0)
 	
-		var is_on_floor = character.was_on_floor
+		var is_on_floor = character._is_on_floor()
 		if is_on_floor and was_on_floor == false:
 			sm.set_state(state_ids["idle"])
 		

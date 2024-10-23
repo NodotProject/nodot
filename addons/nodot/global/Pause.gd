@@ -21,7 +21,7 @@ func _set_pause(new_pause: bool):
 		
 	pause = new_pause
 	get_tree().paused = pause
-	emit_signal("pause_changed", pause)
+	pause_changed.emit(pause)
 
 ## Set the pause state of the tree
 func set_pause(new_pause: bool):

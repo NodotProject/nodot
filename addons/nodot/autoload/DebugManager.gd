@@ -9,11 +9,11 @@ var data: Storage = Storage.new()
 
 func register(node: NodotDebug):
 	debug_nodes.add(node)
-	emit_signal("debug_node_added", node)
+	debug_node_added.emit(node)
 
 func unregister(node: NodotDebug):
 	debug_nodes.remove(node)
-	emit_signal("debug_node_removed", node)
+	debug_node_removed.emit(node)
 
 var supported_types = [StateMachine]
 

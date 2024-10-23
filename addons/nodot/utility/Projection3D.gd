@@ -62,7 +62,7 @@ func _ready():
 		material.disable_ambient_light = true
 	material.no_depth_test = always_on_top
 	plane_mesh.material = material
-	emit_signal("construction_complete")
+	construction_complete.emit()
 
 
 ## Set the size of the projection and resolution

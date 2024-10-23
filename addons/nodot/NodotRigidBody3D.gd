@@ -14,4 +14,4 @@ func unfocussed() -> void:
 			child.unfocussed()
 
 func _on_character_entered(body: CharacterBody3D):
-	emit_signal("character_entered", body)
+	character_enter.emit(body)

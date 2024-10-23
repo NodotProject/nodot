@@ -41,7 +41,7 @@ func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 	
 	enabled = false
 	visible = false
-	emit_signal("collected")
+	collected.emit()
 	
 	if free_delay > 0.0:
 		await get_tree().create_timer(free_delay, false).timeout

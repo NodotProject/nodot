@@ -47,5 +47,4 @@ func delete(body: Node3D) -> void:
 	
 	var last_position = body.global_position
 	body.queue_free()
-	emit_signal("deleted", last_position)
-			
+	deleted.emit(last_position)

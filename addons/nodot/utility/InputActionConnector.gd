@@ -29,7 +29,7 @@ func _ready():
 	
 func _input(event):
 	if event.is_action_pressed(input_action):
-		emit_signal("input_action_pressed")
+		input_action_pressed.emit()
 		if is_instance_valid(target_node) and target_node.has_method(target_method):
 			var callback = target_node[target_method]
 			if method_unbind_count > 0:
@@ -48,7 +48,7 @@ func _get_property_list() -> Array[Dictionary]:
 		methods.sort()
 		method_list = ",".join(methods)
 			
-		property_list.append_array([{
+		property_list.append_array([ {
 			name = "Target",
 			type = TYPE_NIL,
 			usage = PROPERTY_USAGE_SUBGROUP

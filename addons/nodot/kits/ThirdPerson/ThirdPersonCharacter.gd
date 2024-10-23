@@ -5,8 +5,6 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 @export var input_enabled: bool = true
 
 var submerge_handler: CharacterSwim3D
-var floor_body: Node
-var was_on_floor: bool = false
 
 func _enter_tree() -> void:
 	# Set up camera container
@@ -29,9 +27,6 @@ func _enter_tree() -> void:
 		
 	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 
-func _physics_process(delta: float) -> void:
-	floor_body = _is_on_floor()
-	was_on_floor = floor_body != null
 
 ## Disable player input
 func disable_input() -> void:

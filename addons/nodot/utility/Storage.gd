@@ -13,7 +13,7 @@ signal key_deleted(key)
 ## Method to set a value for a given key
 func set_item(key, value):
 	data[key] = value
-	emit_signal("value_changed", key, value)
+	value_changed.emit(key, value)
 	trigger_signal(key, value)
 
 ## Method to get the value for a given key
@@ -29,13 +29,17 @@ func delete_item(key):
 	if has_item(key):
 		var value = data[key]
 		data.erase(key)
-		emit_signal("key_deleted", key)
+		key_deleted.emit(key)
 		trigger_signal(key, null)
+		
+## Method returns whether there are any keys in the Storage
+func is_empty():
+	return data.is_empty()
 
 ## Add a listener for a specific key
 func add_listener(signal_name: String, node: Node, method: StringName):
 	if not signals.has(signal_name):
-		signals[signal_name] = [{
+		signals[signal_name] = [ {
 			"node": node,
 			"method": method
 		}]

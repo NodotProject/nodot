@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 		enabled
 		and distance_traveled > frequency
 		and parent._is_on_floor()
-		and Vector3(parent.velocity.x, 0.0, parent.velocity.z) != Vector3.ZERO
+		and parent.velocity != Vector3.ZERO
 		#and parent.get_slide_collision_count() > 0
 	):
 		force_raycast_update()

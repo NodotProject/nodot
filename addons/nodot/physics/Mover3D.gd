@@ -78,7 +78,7 @@ func move_to_destination():
 	if relative_destination_position:
 		final_destination_position = original_position + destination_position
 
-	if final_destination_position and final_destination_position == position:
+	if final_destination_position and final_destination_position == target_node.position:
 		return
 
 	activated = true
@@ -86,27 +86,27 @@ func move_to_destination():
 	if final_destination_position:
 		(
 			destination_tween
-			. parallel()
-			. tween_property(
+			.parallel()
+			.tween_property(
 				target_node, "position", final_destination_position, time_to_destination
 			)
-			. set_trans(transition_type)
-			. set_ease(ease_type)
+			.set_trans(transition_type)
+			.set_ease(ease_type)
 		)
 	(
 		destination_tween
-		. parallel()
-		. tween_property(target_node, "rotation", destination_rotation, time_to_destination)
-		. set_trans(transition_type)
-		. set_ease(ease_type)
+		.parallel()
+		.tween_property(target_node, "rotation", destination_rotation, time_to_destination)
+		.set_trans(transition_type)
+		.set_ease(ease_type)
 	)
 	destination_tween.play()
-	emit_signal("moving_to_destination")
-	emit_signal("movement_started")
+	moving_to_destination.emit()
+	movement_started.emit()
 
 
 func move_to_origin():
-	if position == original_position:
+	if target_node.position == original_position:
 		return
 
 	activated = false
@@ -114,21 +114,21 @@ func move_to_origin():
 	if original_position:
 		(
 			origin_tween
-			. parallel()
-			. tween_property(target_node, "position", original_position, time_to_origin)
-			. set_trans(transition_type)
-			. set_ease(ease_type)
+			.parallel()
+			.tween_property(target_node, "position", original_position, time_to_origin)
+			.set_trans(transition_type)
+			.set_ease(ease_type)
 		)
 	(
 		origin_tween
-		. parallel()
-		. tween_property(target_node, "rotation", original_rotation, time_to_origin)
-		. set_trans(transition_type)
-		. set_ease(ease_type)
+		.parallel()
+		.tween_property(target_node, "rotation", original_rotation, time_to_origin)
+		.set_trans(transition_type)
+		.set_ease(ease_type)
 	)
 	origin_tween.play()
-	emit_signal("moving_to_origin")
-	emit_signal("movement_started")
+	moving_to_origin.emit()
+	movement_started.emit()
 	
 func reset() -> void:
 	if destination_tween:
@@ -151,8 +151,8 @@ func _create_tween(callback: Callable) -> Tween:
 
 
 func _on_destination_reached():
-	emit_signal("destination_reached")
-	emit_signal("movement_ended")
+	destination_reached.emit()
+	movement_ended.emit()
 	if loop:
 		if reverse_at_destination:
 			move_to_origin()
@@ -162,7 +162,7 @@ func _on_destination_reached():
 
 
 func _on_origin_reached():
-	emit_signal("origin_reached")
-	emit_signal("movement_ended")
+	origin_reached.emit()
+	movement_ended.emit()
 	if loop:
 		move_to_destination()

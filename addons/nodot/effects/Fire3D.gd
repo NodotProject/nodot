@@ -11,16 +11,12 @@ class_name Fire3D extends Node3D
 @export var emission_direction: Vector3 = Vector3.UP: set = _emission_direction_set
 ## The scale (size) of each particle
 @export var effect_scale: float = 1.0: set = _effect_scale_set
-## The scale speed of each particle
-@export var effect_speed: float = 1.0: set = _effect_scale_speed
 ## The color of the fire
 @export var fire_color: Color = Color.ORANGE: set = _fire_color_set
 ## The color of the smoke
 @export var smoke_color: Color = Color(Color.LIGHT_GRAY, 0.5): set = _smoke_color_set
 ## The color of the sparks
 @export var sparks_color: Color = Color.YELLOW: set = _spark_color_set
-## Disable smoke
-@export var disable_smoke: bool = false
 ## Set the render priority
 @export var render_priority: int = 0: set = _set_render_priority
 ## Lock global rotation
@@ -50,8 +46,6 @@ func _enter_tree() -> void:
 	_setup_fire_particle()
 	_setup_smoke_particle()
 	_setup_sparks_particle()
-	set_effect_speed()
-	set_effect_scale()
 	if emission_shape:
 		build_emission_shape(emission_shape)
 		emission_shape.connect("changed", _emission_shape_set)
@@ -76,11 +70,7 @@ func _emission_direction_set(new_direction: Vector3):
 func _effect_scale_set(new_effect_scale: float = effect_scale):
 	effect_scale = new_effect_scale
 	set_effect_scale()
-
-func _effect_scale_speed(new_effect_speed: float = effect_speed):
-	effect_speed = new_effect_speed
-	set_effect_speed()
-
+	
 func _fire_color_set(new_value: Color):
 	fire_color = new_value
 	set_colors()
@@ -233,8 +223,6 @@ func _setup_smoke_particle():
 	
 	smoke_particle.draw_pass_1 = quadmesh
 	
-	if disable_smoke: return
-	
 	add_child(smoke_particle)
 	
 	
@@ -339,18 +327,6 @@ func set_effect_scale():
 	spark_particle.lifetime = _clamp_lifetime(spark_life_time * effect_scale)
 	spark_particle.process_material.scale_min = spark_scale_min * effect_scale
 	spark_particle.process_material.scale_max = spark_scale_max * effect_scale
-	
-func set_effect_speed():
-	if !fire_particle.process_material or !smoke_particle.process_material or !spark_particle.process_material: return
-	fire_particle.process_material.initial_velocity_min = 0.1 * effect_speed
-	fire_particle.process_material.initial_velocity_max = 5.0 * effect_speed
-	fire_particle.speed_scale = effect_speed
-	smoke_particle.process_material.initial_velocity_min = 0.1 * effect_speed
-	smoke_particle.process_material.initial_velocity_max = 5.0 * effect_speed
-	smoke_particle.speed_scale = effect_speed
-	spark_particle.process_material.initial_velocity_min = 0.1 * effect_speed
-	spark_particle.process_material.initial_velocity_max = 5.0 * effect_speed
-	spark_particle.speed_scale = effect_speed
 	
 func set_colors():
 	if !fire_particle.process_material or !smoke_particle.process_material or !spark_particle.process_material: return
