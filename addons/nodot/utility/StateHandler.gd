@@ -31,7 +31,18 @@ func _process(delta):
 	if !enabled or !sm:
 		return
 	
+	_set_state_active()
+	
+	if state_active:
+		process(delta)
+	
+func _input(event: InputEvent) -> void:
+	input(event)
+
+func _set_state_active():
 	var is_state_active: bool = handled_states.has(sm.state)
+	
+	prints(_old_state_active, is_state_active)
 	
 	if _old_state_active != is_state_active:
 		if is_state_active:
@@ -44,11 +55,6 @@ func _process(delta):
 			exit()
 	
 	_old_state_active = state_active
-	if state_active:
-		process(delta)
-	
-func _input(event: InputEvent) -> void:
-	input(event)
 
 ## Extend this placeholder. This is where your logic will be run when the node becomes ready.
 func ready() -> void:
