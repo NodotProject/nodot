@@ -24,42 +24,37 @@ func ready():
 
 	InputManager.register_action(crouch_action, KEY_CTRL)
 
-	register_handled_states(["idle", "walk", "sprint", "prone", "crouch", "stand", "sneak"])
-
-	sm.add_valid_transition("idle", ["crouch"])
-	sm.add_valid_transition("walk", ["crouch"])
-	sm.add_valid_transition("sprint", ["crouch"])
-	sm.add_valid_transition("crouch", ["stand", "sneak"])
-	sm.add_valid_transition("stand", ["idle"])
-	sm.add_valid_transition("prone", ["crouch"])
+	handled_states = ["idle", "walk", "sprint", "prone", "crouch", "stand", "sneak"]
 
 	shape_initial_height = get_collision_shape_height()
 
 	if character_mover:
 		initial_movement_speed = character_mover.movement_speed
 
+func can_enter() -> bool:
+	return ["idle", "walk", "sprint", "prone", "crouch", "stand"].has(sm.old_state)
 
-func state_updated(old_state: int, new_state: int) -> void:
+func enter() -> void:
 	if not is_authority(): return
 	
-	if new_state == state_ids["crouch"]:
+	if sm.state == &"crouch":
 		apply_collision_shape_height(crouch_height)
 		if character_mover:
 			character_mover.movement_speed = movement_speed
-	elif new_state == state_ids["stand"]:
+	elif sm.state == &"stand":
 		apply_collision_shape_height(shape_initial_height)
 		if character_mover:
 			character_mover.movement_speed = initial_movement_speed
-		sm.set_state(state_ids["idle"])
+		sm.set_state(&"idle")
 
 
 func physics(delta: float) -> void:
 	if not is_authority(): return
 	
 	if Input.is_action_pressed(crouch_action):
-		sm.set_state(state_ids["crouch"])
+		sm.set_state(&"crouch")
 	elif Input.is_action_just_released(crouch_action):
-		sm.set_state(state_ids["stand"])
+		sm.set_state(&"stand")
 
 
 func apply_collision_shape_height(crouch_height: float):

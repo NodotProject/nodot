@@ -1,15 +1,13 @@
 ## A node to manage Mouse and joystick NodotCharacter3D
 class_name CharacterLook3D extends CharacterExtensionBase3D
 
-## Handled states
-@export var handle_states: Array[String] = ["idle", "walk", "sprint", "jump", "land", "crouch", "prone", "climb", "fly", "swim", "swim_idle", "zerog"]
 ## The Head for the first person character
 @export var head: Node3D
 
 func ready():
 	if !enabled: return
 	
-	register_handled_states(handle_states)
+	handled_states = ["idle", "walk", "sprint", "jump", "land", "crouch", "prone", "climb", "fly", "swim", "swim_idle", "zerog"]
 		
 func physics(delta: float) -> void:
 	if not is_authority(): return

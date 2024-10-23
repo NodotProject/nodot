@@ -14,34 +14,29 @@ func ready():
 	
 	InputManager.register_action(jump_action, KEY_SPACE)
 	
-	register_handled_states(["jump", "land", "idle", "walk", "sprint", "crouch", "prone"])
-	
-	sm.add_valid_transition("idle", ["jump"])
-	sm.add_valid_transition("walk", ["jump"])
-	sm.add_valid_transition("sprint", ["jump"])
-	sm.add_valid_transition("jump", ["land"])
-	sm.add_valid_transition("land", ["idle", "walk", "sprint"])
-	sm.add_valid_transition("crouch", ["jump"])
-	sm.add_valid_transition("prone", ["jump"])
+	handled_states = ["jump", "land", "idle", "walk", "sprint", "crouch", "prone"]
 
-func state_updated(old_state: int, new_state: int) -> void:
+func can_enter() -> bool:
+	return ["idle", "walk", "sprint", "jump", "land", "crouch", "prone"].has(sm.old_state)
+
+func enter() -> void:
 	if not is_authority_owner(): return
 	
-	if new_state == state_ids["jump"]:
+	if sm.state == &"jump":
 		jump()
 
 func jump() -> void:
 	character.velocity.y = jump_velocity
 
-func physics(delta: float) -> void:
+func physics(_delta) -> void:
 	if not is_authority_owner(): return
 	
 	if !character.was_on_floor:
 		return
 		
 	if Input.is_action_pressed(jump_action):
-		sm.set_state(state_ids["jump"])
-	elif sm.state == state_ids["jump"]:
-		sm.set_state(state_ids["land"])
-	elif sm.state == state_ids["land"]:
-		sm.set_state(state_ids["idle"])
+		sm.set_state(&"jump")
+	elif sm.state == &"jump":
+		sm.set_state(&"land")
+	elif sm.state == &"land":
+		sm.set_state(&"idle")

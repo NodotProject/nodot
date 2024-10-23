@@ -33,15 +33,11 @@ signal surfaced
 var direction: Vector3 = Vector3.ZERO
 var default_speed: float
 
-var zerog_state_id: int
-var idle_state_id: int
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !(get_parent() is NodotCharacter3D):
 		warnings.append("Parent should be a NodotCharacter3D")
 	return warnings
-
 
 func _init():
 	var action_names = [ascend_action, descend_action]
@@ -52,33 +48,20 @@ func _init():
 			InputMap.add_action(action_name)
 			InputManager.add_action_event_key(action_name, default_keys[i])
 
-
-func ready():
-	register_handled_states(["zerog"])
-	
-	zerog_state_id = sm.get_id_from_name("zerog")
-	idle_state_id = sm.get_id_from_name("idle")
-	
-	sm.add_valid_transition("zerog", ["idle"])
-	sm.add_valid_transition("idle", "zerog")
-	sm.add_valid_transition("walk", "zerog")
-	sm.add_valid_transition("jump", "zerog")
-	sm.add_valid_transition("sprint", "zerog")
-	sm.add_valid_transition("crouch", "zerog")
-	sm.add_valid_transition("prone", "zerog")
-
-func state_updated(old_state: int, new_state: int) -> void:
+func enter() -> void:
 	if not is_authority(): return
+	submerged.emit()
 	
-	if new_state == state_ids["zerog"]:
-		submerged.emit()
-	elif old_state == state_ids["zerog"]:
-		surfaced.emit()
+func exit() -> void:
+	if not is_authority(): return
+	surfaced.emit()
 
 func physics(delta: float) -> void:
-	if sm.state == zerog_state_id:
-		drift(delta)
-		
+	drift(delta)
+	
+func can_enter():
+	return ["idle", "walk", "jump", "sprint", "crouch", "prone"].has(sm._old_state)
+
 ## Handles zero-g movement
 func drift(delta: float) -> void:
 	if !character.input_enabled:

@@ -45,21 +45,17 @@ func setup():
 	InputManager.register_action(descend_action, KEY_CTRL)
 	InputManager.register_action(ascend_action, KEY_SPACE)
 	
-	register_handled_states(["idle", "jump", "fly", "land"])
-	
-	sm.add_valid_transition("fly", "land")
-	sm.add_valid_transition("land", "idle")
-	sm.add_valid_transition("idle", "fly")
-	sm.add_valid_transition("jump", "fly")
+	handled_states = ["idle", "jump", "fly", "land"]
 
-func state_updated(old_state: int, new_state: int) -> void:
+func can_enter() -> bool:
+	return ["idle", "jump", "fly", "land"].has(sm.old_state)
+
+func enter() -> void:
 	if not is_authority(): return
 	
-	if new_state == state_ids["fly"]:
-		pass
-	elif new_state == state_ids["land"]:
+	if sm.state == &"land":
 		fly_doubletap_timeleft = 0.0
-		sm.set_state(state_ids["idle"])
+		sm.set_state(&"idle")
 
 func physics(delta: float) -> void:
 	if not is_authority(): return
@@ -67,20 +63,20 @@ func physics(delta: float) -> void:
 	if fly_doubletap_timeleft > 0.0:
 		fly_doubletap_timeleft -= delta
 	
-	if sm.state == state_ids["idle"] or sm.state == state_ids["jump"]:
+	if sm.state == &"idle" or sm.state == &"jump":
 		if Input.is_action_just_pressed(ascend_action):
 			if fly_doubletap_timeleft > 0.0:
-				sm.set_state(state_ids["fly"])
+				sm.set_state(&"fly")
 			elif fly_doubletap_timeleft <= 0.0:
 				fly_doubletap_timeleft = double_tap_time
-	else:				
-		if sm.state == state_ids["fly"]:
+	else:
+		if sm.state == &"fly":
 			if land_on_ground and character.was_on_floor:
-				sm.set_state(state_ids["land"])
+				sm.set_state(&"land")
 				
 			if Input.is_action_just_pressed(ascend_action):
 				if fly_doubletap_timeleft > 0.0:
-					sm.set_state(state_ids["land"])
+					sm.set_state(&"land")
 				elif fly_doubletap_timeleft <= 0.0:
 					fly_doubletap_timeleft = double_tap_time
 					

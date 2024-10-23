@@ -46,16 +46,11 @@ var is_head_submerged: bool = false
 var water_y_position: float = 0.0
 var third_person_camera_container: Node3D
 
-var swim_idle_state_id: int
-var swim_state_id: int
-var surfaced_state_id: int
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !(get_parent() is NodotCharacter3D):
 		warnings.append("Parent should be a NodotCharacter3D")
 	return warnings
-
 
 func _init():
 	var action_names = [ascend_action, descend_action]
@@ -69,39 +64,27 @@ func _init():
 		var action_name = action_names[i]
 		InputManager.register_action(action_name, joy_default_keys[i], 2)
 
-
 func ready():
-	register_handled_states(["swim_idle", "swim", "surfaced"])
-	
-	swim_idle_state_id = sm.get_id_from_name("swim_idle")
-	swim_state_id = sm.get_id_from_name("swim")
-	surfaced_state_id = sm.get_id_from_name("idle")
-	
-	sm.add_valid_transition("swim_idle", ["swim", "idle"])
-	sm.add_valid_transition("swim", ["swim_idle", "idle"])
-	sm.add_valid_transition("idle", "swim_idle")
-	sm.add_valid_transition("walk", "swim_idle")
-	sm.add_valid_transition("jump", "swim_idle")
-	sm.add_valid_transition("sprint", "swim_idle")
-	sm.add_valid_transition("crouch", "swim_idle")
-	sm.add_valid_transition("prone", "swim_idle")
+	handled_states = [&"swim_idle", &"swim", &"idle"]
 	
 	if third_person_camera:
 		third_person_camera_container = third_person_camera.get_parent()
 
-
+func can_enter() -> bool:
+	return ["swim_idle", "swim", "idle", "walk", "jump", "sprint", "crouch", "prone"].has(sm.old_state)
+	
 func physics(delta: float) -> void:
 	if !is_submerged: return
 	check_head_submerged()
 	
 	var character_offset_position = character.global_position.y + submerge_offset
 	
-	if sm.state == swim_state_id or sm.state == swim_idle_state_id:
+	if sm.state == &"swim" or sm.state == &"idle":
 		swim(delta)
 		if character_offset_position > water_y_position:
-			sm.set_state(surfaced_state_id)
+			sm.set_state(&"surfaced")
 	elif character_offset_position < water_y_position:
-		sm.set_state(swim_idle_state_id)
+		sm.set_state(&"swim_idle")
 		
 ## Handles swimming movement
 func swim(delta: float) -> void:
@@ -117,9 +100,9 @@ func swim(delta: float) -> void:
 	direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
 	if direction:
-		sm.set_state(swim_state_id)
+		sm.set_state(&"swim")
 	else:
-		sm.set_state(swim_idle_state_id)
+		sm.set_state(&"swim_idle")
 	
 	var new_y_velocity = clamp(character.velocity.y - submerged_gravity * delta, -3.0, 3.0)
 	character.velocity.y = lerp(character.velocity.y, new_y_velocity, 0.025)
@@ -159,7 +142,7 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 		is_head_submerged = false
 		submerged_water_area.revert()
 		head_surfaced.emit()
-		sm.set_state(surfaced_state_id)
+		sm.set_state(&"surfaced")
 		surfaced.emit()
 
 

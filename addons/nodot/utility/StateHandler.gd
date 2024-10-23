@@ -3,15 +3,14 @@
 class_name StateHandler extends Nodot
 
 ## Enable/disable this node.
-@export var enabled : bool = true: set = _on_enabled_changed
+@export var enabled: bool = true
+## The id of the state
+@export var handled_states: Array[StringName] = []
 ## The StateMachine to attach this handler to
 @export var sm: StateMachine
-## Run process/physics even when the state is unhandled
-@export var ignore_handled_states: bool = false
 
-var is_editor: bool = Engine.is_editor_hint()
-var handled_states: Array[String] = []
-var state_ids: Dictionary = {}
+var _old_state_active: bool = false
+var state_active: bool = false
 
 func _ready():
 	if !enabled:
@@ -20,42 +19,37 @@ func _ready():
 	if !sm and get_parent() is StateMachine:
 		sm = get_parent()
 		
-	sm.connect("state_updated", state_updated)
 	ready()
 	
 func _physics_process(delta):
-	if is_editor or !enabled or !sm or sm.state < 0 or (!ignore_handled_states and !handles_state(sm.state)):
+	if !enabled and state_active:
 		return
 		
 	physics(delta)
 	
 func _process(delta):
-	if is_editor or !enabled or !sm or sm.state < 0 or (!ignore_handled_states and !handles_state(sm.state)):
+	if !enabled or !sm:
 		return
-		
-	process(delta)
 	
-func _input(event: InputEvent) -> void:		
+	var is_state_active: bool = handled_states.has(sm.state)
+	
+	if _old_state_active != is_state_active:
+		if is_state_active:
+			if can_enter():
+				print("entered %s from %s" % [sm.state, sm.old_state])
+				state_active = true
+				enter()
+		else:
+			state_active = false
+			exit()
+	
+	_old_state_active = state_active
+	if state_active:
+		process(delta)
+	
+func _input(event: InputEvent) -> void:
 	input(event)
-	
-func _on_enabled_changed(new_value: bool):
-	enabled = new_value
 
-## Registers a set of states that the node handles
-func register_handled_states(new_states: Array[String]):
-	for state_name in new_states:
-		var state_id = sm.register_state(state_name)
-		state_ids[state_name] = state_id
-		handled_states.append(state_name)
-
-## Checks whether this node handles a certain state
-func handles_state(state: Variant) -> bool:
-	if state is String:
-		return handled_states.has(state)
-	if state is int:
-		return state_ids.values().has(state)
-	return false
-	
 ## Extend this placeholder. This is where your logic will be run when the node becomes ready.
 func ready() -> void:
 	pass
@@ -71,7 +65,13 @@ func process(delta: float) -> void:
 ## Extend this placeholder. This is where your logic will be run for every input.
 func input(event: InputEvent) -> void:
 	pass
-	
-## Extend this placeholder. This is triggered whenever the character state is updated.
-func state_updated(old_state: int, new_state: int) -> void:
+
+func enter():
 	pass
+	
+func exit():
+	pass
+
+## Test if the state can be changed
+func can_enter() -> bool:
+	return true

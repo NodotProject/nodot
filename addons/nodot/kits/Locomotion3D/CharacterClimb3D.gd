@@ -21,16 +21,13 @@ func ready():
 	InputManager.register_action(climb_action, KEY_W)
 	InputManager.register_action(descend_action, KEY_S)
 
-	register_handled_states(["idle", "walk", "sprint", "jump", "climb"])
+	handled_states = ["idle", "walk", "sprint", "jump", "climb"]
 
-	sm.add_valid_transition("idle", "climb")
-	sm.add_valid_transition("walk", "climb")
-	sm.add_valid_transition("sprint", "climb")
-	sm.add_valid_transition("jump", "climb")
-	sm.add_valid_transition("climb", "idle")
+func can_enter() -> bool:
+	return ["idle", "walk", "sprint", "jump", "climb"].has(sm.old_state)
 	
-func state_updated(old_state: int, new_state: int):
-	if new_state == state_ids["climb"]:
+func enter():
+	if sm.state == &"climb":
 		was_on_floor = true
 		
 
@@ -38,7 +35,7 @@ func physics(delta: float):
 	if !enabled:
 		return
 
-	if sm.state == state_ids["climb"]:
+	if sm.state == &"climb":
 		var ascend_velocity = climb_velocity
 		var descend_velocity = -climb_velocity
 		
@@ -53,8 +50,8 @@ func physics(delta: float):
 		elif Input.is_action_pressed(descend_action):
 			character.velocity.y = descend_velocity
 		elif Input.is_action_pressed(jump_action):
-			sm.set_state(state_ids["idle"])
-			sm.set_state(state_ids["jump"])
+			sm.set_state(&"idle")
+			sm.set_state(&"jump")
 		else:
 			character.velocity.y = 0.0
 				
@@ -63,7 +60,7 @@ func physics(delta: float):
 	
 		var is_on_floor = character._is_on_floor()
 		if is_on_floor and was_on_floor == false:
-			sm.set_state(state_ids["idle"])
+			sm.set_state(&"idle")
 		
 		was_on_floor = is_on_floor != null
 			
