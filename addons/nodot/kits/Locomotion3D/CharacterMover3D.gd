@@ -39,13 +39,14 @@ func ready():
 	
 	InputManager.register_action(sprint_action, KEY_SHIFT)
 	
-	handled_states = ["idle", "walk", "sprint", "jump", "land", "crouch", "prone"]
+	handled_states = [&"idle", &"walk", &"sprint", &"jump", &"land", &"crouch", &"prone"]
+	if !sm.state: sm.set_state(&"idle")
 		
 	if third_person_camera:
 		third_person_camera_container = third_person_camera.get_parent()
 
 func can_enter() -> bool:
-	return ["idle", "walk", "sprint", "land", "crouch", "prone", "stand"].has(sm.old_state)
+	return [&"idle", &"walk", &"sprint", &"land", &"crouch"].has(sm.old_state)
 	
 func enter() -> void:
 	if not is_authority(): return

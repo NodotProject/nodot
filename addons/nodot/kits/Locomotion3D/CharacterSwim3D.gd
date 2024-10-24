@@ -65,13 +65,13 @@ func _init():
 		InputManager.register_action(action_name, joy_default_keys[i], 2)
 
 func ready():
-	handled_states = [&"swim_idle", &"swim", &"idle"]
+	handled_states = [&"swim_idle", &"swim"]
 	
 	if third_person_camera:
 		third_person_camera_container = third_person_camera.get_parent()
 
 func can_enter() -> bool:
-	return ["swim_idle", "swim", "idle", "walk", "jump", "sprint", "crouch", "prone"].has(sm.old_state)
+	return [&"swim_idle", &"swim", &"idle", &"walk", &"jump", &"sprint", &"crouch", &"prone"].has(sm.old_state)
 	
 func physics(delta: float) -> void:
 	if !is_submerged: return
@@ -79,14 +79,12 @@ func physics(delta: float) -> void:
 	
 	var character_offset_position = character.global_position.y + submerge_offset
 	
-	if sm.state == &"swim" or sm.state == &"idle":
+	if sm.state == &"swim" or sm.state == &"swim_idle":
 		swim(delta)
-		if character_offset_position > water_y_position:
-			sm.set_state(&"surfaced")
 	elif character_offset_position < water_y_position:
 		sm.set_state(&"swim_idle")
 		
-## Handles swimming movement
+## Handles swimming movementw
 func swim(delta: float) -> void:
 	if !character.input_enabled:
 		return
@@ -137,12 +135,13 @@ func set_submerged(input_submerged: bool, water_area: WaterArea3D) -> void:
 	is_submerged = input_submerged
 
 	if is_submerged:
+		sm.set_state(&"swim")
 		submerged.emit()
 	else:
 		is_head_submerged = false
 		submerged_water_area.revert()
 		head_surfaced.emit()
-		sm.set_state(&"surfaced")
+		sm.set_state(&"idle")
 		surfaced.emit()
 
 

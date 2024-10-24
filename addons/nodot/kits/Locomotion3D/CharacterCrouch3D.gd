@@ -24,7 +24,7 @@ func ready():
 
 	InputManager.register_action(crouch_action, KEY_CTRL)
 
-	handled_states = ["idle", "walk", "sprint", "prone", "crouch", "stand", "sneak"]
+	handled_states = [&"crouch", &"stand", &"walk"]
 
 	shape_initial_height = get_collision_shape_height()
 
@@ -32,7 +32,7 @@ func ready():
 		initial_movement_speed = character_mover.movement_speed
 
 func can_enter() -> bool:
-	return ["idle", "walk", "sprint", "prone", "crouch", "stand"].has(sm.old_state)
+	return [&"idle", &"walk", &"sprint", &"crouch"].has(sm.old_state)
 
 func enter() -> void:
 	if not is_authority(): return
@@ -46,17 +46,18 @@ func enter() -> void:
 		if character_mover:
 			character_mover.movement_speed = initial_movement_speed
 		sm.set_state(&"idle")
+		
+func exit() -> void:
+	apply_collision_shape_height(shape_initial_height)
+	if character_mover:
+		character_mover.movement_speed = initial_movement_speed
 
-
-func physics(delta: float) -> void:
-	if not is_authority(): return
-	
+func input(_event):
 	if Input.is_action_pressed(crouch_action):
 		sm.set_state(&"crouch")
 	elif Input.is_action_just_released(crouch_action):
 		sm.set_state(&"stand")
-
-
+		
 func apply_collision_shape_height(crouch_height: float):
 	if collision_shape and collision_shape.shape:
 		if collision_shape.shape is CapsuleShape3D:
