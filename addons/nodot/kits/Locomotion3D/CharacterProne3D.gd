@@ -26,7 +26,7 @@ func ready():
 	
 	InputManager.register_action(prone_action, KEY_X)
 	
-	handled_states = [&"prone", &"stand", &"walk"]
+	handled_state = &"prone"
 	
 	if collision_shape and collision_shape.shape and collision_shape.shape is CapsuleShape3D:
 		collider_height = collision_shape.shape.height
@@ -38,21 +38,14 @@ func ready():
 	initial_head_position = head.position
 
 func can_enter() -> bool:
-	return [&"idle", &"walk", &"sprint", &"prone"].has(sm.old_state)
+	return [&"idle", &"walk", &"sprint"].has(sm.old_state)
 	
 func enter() -> void:
-	if sm.state == &"prone":
-		collision_shape.rotation.x = PI / 2
-		target_head_position = Vector3(head.position.x, 0.0, -(collider_height / 2))
-		character.velocity = Vector3.ZERO
-		if character_mover:
-			character_mover.movement_speed = movement_speed
-	elif sm.state == &"stand":
-		collision_shape.rotation.x = 0.0
-		if character_mover:
-			character_mover.movement_speed = initial_movement_speed
-		head.position = initial_head_position
-		sm.set_state(&"idle")
+	collision_shape.rotation.x = PI / 2
+	target_head_position = Vector3(head.position.x, 0.0, -(collider_height / 2))
+	character.velocity = Vector3.ZERO
+	if character_mover:
+		character_mover.movement_speed = movement_speed
 		
 func exit() -> void:
 	collision_shape.rotation.x = 0.0
@@ -64,9 +57,8 @@ func input(event: InputEvent) -> void:
 	if Input.is_action_pressed(prone_action):
 		sm.set_state(&"prone")
 	elif Input.is_action_just_released(prone_action):
-		sm.set_state(&"stand")
+		sm.set_state(&"idle")
 
 func physics(_delta):
-	if sm.state == &"prone":
-		head.position = lerp(head.position, target_head_position, 0.1)
-		character.move_and_slide()
+	head.position = lerp(head.position, target_head_position, 0.1)
+	character.move_and_slide()

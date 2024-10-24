@@ -95,7 +95,19 @@ func _physics_process(delta: float) -> void:
 		else:
 			previous_velocity = velocity.y
 	was_on_floor = on_floor
-
+	
+	if !input_enabled: return
+	
+		# Handle look left and right
+	rotate_object_local(Vector3(0, 1, 0), look_angle.x)
+	
+	# Handle look up and down
+	head.rotate_object_local(Vector3(1, 0, 0), look_angle.y)
+	
+	head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
+	head.rotation.z = 0
+	head.rotation.y = 0
+	
 func _is_current_player_changed(new_value: bool):
 	is_current_player = new_value
 	input_enabled = new_value

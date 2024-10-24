@@ -14,21 +14,17 @@ func ready():
 	
 	InputManager.register_action(jump_action, KEY_SPACE)
 	
-	handled_states = ["jump", "land", "idle", "walk", "sprint", "crouch", "prone"]
+	handled_state = &"jump"
 
 func can_enter() -> bool:
-	return ["idle", "walk", "sprint", "jump", "land", "crouch", "prone"].has(sm.old_state)
+	return [&"idle", &"walk", &"sprint"].has(sm.old_state)
 
 func enter() -> void:
 	if not is_authority_owner(): return
 	
-	if sm.state == &"jump":
-		jump()
+	jump()
 
-func jump() -> void:
-	character.velocity.y = jump_velocity
-
-func physics(_delta) -> void:
+func input(_event):
 	if not is_authority_owner(): return
 	
 	if !character.was_on_floor:
@@ -36,7 +32,6 @@ func physics(_delta) -> void:
 		
 	if Input.is_action_pressed(jump_action):
 		sm.set_state(&"jump")
-	elif sm.state == &"jump":
-		sm.set_state(&"land")
-	elif sm.state == &"land":
-		sm.set_state(&"idle")
+		
+func jump() -> void:
+	character.velocity.y = jump_velocity

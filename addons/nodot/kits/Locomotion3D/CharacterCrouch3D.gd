@@ -24,7 +24,7 @@ func ready():
 
 	InputManager.register_action(crouch_action, KEY_CTRL)
 
-	handled_states = [&"crouch", &"stand", &"walk"]
+	handled_state = &"walk"
 
 	shape_initial_height = get_collision_shape_height()
 
@@ -37,16 +37,10 @@ func can_enter() -> bool:
 func enter() -> void:
 	if not is_authority(): return
 	
-	if sm.state == &"crouch":
-		apply_collision_shape_height(crouch_height)
-		if character_mover:
-			character_mover.movement_speed = movement_speed
-	elif sm.state == &"stand":
-		apply_collision_shape_height(shape_initial_height)
-		if character_mover:
-			character_mover.movement_speed = initial_movement_speed
-		sm.set_state(&"idle")
-		
+	apply_collision_shape_height(crouch_height)
+	if character_mover:
+		character_mover.movement_speed = movement_speed
+	
 func exit() -> void:
 	apply_collision_shape_height(shape_initial_height)
 	if character_mover:
@@ -56,7 +50,7 @@ func input(_event):
 	if Input.is_action_pressed(crouch_action):
 		sm.set_state(&"crouch")
 	elif Input.is_action_just_released(crouch_action):
-		sm.set_state(&"stand")
+		sm.set_state(&"idle")
 		
 func apply_collision_shape_height(crouch_height: float):
 	if collision_shape and collision_shape.shape:
@@ -64,7 +58,6 @@ func apply_collision_shape_height(crouch_height: float):
 			collision_shape.shape.height = crouch_height
 		elif collision_shape.shape is BoxShape3D:
 			collision_shape.shape.size.y = crouch_height
-
 
 func get_collision_shape_height() -> float:
 	if collision_shape and collision_shape.shape:

@@ -65,24 +65,25 @@ func _init():
 		InputManager.register_action(action_name, joy_default_keys[i], 2)
 
 func ready():
-	handled_states = [&"swim_idle", &"swim"]
+	handled_state = &"swim"
 	
 	if third_person_camera:
 		third_person_camera_container = third_person_camera.get_parent()
 
 func can_enter() -> bool:
-	return [&"swim_idle", &"swim", &"idle", &"walk", &"jump", &"sprint", &"crouch", &"prone"].has(sm.old_state)
+	return [&"swim", &"idle", &"walk", &"jump", &"sprint", &"crouch", &"prone"].has(sm.old_state)
 	
 func physics(delta: float) -> void:
 	if !is_submerged: return
+	
 	check_head_submerged()
 	
 	var character_offset_position = character.global_position.y + submerge_offset
 	
-	if sm.state == &"swim" or sm.state == &"swim_idle":
+	if sm.state == &"swim":
 		swim(delta)
 	elif character_offset_position < water_y_position:
-		sm.set_state(&"swim_idle")
+		sm.set_state(&"idle")
 		
 ## Handles swimming movementw
 func swim(delta: float) -> void:
@@ -100,7 +101,7 @@ func swim(delta: float) -> void:
 	if direction:
 		sm.set_state(&"swim")
 	else:
-		sm.set_state(&"swim_idle")
+		sm.set_state(&"idle")
 	
 	var new_y_velocity = clamp(character.velocity.y - submerged_gravity * delta, -3.0, 3.0)
 	character.velocity.y = lerp(character.velocity.y, new_y_velocity, 0.025)

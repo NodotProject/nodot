@@ -4,8 +4,8 @@ class_name StateHandler extends Nodot
 
 ## Enable/disable this node.
 @export var enabled: bool = true
-## The id of the state
-@export var handled_states: Array[StringName] = []
+## The handled state
+@export var handled_state: StringName = ""
 ## The StateMachine to attach this handler to
 @export var sm: StateMachine
 
@@ -21,7 +21,7 @@ func _ready():
 	ready()
 	
 func _physics_process(delta):
-	if !enabled or !sm or !handled_states.has(sm.state):
+	if !enabled or !sm or handled_state != sm.state:
 		return
 		
 	physics(delta)
@@ -37,7 +37,7 @@ func _input(event: InputEvent) -> void:
 	input(event)
 
 func _is_state_active() -> bool:
-	var is_state_active: bool = handled_states.has(sm.state)
+	var is_state_active: bool = handled_state != sm.state
 
 	if sm.state != old_state:
 		if is_state_active and can_enter():
