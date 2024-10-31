@@ -32,7 +32,7 @@ func data_updated(value: Variant, key: String):
 	if !existing_accordions.keys().has(key):
 		create_accordion(key)
 	
-	var new_data = DebugManager.data.getItem(key)	
+	var new_data = DebugManager.data.get_item(key)	
 	for watch_item in new_data:
 		update_label(key, watch_item, str(new_data[watch_item]))
 
