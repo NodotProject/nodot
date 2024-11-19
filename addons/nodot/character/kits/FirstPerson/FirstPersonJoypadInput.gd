@@ -93,7 +93,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_editor or character and character.is_authority_owner() == false: return
+	if is_editor or character and character.is_multiplayer_authority() == false: return
 	
 	if !head or !enabled or is_editor or !character.input_enabled: return
 	var look_angle: Vector2 = Vector2(look_rotation.x * delta, look_rotation.y * delta)

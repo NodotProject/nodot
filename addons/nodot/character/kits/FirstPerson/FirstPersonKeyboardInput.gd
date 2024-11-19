@@ -33,10 +33,10 @@ func _ready():
 	InputManager.register_action(down_action, KEY_S)
 
 func _physics_process(delta: float) -> void:
-	if not character.is_authority(): return
+	if not character.is_multiplayer_authority(): return
 	
 	if enabled and character.input_enabled:
-		character.direction = Input.get_vector(left_action, right_action, up_action, down_action)
+		character.direction2d = Input.get_vector(left_action, right_action, up_action, down_action)
 
 func enable():
 	enabled = true

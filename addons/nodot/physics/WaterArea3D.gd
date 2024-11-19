@@ -90,12 +90,11 @@ func _on_body_entered(body: Node3D) -> void:
 		body_tracker.append(body)
 		if body.has_method("set_submerged"):
 			body.set_submerged(true, self)
-	if (
-		body is CharacterBody3D
-		and body.submerge_handler
-		and body.submerge_handler.has_method("set_submerged")
-	):
-		body.submerge_handler.set_submerged(true, self)
+			
+	if body is CharacterBody3D:
+		var swim_state = Nodot.get_first_child_of_type(body, CharacterSwim3D)
+		if swim_state and swim_state.has_method("set_submerged"):
+			swim_state.set_submerged(true, self)
 
 
 func _on_body_exited(body: Node3D) -> void:
@@ -105,12 +104,11 @@ func _on_body_exited(body: Node3D) -> void:
 		if body.has_method("set_submerged"):
 			body.set_submerged(false, self)
 	# probe_tracker.remove_at(idx)
-	if (
-		body is CharacterBody3D
-		and body.submerge_handler
-		and body.submerge_handler.has_method("set_submerged")
-	):
-		body.submerge_handler.set_submerged(false, self)
+	
+	if body is CharacterBody3D:
+		var swim_state = Nodot.get_first_child_of_type(body, CharacterSwim3D)
+		if swim_state and swim_state.has_method("set_submerged"):
+			swim_state.set_submerged(false, self)
 
 
 func _physics_process(delta: float) -> void:

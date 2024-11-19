@@ -6,6 +6,10 @@ class_name NodotCharacter3D extends CharacterBody3D
 ## Is the character used by the player
 @export var is_current_player: bool = false: set = _is_current_player_changed
 @export var camera: Camera3D = Camera3D.new()
+## Gravity for the character
+@export var gravity: float = 9.8
+## The maximum speed a character can fall
+@export var terminal_velocity := 190.0
 
 signal current_camera_changed(old_camera: Camera3D, new_camera: Camera3D)
 
@@ -65,23 +69,11 @@ func face_target(target_position: Vector3, weight: float) -> void:
 	var target_rot = rotation
 	rotation.y = lerp_angle(initial_rotation.y, target_rot.y, weight)
 
-## If in multiplayer mode this checks if the client has authority. If singleplayer it will always return true
-func is_authority():
-	if !NetworkManager.enabled or is_multiplayer_authority():
-		return true
+func cap_velocity(velocity: Vector3) -> Vector3:
+	# Check if the velocity exceeds the terminal velocity
+	if velocity.length() > terminal_velocity:
+		# Cap the velocity to the terminal velocity, maintaining direction
+		return velocity.normalized() * terminal_velocity
 	else:
-		return false
-		
-## If in multiplayer mode this checks if the client owns this node. If singleplayer it will always return true
-func is_authority_owner():
-	if !NetworkManager.enabled or get_multiplayer_authority() == multiplayer.get_unique_id():
-		return true
-	else:
-		return false
-		
-## If in multiplayer mode, this checks of the client is the host. If singleplayer it will always return true
-func is_host():
-	if !NetworkManager.enabled or multiplayer.is_server():
-		return true
-	else:
-		return false
+		# If it's below terminal velocity, return it unchanged
+		return velocity

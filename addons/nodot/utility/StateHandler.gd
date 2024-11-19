@@ -1,77 +1,110 @@
+@tool
 @icon("../icons/statehandler.svg")
-## A node to handle and control events from a state machine
 class_name StateHandler extends Nodot
 
-## Enable/disable this node.
-@export var enabled : bool = true: set = _on_enabled_changed
-## The StateMachine to attach this handler to
-@export var sm: StateMachine
-## Run process/physics even when the state is unhandled
-@export var ignore_handled_states: bool = false
+## Base class for states to be used with [StateMachine].
+##
+## Simplified version of the StateMachine from Netfox: https://github.com/foxssake/netfox
+##
+## Provides multiple callback methods for a state's lifecycle, which can be 
+## overridden by extending classes.
+## [br][br]
+## Must have a [StateMachine] as a parent.
 
-var is_editor: bool = Engine.is_editor_hint()
-var handled_states: Array[String] = []
-var state_ids: Dictionary = {}
+## The [StateMachine] this state belongs to.
+## [br][br]
+## [i]read-only[/i]
+var state_machine: StateMachine:
+	get: return _state_machine
 
-func _ready():
-	if !enabled:
-		return
-	
-	if !sm and get_parent() is StateMachine:
-		sm = get_parent()
-		
-	sm.connect("state_updated", state_updated)
-	ready()
-	
-func _physics_process(delta):
-	if is_editor or !enabled or !sm or sm.state < 0 or (!ignore_handled_states and !handles_state(sm.state)):
-		return
-		
-	physics(delta)
-	
-func _process(delta):
-	if is_editor or !enabled or !sm or sm.state < 0 or (!ignore_handled_states and !handles_state(sm.state)):
-		return
-		
-	process(delta)
-	
-func _input(event: InputEvent) -> void:		
-	input(event)
-	
-func _on_enabled_changed(new_value: bool):
-	enabled = new_value
+var _state_machine: StateMachine
 
-## Registers a set of states that the node handles
-func register_handled_states(new_states: Array[String]):
-	for state_name in new_states:
-		var state_id = sm.register_state(state_name)
-		state_ids[state_name] = state_id
-		handled_states.append(state_name)
-
-## Checks whether this node handles a certain state
-func handles_state(state: Variant) -> bool:
-	if state is String:
-		return handled_states.has(state)
-	if state is int:
-		return state_ids.values().has(state)
-	return false
-	
-## Extend this placeholder. This is where your logic will be run when the node becomes ready.
-func ready() -> void:
+## Callback to input logic.
+##
+## This method is called by the [StateMachine] during input event.
+## [br][br]
+## [i]override[/i] to implement input logic
+func input(event: InputEvent) -> void:
 	pass
-	
-## Extend this placeholder. This is where your logic will be run every physics frame.
-func physics(delta: float) -> void:
-	pass
-	
-## Extend this placeholder. This is where your logic will be run every process frame.
+
+## Callback to process logic.
+##
+## This method is called by the [StateMachine] during the process frame to update game state.
+## [br][br]
+## [i]override[/i] to implement game logic
 func process(delta: float) -> void:
 	pass
 
-## Extend this placeholder. This is where your logic will be run for every input.
-func input(event: InputEvent) -> void:
+## Callback to physics logic.
+##
+## This method is called by the [StateMachine] during the physics frame to update game state.
+## [br][br]
+## [i]override[/i] to implement game logic
+func physics_process(delta: float) -> void:
 	pass
+
+## Callback for entering the state.
+##
+## This method is called whenever the state machine enters this state.
+## [br][br]
+## [i]override[/i] to react to state transitions
+func enter(previous_state: StateHandler) -> void:
+	pass
+
+## Callback for entering the state.
+##
+## This method is called whenever the state machine exits this state.
+## [br][br]
+## [i]override[/i] to react to state transitions
+func exit(next_state: StateHandler) -> void:
+	pass
+
+## Callback for validating state transitions while entering.
+##
+## Whenever the [StateMachine] attempts to enter this state, it will 
+## call this method to ensure that the transition is valid.
+## [br][br]
+## If this method returns true, the transition is valid and the state machine 
+## will enter this state. Otherwise, the transition is invalid, and nothing 
+## happens.
+## [br][br]
+## [i]override[/i] to implement custom transition validation logic
+func can_enter(previous_state: StateHandler) -> bool:
+	# Add your validation logic here
+	# Return true if the state machine can transition to the next state
+	return true
+
+## Callback for validating state transitions while exiting.
+##
+## Whenever the [StateMachine] attempts to exit this state, it will 
+## call this method to ensure that the transition is valid.
+## [br][br]
+## If this method returns true, the transition is valid and the state machine
+## will exit this state. Otherwise, the transition is invalid, and nothing
+## happens.
+## [br][br]
+## [i]override[/i] to implement custom transition validation logic
+func can_exit(next_state: StateHandler) -> bool:
+	# Add your validation logic here
+	# Return true if the state machine can transition to the next state
+	return true
+
+func _get_configuration_warnings():
+	return [] if get_parent() is StateMachine else ["This state should be a child of a StateMachine."]
+
+func _ready():
+	if _state_machine == null and get_parent() is StateMachine:
+		_state_machine = get_parent()
+		_state_machine._available_states[name] = self
+
+func _physics_process(delta: float) -> void:
+	if !state_machine or state_machine.state != name: return
+	physics_process(delta)
 	
-## Extend this placeholder. This is triggered whenever the character state is updated.
-func state_updated(old_state: int, new_state: int) -> void:
-	pass
+func _process(delta: float) -> void:
+	if !state_machine or state_machine.state != name: return
+	process(delta)
+
+func _input(event: InputEvent) -> void:
+	if state_machine.state != name: return
+	input(event)

@@ -1,98 +1,82 @@
+@tool
 @icon("../icons/statemachine.svg")
-## A simple state machine
 class_name StateMachine extends Nodot
 
-## The initial state
-@export var state: int = 0: set = _on_state_changed
-## Valid state transitions is an array of int tuples with old state and new (i.e [[2, 4], [2, 5]])
-@export var valid_transitions: Array[Array] = []
+## A state machine.
+##
+## Simplified version of the StateMachine from Netfox: https://github.com/foxssake/netfox
+##
+## To implement states, extend the [StateHandler] class and add it as a child
+## node.
 
-## Triggered when the state changes
-signal state_updated(old_state: int, new_state: int)
+## Name of the current state.
+## 
+## Can be an empty string if no state is active. Only modify directly if you
+## need to skip [method transition]'s callbacks.
+@export var state: StringName = "":
+	get: return _state_object.name if _state_object != null else ""
+	set(v): _set_state(v)
 
-var old_state: int = 0
-var state_names = []
+## Emitted during state transitions.
+##
+## This signal is emitted whenever a transition happens during rollback, which 
+## means it may be emitted multiple times for the same transition if it gets 
+## resimulated during rollback.
+signal on_state_changed(old_state: StateHandler, new_state: StateHandler)
 
-func _init():
-	old_state = state
-	
-func _on_state_changed(new_state: int):
-	if !_check_transition_valid(state, new_state):
+var _state_object: StateHandler = null
+var _available_states: Dictionary = {}
+
+## Transition to a new state specified by [param new_state_name].
+##
+## Finds the given state by name and transitions to it if possible. The new 
+## state's [method StateHandler.can_enter] callback decides if it can be
+## entered from the current state.
+## [br][br]
+## Upon transitioning, [method StateHandler.exit] is called on the old state,
+## and [method StateHandler.enter] is called on the new state. In addition, 
+## [signal on_state_changed] is emitted.
+## [br][br]
+## Does nothing if transitioning to the currently active state. Emits a warning
+## and does nothing when transitioning to an unknown state.
+func transition(new_state_name: StringName) -> void:
+	if state == new_state_name:
 		return
 	
-	old_state = state
-	state = new_state
-	state_updated.emit(old_state, new_state)
-
-func _check_transition_valid(old_state: int, new_state: int) -> bool:
-	if old_state == new_state:
-		return false
+	if not _available_states.has(new_state_name):
+		printerr("Attempted to transition from state '%s' into unknown state '%s'" % [state, new_state_name])
+		return
 		
-	if valid_transitions.size() > old_state:
-		var transitions = valid_transitions[old_state]
-		if transitions.has(new_state):
-			return true
-		else:
-			return false
-	else:
-		return true
+	var new_state: StateHandler = _available_states[new_state_name]
+	if _state_object:
+		if !_state_object.can_exit(new_state) or !new_state.can_enter(_state_object):
+			return
+	
+		_state_object.exit(new_state)
+	
+	var _previous_state: StateHandler = _state_object
+	_state_object = new_state
+	on_state_changed.emit(_previous_state, new_state)
+	_state_object.enter(_previous_state)
 
-## Add a transition validator. `from` can be a single string or int.  `to` can be either a single in or an array of strings or ints
-func add_valid_transition(from, to) -> void:
-	var from_id = from
-	if from is int:
-		from_id = from
-	elif from is String:
-		from_id = state_names.find(from)
-		if from_id < 0:
-			from_id = register_state(from)
-		
-	var to_ids = to
-	if to is int:
-		to_ids = to
-	if to is String:
-		to_ids = state_names.find(to)
-		if to_ids < 0:
-			to_ids = register_state(to)
-			
-	if to is Array:
-		to_ids = []
-		for t in to:
-			if !to_ids.has(t):
-				if t is int:
-					to_ids.append(t)
-				if t is String:
-					var found_t = state_names.find(t)
-					if found_t < 0:
-						found_t = register_state(t)
-					to_ids.append(found_t)
-		
-	if valid_transitions.size() > from_id:
-		if to_ids is Array:
-			for t in to_ids:
-				if !valid_transitions[from_id].has(t):
-					valid_transitions[from_id].append(t)
-		else:
-			if !valid_transitions[from_id].has(to_ids):
-				valid_transitions[from_id].append(to_ids)
+func _input(event: InputEvent) -> void:
+	if _state_object:
+		_state_object.input(event)
 
-## Register a new state
-func register_state(new_state_name: String) -> int:
-	var existing_id = state_names.find(new_state_name)
-	if existing_id < 0:
-		state_names.append(new_state_name)
-		valid_transitions.append([])
-		return valid_transitions.size() - 1
-	return existing_id
+func _process(delta: float) -> void:
+	if _state_object:
+		_state_object.process(delta)
 
-func get_id_from_name(state_name: String) -> int:
-	var id = state_names.find(state_name)
-	if id < 0:
-		push_error("Attempted to get id of %s before it was registered" % state_name)
-	return id
+func _physics_process(delta: float) -> void:
+	if _state_object:
+		_state_object.physics_process(delta)
 
-func get_name_from_id(id: int) -> String:
-	return state_names[id]
-
-func set_state(new_state: int) -> void:
-	state = new_state
+func _set_state(new_state: StringName) -> void:
+	if not new_state:
+		return
+	
+	if not _available_states.has(new_state):
+		printerr("Attempted to jump to unknown state: %s" % [new_state])
+		return
+	
+	_state_object = _available_states[new_state]

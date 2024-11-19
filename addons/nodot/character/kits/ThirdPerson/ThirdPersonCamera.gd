@@ -25,6 +25,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _enter_tree() -> void:
 	if always_in_front:
 		raycast = RayCast3D.new()
+		raycast.hit_back_faces = false
 		get_parent().add_child.call_deferred(raycast)
 
 
