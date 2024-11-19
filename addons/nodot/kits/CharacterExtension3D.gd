@@ -1,24 +1,54 @@
 # A base node to add extension logic to NodotCharacter3D
 class_name CharacterExtensionBase3D extends StateHandler
 
-var character: NodotCharacter3D
+## The NodotCharacter3D to apply this node to. Uses parent if unset.
+@export var character: NodotCharacter3D
+
 var third_person_camera: ThirdPersonCamera
+var active_camera: Camera3D
 
-func _get_configuration_warnings():
-	return [] if get_parent() is NodotCharacter3D else ["This state should be a child of a NodotCharacter3D."]
+func _enter_tree():
+	if not character:
+		var parent = get_parent()
+		if parent is NodotCharacter3D:
+			character = parent
+		else:
+			enabled = false
+			return
+			
+	if character.camera is ThirdPersonCamera:
+		third_person_camera = character.camera
+	
+	sm = character.sm
 
-func _ready():
-	if character == null and get_parent() is NodotCharacter3D:
-		character = get_parent()
-		if character.camera is ThirdPersonCamera:
-			third_person_camera = character.camera
+## Turn to face the target. Essentially lerping look_at
+func face_target(target_position: Vector3, weight: float) -> void:
+	# First look directly at the target
+	var initial_rotation = character.rotation
+	character.look_at(target_position)
+	character.rotation.x = initial_rotation.x
+	character.rotation.z = initial_rotation.z
+	# Then lerp the next rotation
+	var target_rot = character.rotation
+	character.rotation.y = lerp_angle(initial_rotation.y, target_rot.y, weight)
+
+## If in multiplayer mode this checks if the client has authority. If singleplayer it will always return true
+func is_authority():
+	if !NetworkManager.enabled or character.is_multiplayer_authority():
+		return true
+	else:
+		return false
 		
-		_state_machine = character.sm
-		_state_machine._available_states[name] = self
+## If in multiplayer mode this checks if the client owns this node. If singleplayer it will always return true
+func is_authority_owner():
+	if !NetworkManager.enabled or character.get_multiplayer_authority() == multiplayer.get_unique_id():
+		return true
+	else:
+		return false
 		
-	if has_method("setup"):
-		setup()
-
-## Override this
-func setup():
-	pass
+## If in multiplayer mode, this checks of the client is the host. If singleplayer it will always return true
+func is_host():
+	if !NetworkManager.enabled or multiplayer.is_server():
+		return true
+	else:
+		return false

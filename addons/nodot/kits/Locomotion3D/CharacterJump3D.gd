@@ -8,28 +8,40 @@ class_name CharacterJump3D extends CharacterExtensionBase3D
 ## The input action name for jumping
 @export var jump_action: String = "jump"
 
-var idle_state_node: CharacterIdle3D
-var left_the_ground: bool = false
-
-func _input(_event):
-	if character.was_on_floor and Input.is_action_pressed(jump_action):
-		state_machine.transition(name)
-
-func setup():
+func ready():
+	if !enabled:
+		return
+	
 	InputManager.register_action(jump_action, KEY_SPACE)
-	idle_state_node = Nodot.get_first_sibling_of_type(self, CharacterIdle3D)
+	
+	register_handled_states(["jump", "land", "idle", "walk", "sprint", "crouch", "prone"])
+	
+	sm.add_valid_transition("idle", ["jump"])
+	sm.add_valid_transition("walk", ["jump"])
+	sm.add_valid_transition("sprint", ["jump"])
+	sm.add_valid_transition("jump", ["land"])
+	sm.add_valid_transition("land", ["idle", "walk", "sprint"])
+	sm.add_valid_transition("crouch", ["jump"])
+	sm.add_valid_transition("prone", ["jump"])
 
-func can_enter(old_state) -> bool:
-	return character._is_on_floor() != null
+func state_updated(old_state: int, new_state: int) -> void:
+	if not is_authority_owner(): return
+	
+	if new_state == state_ids["jump"]:
+		jump()
 
-func enter(_old_state) -> void:
+func jump() -> void:
 	character.velocity.y = jump_velocity
 
-func physics_process(_delta):
-	if left_the_ground:
-		if character._is_on_floor():
-			state_machine.transition(idle_state_node.name)
-			left_the_ground = false
-	else:
-		if !character._is_on_floor():
-			left_the_ground = true
+func physics(delta: float) -> void:
+	if not is_authority_owner(): return
+	
+	if !character.was_on_floor:
+		return
+		
+	if Input.is_action_pressed(jump_action):
+		sm.set_state(state_ids["jump"])
+	elif sm.state == state_ids["jump"]:
+		sm.set_state(state_ids["land"])
+	elif sm.state == state_ids["land"]:
+		sm.set_state(state_ids["idle"])

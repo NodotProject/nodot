@@ -3,7 +3,6 @@ class_name HitTarget
 @export var distance: int = 0
 @export var collision_point: Vector3 = Vector3.ZERO
 @export var collision_normal: Vector3 = Vector3.ZERO
-@export var raycast_basis: Basis = Basis()
 var target_node: Variant
 
 
@@ -11,8 +10,7 @@ func _init(
 	input_distance: int,
 	input_collision_point: Vector3,
 	input_collision_normal: Vector3,
-	input_target_node: Variant,
-	input_raycast_basis: Basis
+	input_target_node: Variant
 ) -> void:
 	distance = input_distance
 	collision_point = input_collision_point
