@@ -31,7 +31,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("Parent should be a FirstPersonCharacter")
 	return warnings
 
-func _init():	
+func _init():
 	var action_names = [item_next_action, item_previous_action, action_action, zoom_action]
 	var default_keys = [
 		MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT
@@ -42,7 +42,7 @@ func _init():
 			
 
 func _ready() -> void:
-	if not character.is_authority(): return
+	if not character.is_multiplayer_authority(): return
 	
 	if enabled:
 		enable()
@@ -51,7 +51,7 @@ func _ready() -> void:
 		cursor_show_state = Input.MOUSE_MODE_HIDDEN
 
 func _input(event: InputEvent) -> void:
-	if not character.is_authority_owner(): return
+	if not character.is_multiplayer_authority(): return
 	
 	if !enabled or !character.input_enabled: return
 	if event is InputEventMouseMotion:
@@ -66,7 +66,7 @@ func _input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	if is_editor or character and character.is_authority_owner() == false: return
+	if is_editor or character and character.is_multiplayer_authority() == false: return
 	
 	if !enabled or is_editor or !character.input_enabled: return
 	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)

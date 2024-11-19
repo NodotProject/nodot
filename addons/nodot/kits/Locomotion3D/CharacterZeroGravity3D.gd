@@ -7,6 +7,12 @@ class_name CharacterZeroGravity3D extends CharacterExtensionBase3D
 ## How fast the player can move
 @export var movement_speed := 5.0
 
+@export_category("State Handlers")
+## Set the swim state handler
+@export var swim_state_handler: CharacterSwim3D
+## Set the idle state handler
+@export var idle_state_handler: StateHandler
+
 @export_subgroup("Third Person Controls")
 ## Turn rate. If strafing is disabled, define how fast the character will turn.
 @export var turn_rate: float = 0.1
@@ -25,11 +31,6 @@ class_name CharacterZeroGravity3D extends CharacterExtensionBase3D
 ## The input action name for drifting downwards
 @export var descend_action: String = "submerge_descend"
 
-## Triggered when entering zerog
-signal submerged
-## Triggered when exiting zerog
-signal surfaced
-
 var direction: Vector3 = Vector3.ZERO
 var default_speed: float
 
@@ -39,7 +40,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("Parent should be a NodotCharacter3D")
 	return warnings
 
-func _init():
+func setup():
 	var action_names = [ascend_action, descend_action]
 	var default_keys = [KEY_SPACE, KEY_CTRL]
 	for i in action_names.size():
@@ -48,22 +49,7 @@ func _init():
 			InputMap.add_action(action_name)
 			InputManager.add_action_event_key(action_name, default_keys[i])
 
-func enter() -> void:
-	if not is_authority(): return
-	submerged.emit()
-	
-func exit() -> void:
-	if not is_authority(): return
-	surfaced.emit()
-
 func physics(delta: float) -> void:
-	drift(delta)
-	
-func can_enter():
-	return ["idle", "walk", "jump", "sprint", "crouch", "prone"].has(sm._old_state)
-
-## Handles zero-g movement
-func drift(delta: float) -> void:
 	if !character.input_enabled:
 		return
 		

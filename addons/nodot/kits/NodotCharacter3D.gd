@@ -64,24 +64,3 @@ func face_target(target_position: Vector3, weight: float) -> void:
 	# Then lerp the next rotation
 	var target_rot = rotation
 	rotation.y = lerp_angle(initial_rotation.y, target_rot.y, weight)
-
-## If in multiplayer mode this checks if the client has authority. If singleplayer it will always return true
-func is_authority():
-	if !NetworkManager.enabled or is_multiplayer_authority():
-		return true
-	else:
-		return false
-		
-## If in multiplayer mode this checks if the client owns this node. If singleplayer it will always return true
-func is_authority_owner():
-	if !NetworkManager.enabled or get_multiplayer_authority() == multiplayer.get_unique_id():
-		return true
-	else:
-		return false
-		
-## If in multiplayer mode, this checks of the client is the host. If singleplayer it will always return true
-func is_host():
-	if !NetworkManager.enabled or multiplayer.is_server():
-		return true
-	else:
-		return false

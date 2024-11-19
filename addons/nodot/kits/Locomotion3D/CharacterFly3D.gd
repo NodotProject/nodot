@@ -24,68 +24,42 @@ class_name CharacterFly3D extends CharacterExtensionBase3D
 ## The input action name for ascending
 @export var ascend_action: String = "jump"
 
+var idle_state_handler: CharacterIdle3D
 var direction: Vector3 = Vector3.ZERO
 var fly_doubletap_timeleft: float = 0.0
-
-func ready():
-	setup()
-	
-func _on_enabled_changed(new_value: bool):
-	enabled = new_value
-	setup()
 	
 func setup():
-	if !enabled:
-		return
-		
 	InputManager.register_action(left_action, KEY_A)
 	InputManager.register_action(right_action, KEY_D)
 	InputManager.register_action(up_action, KEY_W)
 	InputManager.register_action(down_action, KEY_S)
 	InputManager.register_action(descend_action, KEY_CTRL)
 	InputManager.register_action(ascend_action, KEY_SPACE)
-	
-	handled_state = &"fly"
+	idle_state_handler = Nodot.get_first_sibling_of_type(self, CharacterIdle3D)
 
-func can_enter() -> bool:
-	return [&"idle", &"jump", &"fly"].has(sm.old_state)
-
-func enter() -> void:
-	if not is_authority(): return
+func enter(_old_state: StateHandler):
+	character.override_movement = true
 	
-func exit():
+func exit(_old_state: StateHandler):
+	character.override_movement = false
 	fly_doubletap_timeleft = 0.0
 	
-func _physics_process(delta):
-	if !enabled or !sm:
-		return
-		
+func _physics_process(delta: float) -> void:
 	if fly_doubletap_timeleft > 0.0:
 		fly_doubletap_timeleft -= delta
 		
-	if sm.state == &"idle" or sm.state == &"jump":
-		if Input.is_action_just_pressed(ascend_action):
-			if fly_doubletap_timeleft > 0.0:
-				sm.set_state(&"fly")
-			elif fly_doubletap_timeleft <= 0.0:
-				fly_doubletap_timeleft = double_tap_time
-	
-	if handled_state != sm.state:
-		return
-	
-	physics(delta)
-
-func physics(delta: float) -> void:
-	if not is_authority(): return
-	
-	if land_on_ground and character.was_on_floor:
-		sm.set_state(&"idle")
-		
 	if Input.is_action_just_pressed(ascend_action):
 		if fly_doubletap_timeleft > 0.0:
-			sm.set_state(&"idle")
+			if state_machine.state == name:
+				state_machine.transition(idle_state_handler.name)
+			else:
+				state_machine.transition(name)
 		elif fly_doubletap_timeleft <= 0.0:
 			fly_doubletap_timeleft = double_tap_time
+
+func physics_process(delta: float) -> void:
+	if land_on_ground and character.was_on_floor:
+		state_machine.transition(idle_state_handler.name)
 			
 	var input_dir = Input.get_vector(left_action, right_action, up_action, down_action)
 	var basis: Basis

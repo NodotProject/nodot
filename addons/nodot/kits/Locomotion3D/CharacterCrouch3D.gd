@@ -5,8 +5,6 @@ class_name CharacterCrouch3D extends CharacterExtensionBase3D
 @export var collision_shape: CollisionShape3D
 ## The new height of the collision shape
 @export var crouch_height: float = 1.0
-## The associated character mover
-@export var character_mover: CharacterMover3D
 ## The new movement speed
 @export var movement_speed: float = 1.0
 
@@ -14,44 +12,30 @@ class_name CharacterCrouch3D extends CharacterExtensionBase3D
 ## The input action name for crouching
 @export var crouch_action: String = "crouch"
 
+var idle_state_handler: CharacterIdle3D
 var shape_initial_height: float
 var initial_movement_speed: float = 5.0
 
-
-func ready():
-	if !enabled:
-		return
-
-	InputManager.register_action(crouch_action, KEY_CTRL)
-
-	handled_state = &"walk"
-
-	shape_initial_height = get_collision_shape_height()
-
-	if character_mover:
-		initial_movement_speed = character_mover.movement_speed
-
-func can_enter() -> bool:
-	return [&"idle", &"walk", &"sprint", &"crouch"].has(sm.old_state)
-
-func enter() -> void:
-	if not is_authority(): return
-	
-	apply_collision_shape_height(crouch_height)
-	if character_mover:
-		character_mover.movement_speed = movement_speed
-	
-func exit() -> void:
-	apply_collision_shape_height(shape_initial_height)
-	if character_mover:
-		character_mover.movement_speed = initial_movement_speed
-
-func input(_event):
+func _input(_event):
 	if Input.is_action_pressed(crouch_action):
-		sm.set_state(&"crouch")
+		state_machine.transition(name)
 	elif Input.is_action_just_released(crouch_action):
-		sm.set_state(&"idle")
+		state_machine.transition(idle_state_handler.name)
 		
+func setup():
+	InputManager.register_action(crouch_action, KEY_CTRL)
+	shape_initial_height = get_collision_shape_height()
+	initial_movement_speed = character.movement_speed
+	idle_state_handler = Nodot.get_first_sibling_of_type(self, CharacterIdle3D)
+
+func enter(_old_state) -> void:
+	apply_collision_shape_height(crouch_height)
+	character.movement_speed = movement_speed
+	
+func exit(_new_state) -> void:
+	apply_collision_shape_height(shape_initial_height)
+	character.movement_speed = initial_movement_speed
+
 func apply_collision_shape_height(crouch_height: float):
 	if collision_shape and collision_shape.shape:
 		if collision_shape.shape is CapsuleShape3D:

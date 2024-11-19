@@ -6,7 +6,11 @@ func _enter_tree():
 	connect("current_player_body_exited", _on_current_player_body_exited)
 	
 func _on_current_player_body_entered(body: NodotCharacter3D):
-	body.sm.set_state(&"climb")
+	var climb_state_handler = Nodot.get_first_child_of_type(body, CharacterClimb3D)
+	if climb_state_handler:
+		body.sm.transition(climb_state_handler.name)
 	
 func _on_current_player_body_exited(body: NodotCharacter3D):
-	body.sm.set_state(&"idle")
+	var idle_state_handler = Nodot.get_first_child_of_type(body, CharacterIdle3D)
+	if idle_state_handler:
+		body.sm.transition(idle_state_handler.name)

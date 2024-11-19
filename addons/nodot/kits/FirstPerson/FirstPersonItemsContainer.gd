@@ -29,7 +29,7 @@ func _ready() -> void:
 	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
 	
 func _input(event: InputEvent) -> void:
-	if not character.is_authority(): return
+	if not character.is_multiplayer_authority(): return
 	
 	if event.is_action_pressed(reload_action):
 		reload()
@@ -72,7 +72,7 @@ func on_carry_ended(_body):
 ## Get the active item if there is one
 ## TODO: Typehint this when nullable static types are supported. https://github.com/godotengine/godot-proposals/issues/162
 func get_active_item():
-	if not character.is_authority(): return
+	if not character.is_multiplayer_authority(): return
 	
 	var items = Nodot.get_children_of_type(self, FirstPersonItem)
 	for item in items:

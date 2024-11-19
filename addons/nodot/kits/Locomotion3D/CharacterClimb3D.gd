@@ -12,29 +12,26 @@ class_name CharacterClimb3D extends CharacterExtensionBase3D
 ## The input action name for jumping off the ladder
 @export var jump_action: String = "jump"
 
+var idle_state_handler: StateHandler
 var was_on_floor: bool = true
 
-func ready():
-	if !enabled:
-		return
-
+func setup():
 	InputManager.register_action(climb_action, KEY_W)
 	InputManager.register_action(descend_action, KEY_S)
-
-	handled_state = &"climb"
-
-func can_enter() -> bool:
-	return [&"idle", &"walk", &"sprint", &"jump"].has(sm.old_state)
+	idle_state_handler = Nodot.get_first_sibling_of_type(self, CharacterIdle3D)
 	
-func enter():
-	if sm.state == &"climb":
-		was_on_floor = true
+func enter(_old_state: StateHandler):
+	character.override_movement = true
+	was_on_floor = true
+	
+func exit(_old_state: StateHandler):
+	character.override_movement = false
 		
-
-func physics(delta: float):
-	if !enabled:
-		return
-
+func physics_process(delta: float):
+	if Input.is_action_pressed("jump"):
+		# TODO: add a little velocity in the faced direction
+		state_machine.transition(idle_state_handler.name)
+		
 	var ascend_velocity = climb_velocity
 	var descend_velocity = -climb_velocity
 	
@@ -48,8 +45,6 @@ func physics(delta: float):
 		character.velocity.y = ascend_velocity
 	elif Input.is_action_pressed(descend_action):
 		character.velocity.y = descend_velocity
-	elif Input.is_action_pressed(jump_action):
-		sm.set_state(&"jump")
 	else:
 		character.velocity.y = 0.0
 			
@@ -58,7 +53,7 @@ func physics(delta: float):
 
 	var is_on_floor = character._is_on_floor()
 	if is_on_floor and was_on_floor == false:
-		sm.set_state(&"idle")
+		state_machine.set_state(idle_state_handler.name)
 	
 	was_on_floor = is_on_floor != null
 		

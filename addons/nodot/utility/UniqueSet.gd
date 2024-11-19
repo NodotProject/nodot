@@ -9,18 +9,15 @@ signal item_added(item: Variant)
 signal item_removed(item: Variant)
 signal items_updated
 
-
 func _set_items(value: Array[Variant]):
 	items = value
 	items_updated.emit()
-
 
 func add(item: Variant):
 	if !items.has(item):
 		items.append(item)
 		item_added.emit(item)
 		items_updated.emit()
-
 
 func remove(item: Variant):
 	if items.has(item):

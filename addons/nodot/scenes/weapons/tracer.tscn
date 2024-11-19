@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://71otckrklqbk"]
+
+[sub_resource type="GDScript" id="GDScript_ns61t"]
+script/source = "extends Node3D
+
+@export var target_position = Vector3(0,0,0)
+@export var speed = 75.0 # m/s
+@export var tracer_length = 1
+
+const MAX_LIFETIME_MS = 5000
+
+@onready var spawn_time = Time.get_ticks_msec()
+
+func _process(delta: float) -> void:
+	var diff = target_position - global_position
+	var add = diff.normalized() * speed * delta
+	add = add.limit_length(diff.length())
+	global_position += add
+	if (target_position - global_position).length() <= tracer_length or Time.get_ticks_msec() - spawn_time > MAX_LIFETIME_MS:
+		queue_free()
+"
+
+[sub_resource type="Gradient" id="Gradient_u6tl8"]
+offsets = PackedFloat32Array(0, 0.304659, 0.695341, 1)
+colors = PackedColorArray(0.913725, 0.819608, 0.462745, 0, 0.968947, 0.831487, 0.507417, 1, 0.882622, 0.847945, 0.737837, 1, 0.941176, 0.854902, 0.568627, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_uy4k8"]
+gradient = SubResource("Gradient_u6tl8")
+height = 256
+fill_from = Vector2(0.5, 1)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aitnh"]
+transparency = 1
+cull_mode = 2
+albedo_texture = SubResource("GradientTexture2D_uy4k8")
+emission_enabled = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_fv62p"]
+material = SubResource("StandardMaterial3D_aitnh")
+size = 0.015
+sections = 2
+section_length = 0.5
+section_segments = 1
+
+[node name="Tracer" type="Node3D"]
+script = SubResource("GDScript_ns61t")
+
+[node name="Tracer" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.5)
+mesh = SubResource("RibbonTrailMesh_fv62p")
