@@ -54,7 +54,7 @@ func get_hit_target():
 	if !collider: return
 	var distance: float = get_distance(collider)
 	var hit_target = HitTarget.new(
-		distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider
+		distance, raycast.get_collision_point(), raycast.get_collision_normal(), collider, raycast.global_basis
 	)
 	
 	if applied_force > 0 and not hit_target.target_node.has_meta("NonPunchable"):
@@ -71,21 +71,34 @@ func get_hit_target():
 	
 	if damage > 0.0:
 		var collider_healths: Array[Node] = collider.find_children("*", "Health")
+		var collider_hitboxes: Array[Node] = collider.find_children("*", "HitBox3D")
+		var hitbox_present: bool = collider_hitboxes.size() > 0
+		var hitbox_hit: bool = false
+		var final_damage: float = damage
+		
+		for hitbox in collider_hitboxes:
+			if hitbox.is_point_inside(hit_target.collision_point):
+				final_damage *= hitbox.damage_multiplier
+				hitbox_hit = true
+				break
+		
 		if collider_healths.size() > 0:
 			var collider_health: Health = collider_healths[0]
-			var final_damage: float = damage
-			# Calculate damage reduction
-			if damage_distance_reduction > 0.0:
-				var damage_reduction: float = (
-					(final_damage / 100) * damage_distance_reduction
-				)
-				final_damage = final_damage - (distance * damage_reduction)
-			# Apply damage to the hit target
-			if !healing:
-				final_damage = -final_damage
-			collider_health.add_health(final_damage)
+			var should_apply_damage = !(hitbox_present and collider_health.hitbox_only and !hitbox_hit)
+			
+			if should_apply_damage:
+				# Calculate damage reduction
+				if damage_distance_reduction > 0.0:
+					var damage_reduction: float = (
+						(final_damage / 100) * damage_distance_reduction
+					)
+					final_damage = final_damage - (distance * damage_reduction)
+				# Apply damage to the hit target
+				if !healing:
+					final_damage = -final_damage
+				collider_health.add_health(final_damage)
 	
-	target_hit.emit(hit_target);
+	target_hit.emit(hit_target)
 	return hit_target
 
 

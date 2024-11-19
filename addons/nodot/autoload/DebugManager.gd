@@ -50,5 +50,4 @@ func get_custom_field_values(node: Node, keys: Array[String]):
 	for property in node.get_property_list():
 		if keys.has(property.name):
 			values[property.name] = node.get(property.name)
-			
 	return values

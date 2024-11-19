@@ -7,6 +7,12 @@ class_name CharacterZeroGravity3D extends CharacterExtensionBase3D
 ## How fast the player can move
 @export var movement_speed := 5.0
 
+@export_category("State Handlers")
+## Set the swim state handler
+@export var swim_state_handler: CharacterSwim3D
+## Set the idle state handler
+@export var idle_state_handler: StateHandler
+
 @export_subgroup("Third Person Controls")
 ## Turn rate. If strafing is disabled, define how fast the character will turn.
 @export var turn_rate: float = 0.1
@@ -25,16 +31,8 @@ class_name CharacterZeroGravity3D extends CharacterExtensionBase3D
 ## The input action name for drifting downwards
 @export var descend_action: String = "submerge_descend"
 
-## Triggered when entering zerog
-signal submerged
-## Triggered when exiting zerog
-signal surfaced
-
 var direction: Vector3 = Vector3.ZERO
 var default_speed: float
-
-var zerog_state_id: int
-var idle_state_id: int
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -42,8 +40,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("Parent should be a NodotCharacter3D")
 	return warnings
 
-
-func _init():
+func setup():
 	var action_names = [ascend_action, descend_action]
 	var default_keys = [KEY_SPACE, KEY_CTRL]
 	for i in action_names.size():
@@ -52,35 +49,7 @@ func _init():
 			InputMap.add_action(action_name)
 			InputManager.add_action_event_key(action_name, default_keys[i])
 
-
-func ready():
-	register_handled_states(["zerog"])
-	
-	zerog_state_id = sm.get_id_from_name("zerog")
-	idle_state_id = sm.get_id_from_name("idle")
-	
-	sm.add_valid_transition("zerog", ["idle"])
-	sm.add_valid_transition("idle", "zerog")
-	sm.add_valid_transition("walk", "zerog")
-	sm.add_valid_transition("jump", "zerog")
-	sm.add_valid_transition("sprint", "zerog")
-	sm.add_valid_transition("crouch", "zerog")
-	sm.add_valid_transition("prone", "zerog")
-
-func state_updated(old_state: int, new_state: int) -> void:
-	if not is_authority(): return
-	
-	if new_state == state_ids["zerog"]:
-		submerged.emit()
-	elif old_state == state_ids["zerog"]:
-		surfaced.emit()
-
 func physics(delta: float) -> void:
-	if sm.state == zerog_state_id:
-		drift(delta)
-		
-## Handles zero-g movement
-func drift(delta: float) -> void:
 	if !character.input_enabled:
 		return
 		

@@ -9,11 +9,13 @@ class_name MuzzleFlash3D extends Nodot3D
 ## Set the render priority
 @export var render_priority: int = 0: set = _set_render_priority
 ## Minimum scale of the effect
-@export var effect_scale_max: float = 1.0
+@export var effect_scale_max: float = 0.3: set = _set_effect_scale_max
 ## Maximum scale of the fire particles
-@export var effect_scale_min: float = 0.1
+@export var effect_scale_min: float = 0.1: set = _set_effect_scale_min
 ## Color of the effect
 @export var color: Color = Color(1.0, 1.0, 1.0)
+## Energy of the light
+@export var light_energy: float = 1.0
 
 var flash_particle = GPUParticles3D.new()
 var light = OmniLight3D.new()
@@ -26,9 +28,20 @@ func _enter_tree():
 
 	## Create an omnilight and add it to the scene
 	light.light_color = color
+	light.light_energy = light_energy
 	light.shadow_enabled = true
 	light.visible = false
 	add_child(light)
+
+func _set_effect_scale_max(new_value: float):
+	effect_scale_max = new_value
+	if flash_particle.process_material:
+		flash_particle.process_material.scale_max = effect_scale_max
+
+func _set_effect_scale_min(new_value: float):
+	effect_scale_min = new_value
+	if flash_particle.process_material:
+		flash_particle.process_material.scale_min = effect_scale_min
 
 func setup_particle_emitter() -> void:
 	flash_particle.emitting = false
