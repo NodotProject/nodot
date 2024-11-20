@@ -5,10 +5,6 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 @export var input_enabled := true
 ## Friction when stopping. The smaller the value, the more you slide (-1 to disable)
 @export var friction: float = 1.0
-## Enables stepping up stairs.
-@export var stepping_enabled: bool = true
-## Maximum height for a ledge to allow stepping up.
-@export var step_height: float = 0.5
 ## How fast the character can move
 @export var movement_speed := 5.0
 ## The camera field of view
@@ -19,9 +15,6 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 @export var fall_damage_multiplier: float = 0.5
 ## The strength that the character will push rigidbodies
 @export var push_strength: float = 0.5
-
-## Constructs the step up movement vector.
-@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 
 ## Triggered when the character takes fall damage
 signal fall_damage(amount: float)
@@ -157,6 +150,7 @@ func move(delta: float) -> void:
 		move_ground(delta)
 	
 	set_rigid_interaction()
+	move_and_slide()
 	
 func set_rigid_interaction():
 	for i in get_slide_collision_count():
@@ -183,8 +177,6 @@ func move_air(delta: float) -> void:
 	if direction3d != Vector3.ZERO:
 		velocity.x = lerp(velocity.x, direction3d.x * final_speed, 0.025)
 		velocity.z = lerp(velocity.z, direction3d.z * final_speed, 0.025)
-	
-	move_and_slide()
 
 func move_ground(delta: float) -> void:
 	var final_speed: float = movement_speed * delta * 100
@@ -196,44 +188,3 @@ func move_ground(delta: float) -> void:
 	else:
 		velocity.x = direction3d.x * final_speed
 		velocity.z = direction3d.z * final_speed
-			
-	stair_step(delta)
-	
-func stair_step(delta: float):
-		# --- Stairs logic ---
-	var starting_position: Vector3 = global_position
-	var starting_velocity: Vector3 = velocity
-	
-	# Start by moving our character body by its normal velocity.
-	move_and_slide()
-	if !stepping_enabled or !was_on_floor:
-		return
-	
-	# Next, we store the resulting position for later, and reset our character's
-	#    position and velocity values.
-	var slide_position: Vector3 = global_position
-	global_position = starting_position
-	velocity = starting_velocity
-	
-	# After that, we move_and_collide() them up by step_height, move_and_slide()
-	#    and move_and_collide() back down
-	move_and_collide(step_vector)
-	move_and_slide()
-	move_and_collide(-step_vector)
-	
-	# Finally, we test move down to see if they'll touch the floor once we move
-	#    them back down to their starting Y-position, if not, they fall,
-	#    otherwise, they step down by -step_height.
-	if !test_move(global_transform, -step_vector):
-		move_and_collide(-step_vector)
-		
-	# Now that we've done all that, we get the distance moved for both movements
-	#    and go with whichever one moves us further, as overhangs could impede 
-	#    movement if we were to only step.
-	var slide_distance: float = starting_position.distance_to(slide_position)
-	var step_distance: float = starting_position.distance_to(global_position)
-	if slide_distance > step_distance or !was_on_floor:
-		global_position = slide_position
-	# --- Step up logic ---
-	
-	velocity.y = lerp(velocity.y, 0.0, delta * 2.0)
