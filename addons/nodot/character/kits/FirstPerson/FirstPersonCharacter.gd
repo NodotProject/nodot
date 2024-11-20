@@ -17,6 +17,8 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 @export var minimum_fall_damage: float = 5.0
 ## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
 @export var fall_damage_multiplier: float = 0.5
+## The strength that the character will push rigidbodies
+@export var push_strength: float = 0.5
 
 ## Constructs the step up movement vector.
 @onready var step_vector: Vector3 = Vector3(0, step_height, 0)
@@ -171,7 +173,7 @@ func set_rigid_interaction():
 			elif sign(char_basis.z) == sign(lin_vel.z):
 				c.get_collider().linear_velocity.z *= -0.1
 			
-			c.get_collider().apply_central_impulse(-c.get_normal() * 0.25 * c.get_collider().mass)
+			c.get_collider().apply_central_impulse(-c.get_normal() * push_strength * c.get_collider().mass)
 
 func move_air(delta: float) -> void:
 	velocity.y = min(terminal_velocity, velocity.y - gravity * delta)
