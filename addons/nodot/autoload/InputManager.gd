@@ -20,6 +20,16 @@ func _ready():
 		var input_actions = SaveManager.config.get_item("input_actions")
 		set_all_input_actions(input_actions)
 
+func bulk_register_actions_once(uid: String, action_names: Array[String], default_keys: Array[int], input_source: int = 0) -> void:
+	var storage_key: String = "%s:register_actions" % uid
+	if GlobalStorage.has_item(storage_key): return
+	
+	for i in action_names.size():
+		var action_name = action_names[i]
+		InputManager.register_action(action_name, default_keys[i], input_source)
+		
+	GlobalStorage.set_item(storage_key, true)
+
 func register_action(action_name: String, default_key: int = -1, input_source: int = 0, value: float = 0.0) -> void:
 	if !InputMap.has_action(action_name):
 		InputMap.add_action(action_name)

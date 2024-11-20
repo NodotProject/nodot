@@ -26,15 +26,14 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _ready():
 	if enabled:
 		enable()
-		
-	InputManager.register_action(left_action, KEY_A)
-	InputManager.register_action(right_action, KEY_D)
-	InputManager.register_action(up_action, KEY_W)
-	InputManager.register_action(down_action, KEY_S)
+
+	InputManager.bulk_register_actions_once(
+		get_class(),
+		[left_action, right_action, up_action, down_action],
+		[KEY_A, KEY_D, KEY_W, KEY_S]
+	)
 
 func _physics_process(delta: float) -> void:
-	if not character.is_multiplayer_authority(): return
-	
 	if enabled and character.input_enabled:
 		character.direction2d = Input.get_vector(left_action, right_action, up_action, down_action)
 
