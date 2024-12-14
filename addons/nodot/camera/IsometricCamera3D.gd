@@ -47,6 +47,8 @@ func _init():
 	if projection == PROJECTION_ORTHOGONAL:
 		zoom_in = zoom_in_orthogonal
 		zoom_out = zoom_out_orthogonal
+	else:
+		push_error("Cannot set zoom functionality, unsupported Camera3D projection setting: %s" % projection)
 
 func _ready():
 	global_position.y = height
