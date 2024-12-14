@@ -32,10 +32,21 @@ class_name IsometricCamera3D extends Camera3D
 var velocity: Vector3 = Vector3.ZERO
 var zoom_velocity: Vector3 = Vector3.ZERO
 
+## Function references for conditional camera controls
+var zoom_in: Callable
+var zoom_out: Callable
+
 func _init():
 	register_key_actions()
 	register_mouse_actions()
 	top_level = true
+	
+	if projection == PROJECTION_PERSPECTIVE:
+		zoom_in = zoom_in_perspective
+		zoom_out = zoom_out_perspective
+	if projection == PROJECTION_ORTHOGONAL:
+		zoom_in = zoom_in_orthogonal
+		zoom_out = zoom_out_orthogonal
 
 func _ready():
 	global_position.y = height
@@ -62,12 +73,11 @@ func _physics_process(delta):
 	
 	if can_zoom:
 		if Input.is_action_just_pressed(zoom_in_action):
-			zoom_velocity = -global_transform.basis.z * zoom_speed * delta
-		if Input.is_action_just_pressed(zoom_out_action):
-			zoom_velocity = global_transform.basis.z * zoom_speed * delta
-		zoom_velocity = lerp(zoom_velocity, Vector3.ZERO, (zoom_speed / 2) * delta)
+			zoom_in.call(delta, zoom_speed)
+		elif Input.is_action_just_pressed(zoom_out_action):
+			zoom_out.call(delta, zoom_speed)
 		
-	position += (velocity + zoom_velocity)
+	position += velocity
 
 func register_key_actions():
 	var action_names = [left_action, right_action, up_action, down_action, rotate_left_action, rotate_right_action]
@@ -91,3 +101,19 @@ func register_mouse_actions():
 			InputMap.add_action(action_name)
 			InputManager.add_action_event_mouse(action_name, default_keys[i])
 			
+## Zoom functions
+func zoom_in_orthogonal(delta: float, zoom_speed: float) -> void:
+	size /= (100+zoom_speed)/100
+	
+func zoom_out_orthogonal(delta: float, zoom_speed: float) -> void:
+	size *= (100+zoom_speed)/100
+	
+func zoom_in_perspective(delta: float, zoom_speed: float) -> void:
+	zoom_velocity = -global_transform.basis.z * zoom_speed * delta
+	zoom_velocity = lerp(zoom_velocity, Vector3.ZERO, (zoom_speed / 2) * delta)
+	position += zoom_velocity
+	
+func zoom_out_perspective(delta: float, zoom_speed: float) -> void:
+	zoom_velocity = global_transform.basis.z * zoom_speed * delta
+	zoom_velocity = lerp(zoom_velocity, Vector3.ZERO, (zoom_speed / 2) * delta)
+	position += zoom_velocity
