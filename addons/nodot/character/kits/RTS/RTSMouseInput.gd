@@ -68,7 +68,7 @@ func select():
 		get_selectable()
 	else:
 		get_selectables()
-		
+
 func get_selectable():
 	var collision = get_collision(mouse_position)
 	if collision and collision.collider:
@@ -79,33 +79,25 @@ func get_selectable():
 			selected.emit(collision.collider)
 	
 func get_selectables():
-	var top_left_collision = get_collision(selection_box.position)
-	var top_right_collision = get_collision(selection_box.position + Vector2(selection_box.size.x, 0.0))
-	var bottom_right_collision = get_collision(selection_box.position + selection_box.size)
-	var bottom_left_collision = get_collision(selection_box.position + Vector2(0.0, selection_box.size.y))
+	var selection_box_geometry: PackedVector2Array = [
+		selection_box.position,
+		selection_box.position + Vector2(selection_box.size.x, 0.0),
+		selection_box.position + selection_box.size,
+		selection_box.position + Vector2(0.0, selection_box.size.y)
+	]
 	
-	if !top_left_collision or !top_right_collision or !bottom_right_collision or !bottom_left_collision: return
-	
-	var top_left_position = Vector2(top_left_collision.position.x, top_left_collision.position.z)
-	var top_right_position = Vector2(top_right_collision.position.x, top_right_collision.position.z)
-	var bottom_right_position = Vector2(bottom_right_collision.position.x, bottom_right_collision.position.z)
-	var bottom_left_position = Vector2(bottom_left_collision.position.x, bottom_left_collision.position.z)
-	
-	var selection_box_size = abs(top_left_position - bottom_right_position)
-	
-	var selection_box_geometry: PackedVector2Array = [top_left_position, top_right_position, bottom_right_position, bottom_left_position]
 	for selectable in get_tree().get_nodes_in_group("rts_selectable"):
-		var selectable_position = Vector2(selectable.global_position.x, selectable.global_position.z)
-		if Geometry2D.is_point_in_polygon(selectable_position, selection_box_geometry):
+		var selected_screen_position = camera.unproject_position(selectable.global_position)
+		if Geometry2D.is_point_in_polygon(selected_screen_position, selection_box_geometry):
 			selected_nodes.append(selectable)
 			Nodot.get_first_child_of_type(selectable, RTSSelectable).select()
 	selected_multiple.emit(selected_nodes)
-	
+
 func get_collision(target_position: Vector2):
 	var projected_position = get_3d_position(target_position)
 	var space_state = get_world_3d().direct_space_state
 	var params = PhysicsRayQueryParameters3D.new()
-	params.from = camera.global_position
+	params.from = camera.project_ray_origin(get_viewport().get_mouse_position())
 	params.to = projected_position
 
 	var result = space_state.intersect_ray(params)
