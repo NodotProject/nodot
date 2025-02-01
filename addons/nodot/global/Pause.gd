@@ -1,5 +1,5 @@
 ## A node that manages the pause state of the tree
-class_name Pause extends Nodot
+class_name Pause extends Node
 
 @export var pause: bool = false: set = _set_pause
 @export var release_mouse_on_pause: bool = false

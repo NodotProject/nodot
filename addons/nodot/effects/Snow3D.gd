@@ -1,6 +1,6 @@
 @tool
 ## Creates customizable snow effect
-class_name Snow3D extends Nodot3D
+class_name Snow3D extends Node3D
 
 ## Texture used for snowflakes
 @export var texture: Texture2D = load("res://addons/nodot/textures/snowflake.png"): set = _set_texture

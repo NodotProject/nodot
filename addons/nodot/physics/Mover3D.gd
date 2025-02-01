@@ -1,5 +1,5 @@
 ## A Node to move other nodes from one place to another (any maybe even back again)
-class_name Mover3D extends Nodot3D
+class_name Mover3D extends Node3D
 
 ## Destination position/rotation has been reached
 signal destination_reached

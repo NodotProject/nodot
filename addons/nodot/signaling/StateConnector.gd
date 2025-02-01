@@ -1,7 +1,7 @@
 @tool
 @icon("../icons/stateconnector.svg")
 ## Connects state changes to methods
-class_name StateConnector extends Nodot
+class_name StateConnector extends Node
 
 var is_editor: bool = Engine.is_editor_hint()
 
@@ -41,7 +41,7 @@ func _ready():
 	final_state_machine.connect("state_updated", _state_updated)
 
 func _get_property_list() -> Array[Dictionary]:
-	var property_list: Array[Dictionary] = [{
+	var property_list: Array[Dictionary] = [ {
 		name = "Trigger",
 		type = TYPE_NIL,
 		usage = PROPERTY_USAGE_SUBGROUP
@@ -56,7 +56,7 @@ func _get_property_list() -> Array[Dictionary]:
 		methods.sort()
 		method_list = ",".join(methods)
 			
-		property_list.append_array([{
+		property_list.append_array([ {
 			name = "Target",
 			type = TYPE_NIL,
 			usage = PROPERTY_USAGE_SUBGROUP
@@ -79,4 +79,3 @@ func _state_updated(old_state: int, new_state: int) -> void:
 		if method_unbind_count > 0:
 			callback = Callable(target_node[target_method].unbind(method_unbind_count))
 		callback.call()
-			

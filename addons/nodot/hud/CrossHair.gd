@@ -1,9 +1,9 @@
 @tool
 @icon("../icons/crosshair.svg")
 ## Places a crosshair in the center of the screen
-class_name CrossHair extends Nodot2D
+class_name CrossHair extends Node2D
 
-@export var crosshair_sprite: Texture2D  ## The crosshair texture
+@export var crosshair_sprite: Texture2D ## The crosshair texture
 @export var crosshair_scale: Vector2 = Vector2(1, 1);
 
 var is_editor: bool = Engine.is_editor_hint()

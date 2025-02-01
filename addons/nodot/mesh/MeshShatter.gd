@@ -1,4 +1,4 @@
-class_name MeshShatter extends Nodot3D
+class_name MeshShatter extends Node3D
 
 @export var autoslice: bool = true
 @export var auto_add_to_tree: bool = false
@@ -134,9 +134,9 @@ func get_random_point_in_triangle(a, b, c):
 	return p
 	
 func get_random_euler_rotation():
-	var x_rot = randf_range(-PI, PI)  # Random rotation around X-axis
-	var y_rot = randf_range(-PI, PI)  # Random rotation around Y-axis
-	var z_rot = randf_range(-PI, PI)  # Random rotation around Z-axis
+	var x_rot = randf_range(-PI, PI) # Random rotation around X-axis
+	var y_rot = randf_range(-PI, PI) # Random rotation around Y-axis
+	var z_rot = randf_range(-PI, PI) # Random rotation around Z-axis
 
 	return Vector3(x_rot, y_rot, z_rot)
 
@@ -148,4 +148,3 @@ func reset():
 	pieces = []
 	if autoslice:
 		action()
-	

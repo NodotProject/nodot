@@ -1,5 +1,5 @@
 ## A node that handles mouse input for an IsometricCamera3D
-class_name RTSMouseInput extends Nodot3D
+class_name RTSMouseInput extends Node3D
 
 @export var enabled: bool = true
 ## The ColorRect to use as a selection box

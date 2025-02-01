@@ -9,14 +9,12 @@ class_name DamageArea3D extends Area3D
 ## Triggered when a body is damaged (or healed) by the area
 signal damage_given
 
-
 func _init():
 	var timer: Timer = Timer.new()
 	timer.autostart = true
 	timer.wait_time = damage_interval
 	timer.connect("timeout", action)
 	add_child(timer)
-
 
 ## Deals damage to all overlapping bodies
 func action():

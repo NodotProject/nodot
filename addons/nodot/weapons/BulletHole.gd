@@ -1,5 +1,5 @@
 ## Spawns a bullethole
-class_name BulletHole extends Nodot3D
+class_name BulletHole extends Node3D
 
 ## An array of StandardMaterial3Ds to use as the bullethole decal. The material index can be retrieved from the target nodes "physical_material" property. The first material is the fallback default.
 @export var textures: Array[StandardMaterial3D]
@@ -47,7 +47,7 @@ func action(hit_target: HitTarget) -> void:
 	decal_node.texture_normal = material.normal_texture
 	decal_node.size = Vector3(randf_range(hole_minimum_size, hole_maximum_size), 0.02, randf_range(hole_minimum_size, hole_maximum_size))
 
-	decal_node.global_transform = Transform3D(hit_target.raycast_basis, hit_target.collision_point) * Transform3D(Basis().rotated(Vector3(1,0,0), deg_to_rad(90)), Vector3())
+	decal_node.global_transform = Transform3D(hit_target.raycast_basis, hit_target.collision_point) * Transform3D(Basis().rotated(Vector3(1, 0, 0), deg_to_rad(90)), Vector3())
 	decal_node.global_basis = Basis(Quaternion(decal_node.global_basis.y, hit_target.collision_normal)) * decal_node.global_basis
 	
 	# Apply random rotation around the normal

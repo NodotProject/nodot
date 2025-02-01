@@ -1,5 +1,5 @@
 ## A timer that can be used to queue_free a node after a certain amount of time
-class_name FreeTimer extends Nodot
+class_name FreeTimer extends Node
 
 ## Whether the FreeTimer is enabled or not
 @export var enabled: bool = true
@@ -29,4 +29,3 @@ func action():
 	if target.has_method("pre_queue_free"):
 		target.pre_queue_free();
 	target.queue_free()
-	

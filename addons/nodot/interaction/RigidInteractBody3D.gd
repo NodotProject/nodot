@@ -1,5 +1,5 @@
 ## RigidBody3D that fires a signal on interaction
-class_name RigidInteractBody3D extends NodotRigidBody3D
+class_name RigidInteractBody3D extends NodeRigidBody3D
 
 ## Whether to enable the interaction logic
 @export var enabled: bool = true

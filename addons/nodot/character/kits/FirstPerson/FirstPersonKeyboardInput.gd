@@ -1,6 +1,6 @@
 @icon("../../icons/keyboard.svg")
 ## Adds keyboard support to the first person character
-class_name FirstPersonKeyboardInput extends Nodot
+class_name FirstPersonKeyboardInput extends Node
 
 ## Is input enabled
 @export var enabled := true

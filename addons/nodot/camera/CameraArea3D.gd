@@ -1,5 +1,5 @@
 @tool
-## When the current player enters this area, the camera is overridden
+## When the current player enters this area, the current camera is overridden
 class_name CameraArea3D extends NodotArea3D
 
 ## The camera to set to when triggered

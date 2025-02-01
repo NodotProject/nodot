@@ -1,7 +1,7 @@
 @tool
 @icon("../../icons/first_person_item.svg")
 ## An item used in first person games. i.e sword, gun, hands.
-class_name FirstPersonItem extends Nodot3D
+class_name FirstPersonItem extends Node3D
 
 ## If the weapon is allowed to be used or not
 @export var unlocked: bool = true

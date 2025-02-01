@@ -1,6 +1,6 @@
 @tool
 ## Allows you to update node size to the window size
-class_name WindowSizeConnector extends Nodot
+class_name WindowSizeConnector extends Node
 
 ## The nodes to apply the new size to
 @export var target_nodes: Array[Node] = []: set = _target_nodes_changed

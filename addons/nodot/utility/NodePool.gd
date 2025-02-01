@@ -1,4 +1,4 @@
-class_name NodePool extends Nodot
+class_name NodePool extends Node
 
 ## The maximum objects in the pool
 @export var pool_limit: int = 10

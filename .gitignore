@@ -23,4 +23,5 @@ build
 *.tmp
 .vscode/settings.json
 .vscode/settings.json
+addons/vest
 addons/gut

@@ -1,5 +1,5 @@
 ## Allows 
-class_name Burnable3D extends Nodot
+class_name Burnable3D extends Node
 
 ## Enable the burnable3d node
 @export var enabled: bool = true

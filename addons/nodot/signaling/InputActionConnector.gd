@@ -1,6 +1,6 @@
 @tool
 ## Executes a method and/or triggers a signal when an input action is pressed
-class_name InputActionConnector extends Nodot
+class_name InputActionConnector extends Node
 
 ## Whether the node functionality is enabled
 @export var enabled: bool = true

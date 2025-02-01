@@ -1,6 +1,6 @@
 @tool
 ## Creates customizable rain effect
-class_name Rain3D extends Nodot3D
+class_name Rain3D extends Node3D
 
 ## The texture for each raindrop
 @export var texture: Texture2D = load("res://addons/nodot/textures/raindrop.png"): set = _set_texture

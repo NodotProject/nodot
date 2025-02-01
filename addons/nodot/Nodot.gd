@@ -50,3 +50,7 @@ static func get_first_sibling_of_type(node: Node, type: Variant) -> Node:
 static func free_all_children(parent: Node) -> void:
 	for child in parent.get_children():
 		child.queue_free()
+
+## Toggle between visible and invisible
+static func toggle(parent: Node) -> void:
+	parent.visible = !parent.visible

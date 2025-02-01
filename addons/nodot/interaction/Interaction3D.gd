@@ -22,8 +22,12 @@ signal interaction_label_updated(message: String)
 @export var max_carry_distance: float = 2.0
 ## The force of throwing the carried body
 @export var throw_force: float = 250.0
+## Angular velocity multiplier when throwing
+@export var throw_angular_velocity: float = 1.0
 ## The Close Carry body position Node
 @export var carry_position_node: Node3D
+## Smoothing factor for object movement
+@export var movement_smoothing: float = 0.5
 ## Carry collision layer
 @export_flags_3d_physics var carry_collision_layer: int = 1
 ## Carry collision mask
@@ -48,7 +52,7 @@ func _ready():
 
 func _input(event: InputEvent):
 	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
-	if is_action_pressed: return 
+	if is_action_pressed: return
 	
 	var collider = get_collider()
 	if collider and collider.has_meta("NonPickable") and collider.get_meta("NonPickable"): return
@@ -69,20 +73,33 @@ func _input(event: InputEvent):
 
 
 func _physics_process(delta):
+	if !is_multiplayer_authority(): return
+	
 	is_action_pressed = Input.is_action_pressed("action")
 	
 	if is_instance_valid(carried_body):
 		was_carrying_body = true
-		var point = get_collision_point()
-		var carry_position = global_transform.origin - global_transform.basis.z.normalized() * (carry_distance + carried_body_width)
-		var current_carry_distance = carried_body.global_position.distance_to(global_position)
+		
+		# Cache transform values
+		var transform = global_transform
+		var origin = transform.origin
+		var basis_z = transform.basis.z.normalized()
+		
+		# Calculate carry position
+		var carry_position = origin - basis_z * (carry_distance + carried_body_width)
+		var current_carry_distance = carried_body.global_position.distance_to(origin)
+		
 		if current_carry_distance > carry_distance + max_carry_distance:
 			carry_end()
 			return
+			
 		if is_action_pressed:
 			throw()
-			return 
-		var speed = carried_body.global_position.distance_to(carry_position) * 700
+			return
+			
+		# Smooth movement calculation
+		var distance = carried_body.global_position.distance_to(carry_position)
+		var speed = distance * 700 * movement_smoothing
 		carried_body.linear_velocity = carried_body.global_transform.origin.direction_to(carry_position) * speed * delta
 		
 		var rotate_speed: float = 10.0 * delta

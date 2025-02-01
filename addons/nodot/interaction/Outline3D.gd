@@ -1,5 +1,5 @@
 ## Adds an outline to the parent mesh
-class_name Outline3D extends Nodot
+class_name Outline3D extends Node
 
 ## Outline color
 @export var outline_color: Color = Color.WHITE

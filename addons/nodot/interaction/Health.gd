@@ -1,5 +1,5 @@
 ## A node to manage health
-class_name Health extends Nodot
+class_name Health extends Node
 
 ## The maximum health
 @export var max_health: float = 100.0
@@ -16,7 +16,6 @@ signal health_lost(old_health: float, new_health: float)
 signal health_gained(old_health: float, new_health: float)
 ## current_health has changed
 signal health_changed(old_health: float, new_health: float)
-
 
 ## Offsets current_health by the modifier
 func add_health(modifier: float) -> void:

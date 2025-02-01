@@ -1,7 +1,7 @@
 @tool
 @icon("../icons/signal.svg")
 ## Connects signals to methods
-class_name SignalConnector extends Nodot
+class_name SignalConnector extends Node
 
 var is_editor: bool = Engine.is_editor_hint()
 
@@ -51,7 +51,7 @@ func _ready():
 	trigger_node.connect(trigger_signal, callback)
 
 func _get_property_list() -> Array[Dictionary]:
-	var property_list: Array[Dictionary] = [{
+	var property_list: Array[Dictionary] = [ {
 		name = "Trigger",
 		type = TYPE_NIL,
 		usage = PROPERTY_USAGE_SUBGROUP
@@ -83,7 +83,7 @@ func _get_property_list() -> Array[Dictionary]:
 		methods.sort()
 		method_list = ",".join(methods)
 			
-		property_list.append_array([{
+		property_list.append_array([ {
 			name = "Target",
 			type = TYPE_NIL,
 			usage = PROPERTY_USAGE_SUBGROUP

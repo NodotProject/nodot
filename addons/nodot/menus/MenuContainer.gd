@@ -1,6 +1,6 @@
 @icon("../icons/menu_container.svg")
 ## A container for menus
-class_name MenuContainer extends Nodot2D
+class_name MenuContainer extends Node2D
 
 ## Change visibility using a custom transition
 @export var custom_transition: bool = false ## Used to override the simple visibility transition with a custom one

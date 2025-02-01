@@ -1,6 +1,6 @@
 @tool
 @icon("../icons/statehandler.svg")
-class_name StateHandler extends Nodot
+class_name StateHandler extends Node
 
 ## Base class for states to be used with [StateMachine].
 ##

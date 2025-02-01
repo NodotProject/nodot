@@ -1,4 +1,4 @@
-class_name NodotDebug extends Nodot
+class_name NodotDebug extends Node
 
 @export var enabled: bool = true
 @export var target_node: Node

@@ -1,6 +1,6 @@
 @icon("../icons/storage.svg")
 ## Redis-like class to store key-value pairs
-class_name Storage extends Nodot
+class_name Storage extends Node
 
 ## Dictionary to store key-value pairs
 @export var data: Dictionary = {}
@@ -39,7 +39,7 @@ func is_empty():
 ## Add a signal for a specific key
 func add_signal(signal_name: String):
 	if not has_user_signal(signal_name):
-		add_user_signal(signal_name, [{ "name": "value", "type": TYPE_OBJECT }])
+		add_user_signal(signal_name, [ {"name": "value", "type": TYPE_OBJECT}])
 
 ## Emit a signal for a specific key
 func _emit_signal(signal_name: String, arg: Variant = null):

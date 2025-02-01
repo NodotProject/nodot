@@ -1,6 +1,6 @@
 ## Credit: Majikayo Games - https://www.youtube.com/watch?v=vWHHXq8NAYw
 ## A 3D bullet tracer effect that can be attached to a weapon.
-class_name BulletTracer3D extends Nodot3D
+class_name BulletTracer3D extends Node3D
 
 @export var enabled: bool = true
 ## The hitscan3d to trigger the effect

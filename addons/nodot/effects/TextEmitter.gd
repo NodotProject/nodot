@@ -1,5 +1,5 @@
 ## Used to briefly show text in a 3D space
-class_name TextEmitter extends Nodot3D
+class_name TextEmitter extends Node3D
 
 ## Enable or disable the emitter
 @export var enabled: bool = true

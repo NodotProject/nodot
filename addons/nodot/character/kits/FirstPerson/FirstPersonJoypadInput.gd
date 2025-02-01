@@ -1,6 +1,6 @@
 @icon("../../icons/mouse.svg")
 ## A preconfigured set of inputs for first person joypad control
-class_name FirstPersonJoypadInput extends Nodot
+class_name FirstPersonJoypadInput extends Node
 
 ## Is input enabled
 @export var enabled := true

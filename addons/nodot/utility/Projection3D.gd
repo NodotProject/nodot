@@ -1,6 +1,6 @@
 @tool
 ## Whatever 2D nodes are added to Projection3D are projected onto a plane
-class_name Projection3D extends Nodot3D
+class_name Projection3D extends Node3D
 
 ## Width of the projection
 @export var projection_size: Vector2 = Vector2(1.0, 0.66)

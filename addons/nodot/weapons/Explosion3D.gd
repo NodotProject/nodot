@@ -1,5 +1,5 @@
 ## A node that explodes causing damage
-class_name Explosion3D extends Nodot3D
+class_name Explosion3D extends Node3D
 
 ## How long to play the effect
 @export var effect_time: float = 1.0

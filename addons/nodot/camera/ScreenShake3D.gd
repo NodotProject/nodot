@@ -1,4 +1,4 @@
-class_name ScreenShake3D extends Nodot
+class_name ScreenShake3D extends Node
 
 ## (optional) select the camera to apply the affect to. Will use the parent if not present.
 @export var camera: Camera3D
@@ -39,7 +39,6 @@ func _get_camera():
 		final_cameras = [parent]
 		initial_positions = [parent.position]
 		
-
 
 func _physics_process(delta: float):
 	if current_time > 0.0:

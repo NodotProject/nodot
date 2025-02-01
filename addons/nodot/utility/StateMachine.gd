@@ -1,6 +1,6 @@
 @tool
 @icon("../icons/statemachine.svg")
-class_name StateMachine extends Nodot
+class_name StateMachine extends Node
 
 ## A state machine.
 ##

@@ -1,5 +1,5 @@
 ## A collectable StaticBody3D that can be placed in inventories.
-class_name StaticCollectable3D extends NodotStaticBody3D
+class_name StaticCollectable3D extends NodeStaticBody3D
 
 ## Enable the item for collection
 @export var enabled: bool = true

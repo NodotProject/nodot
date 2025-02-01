@@ -1,7 +1,7 @@
 @tool
 @icon("../icons/signal.svg")
 ## Proxies local signals to global signals
-class_name LocalToGlobalSignalProxy extends Nodot
+class_name LocalToGlobalSignalProxy extends Node
 
 var is_editor: bool = Engine.is_editor_hint()
 
@@ -41,7 +41,7 @@ func _callback(arg = null):
 	GlobalSignal.trigger_signal(global_signal, arg)
 
 func _get_property_list() -> Array[Dictionary]:
-	var property_list: Array[Dictionary] = [{
+	var property_list: Array[Dictionary] = [ {
 		name = "Trigger",
 		type = TYPE_NIL,
 		usage = PROPERTY_USAGE_SUBGROUP

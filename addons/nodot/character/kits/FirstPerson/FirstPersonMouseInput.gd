@@ -1,6 +1,6 @@
 @icon("../../icons/mouse.svg")
 ## Adds mouse support to the first person character
-class_name FirstPersonMouseInput extends Nodot
+class_name FirstPersonMouseInput extends Node
 
 ## Is input enabled
 @export var enabled := true

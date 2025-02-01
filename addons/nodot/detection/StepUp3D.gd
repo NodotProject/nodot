@@ -1,6 +1,6 @@
 @tool
 ## A raycast powered tool to detect when the player is trying to move up some steps and will elevate the player
-class_name StepUp3D extends Nodot3D
+class_name StepUp3D extends Node3D
 
 ## Maximum height limit of the steps before the character will no longer walk up them
 @export var max_step_height: float = 0.5
@@ -18,7 +18,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if !child_raycast:
 		(
 			warnings
-			. append(
+			.append(
 				"Should have a RayCast3D node as a child (on the soles of the feet of the character but above the floor)"
 			)
 		)

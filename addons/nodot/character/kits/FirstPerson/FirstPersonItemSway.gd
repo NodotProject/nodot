@@ -1,17 +1,17 @@
-class_name FirstPersonItemSway extends Nodot
+class_name FirstPersonItemSway extends Node
 
 @export var first_person_item: FirstPersonItem
 
 @export_category("Sway Settings")
-@export var sway_amount = Vector3(0.2, 0.2, 0.2)  # How much the weapon can sway
-@export var sway_speed = 5.0  # How quickly the weapon sways back to center
-@export var rotation_sensitivity = Vector2(0.2, 0.2)  # Sensitivity of the sway based on head rotation
+@export var sway_amount = Vector3(0.2, 0.2, 0.2) # How much the weapon can sway
+@export var sway_speed = 5.0 # How quickly the weapon sways back to center
+@export var rotation_sensitivity = Vector2(0.2, 0.2) # Sensitivity of the sway based on head rotation
 
 @export_category("Optional Overrides")
 @export var ironsight: FirstPersonIronSight
 
-var target_position = Vector3.ZERO  # Target position for the sway effect
-var target_rotation = Vector3.ZERO  # Target rotation for the sway effect
+var target_position = Vector3.ZERO # Target position for the sway effect
+var target_rotation = Vector3.ZERO # Target rotation for the sway effect
 var original_position: Vector3
 var head: Node3D
 var last_head_rotation: Vector3

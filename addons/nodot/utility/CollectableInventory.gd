@@ -1,5 +1,5 @@
 ## An inventory for collectables
-class_name CollectableInventory extends Nodot
+class_name CollectableInventory extends Node
 
 ## Enable the inventory
 @export var enabled: bool = true

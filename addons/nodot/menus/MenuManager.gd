@@ -1,6 +1,6 @@
 @icon("../icons/menu_manager.svg")
 ## Contains MenuContainer nodes and can be used to show, hide or transition between them as needed
-class_name MenuManager extends Nodot2D
+class_name MenuManager extends Node2D
 
 ## The active menu node name (empty string if none active)
 @export var active_menu: String = ""

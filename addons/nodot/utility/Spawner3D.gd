@@ -1,6 +1,6 @@
 @tool
 ## Spawns an object or objects at the specified location
-class_name Spawner3D extends Nodot3D
+class_name Spawner3D extends Node3D
 
 ## Whether to enable the spawner
 @export var enabled: bool = true

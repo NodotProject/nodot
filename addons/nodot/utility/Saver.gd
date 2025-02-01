@@ -1,6 +1,6 @@
 @icon("../icons/saver.svg")
 ## Connects with the SaveManager to save field data for the parent node
-class_name Saver extends Nodot
+class_name Saver extends Node
 
 ## Which fields to save
 @export var fields: Array[String] = []

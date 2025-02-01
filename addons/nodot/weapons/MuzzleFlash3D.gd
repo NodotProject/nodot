@@ -1,5 +1,5 @@
 ## A 3D muzzle flash effect that can be attached to a weapon.
-class_name MuzzleFlash3D extends Nodot3D
+class_name MuzzleFlash3D extends Node3D
 
 @export var enabled: bool = true
 ## The magazine to trigger the effect

@@ -1,7 +1,7 @@
 @tool
 @icon("../../icons/keyboard.svg")
 ## A preconfigured set of inputs for third person keyboard control
-class_name ThirdPersonKeyboardInput extends Nodot
+class_name ThirdPersonKeyboardInput extends Node
 
 ## Is input enabled
 @export var enabled := true

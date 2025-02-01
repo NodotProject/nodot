@@ -1,7 +1,7 @@
 @tool
 @icon("../../icons/mouse.svg")
 ## Takes joypad input for a third person character
-class_name ThirdPersonJoypadInput extends Nodot
+class_name ThirdPersonJoypadInput extends Node
 
 ## Is input enabled
 @export var enabled: bool = true

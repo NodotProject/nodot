@@ -7,7 +7,6 @@ func focussed() -> void:
 		if child.has_method("focussed"):
 			child.focussed()
 
-
 func unfocussed() -> void:
 	for child in get_children():
 		if child.has_method("unfocussed"):

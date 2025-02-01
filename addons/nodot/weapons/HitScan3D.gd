@@ -1,6 +1,6 @@
 @tool
 ## Detects a hit between the start point end target
-class_name HitScan3D extends Nodot3D
+class_name HitScan3D extends Node3D
 
 ## Whether to enable the hitscan or not
 @export var enabled: bool = false

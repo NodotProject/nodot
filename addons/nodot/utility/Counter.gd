@@ -1,5 +1,5 @@
 ## A node to manage and monitor a numeric value.
-class_name Counter extends Nodot
+class_name Counter extends Node
 
 ## Use the minimum and maximum values to forcefully limit the value
 @export var limit_values: bool = false

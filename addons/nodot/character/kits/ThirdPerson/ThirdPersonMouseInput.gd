@@ -1,7 +1,7 @@
 @tool
 @icon("../../icons/mouse.svg")
 ## Takes mouse input for a third person character
-class_name ThirdPersonMouseInput extends Nodot
+class_name ThirdPersonMouseInput extends Node
 
 ## Is input enabled
 @export var enabled := true

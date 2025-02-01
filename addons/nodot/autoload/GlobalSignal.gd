@@ -1,12 +1,12 @@
 ## A simple signal class for global signals
-extends Nodot
+extends Node
 
 var signals: Dictionary = {}
 
 ## Add a listener for a specific key
 func add_listener(signal_name: String, node: Node, method: StringName):
 	if not signals.has(signal_name):
-		signals[signal_name] = [{
+		signals[signal_name] = [ {
 			"node": node,
 			"method": method
 		}]
