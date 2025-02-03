@@ -51,16 +51,13 @@ func set_value(new_value: float) -> void:
 func add(amount: float) -> void:
 	set_value(value + amount)
 
-
 ## Remove an amount from the value.
 func remove(amount: float) -> void:
 	set_value(value - amount)
 
-
 ## Increase the value by the step value
 func step_up() -> void:
 	add(step)
-
 
 ## Decrease the value by the step value
 func step_down() -> void:
