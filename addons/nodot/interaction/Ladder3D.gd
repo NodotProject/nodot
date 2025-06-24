@@ -1,9 +1,9 @@
 ## A node that, when touched, the character is set to the "climb" state
-class_name Ladder3D extends Area3D
+class_name Ladder3D extends NodotArea3D
 
 func _enter_tree():
-	connect("current_player_body_entered", _on_current_player_body_entered)
-	connect("current_player_body_exited", _on_current_player_body_exited)
+	current_player_body_entered.connect(_on_current_player_body_entered)
+	current_player_body_exited.connect(_on_current_player_body_exited)
 	
 func _on_current_player_body_entered(body: NodotCharacter3D):
 	var climb_state_handler = Nodot.get_first_child_of_type(body, CharacterClimb3D)
