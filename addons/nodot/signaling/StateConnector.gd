@@ -7,7 +7,7 @@ var is_editor: bool = Engine.is_editor_hint()
 
 @export_subgroup("State Trigger")
 ## The StateMachine or NodotCharacter that will change to the trigger state
-@export var state_machine: Node
+@export var state_machine: StateMachine
 ## The state that will trigger the method
 @export var trigger_state: String
 
@@ -38,7 +38,8 @@ func _ready():
 	elif state_machine is StateMachine:
 		final_state_machine = state_machine
 		
-	final_state_machine.connect("state_updated", _state_updated)
+	final_state_machine.
+	final_state_machine.on_state_changed.connect(_state_updated)
 
 func _get_property_list() -> Array[Dictionary]:
 	var property_list: Array[Dictionary] = [ {
@@ -70,11 +71,8 @@ func _get_property_list() -> Array[Dictionary]:
 		
 	return property_list
 
-func _state_updated(old_state: int, new_state: int) -> void:
-	if final_trigger_state_id < 0:
-		final_trigger_state_id = final_state_machine.get_id_from_name(trigger_state)
-		
-	if new_state == final_trigger_state_id:
+func _state_updated(old_state: String, new_state: String) -> void:
+	if new_state == trigger_state_id:
 		var callback = target_node[target_method]
 		if method_unbind_count > 0:
 			callback = Callable(target_node[target_method].unbind(method_unbind_count))

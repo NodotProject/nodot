@@ -12,7 +12,6 @@ class_name Projection3D extends Node3D
 @export var always_on_top: bool = false
 ## No lighting or shading
 @export var disable_shading: bool = true
-## d
 
 ## Triggered when the Node is fully constructed
 signal construction_complete
@@ -40,8 +39,6 @@ func _ready():
 	viewport_container.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
 	viewport_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	viewport.size = resolution_size
-	# TODO: Figure out why the progressbar is slightly transparent.
-	# It may not be a material issue but a rendering one (cleared one frame but drawn the next)
 	viewport.transparent_bg = true
 	viewport.disable_3d = true
 	viewport.handle_input_locally = false
