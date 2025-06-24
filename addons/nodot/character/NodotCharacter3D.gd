@@ -15,6 +15,11 @@ signal current_camera_changed(old_camera: Camera3D, new_camera: Camera3D)
 
 var current_camera: Camera3D
 
+func _enter_tree():
+	if !sm:
+		sm = StateMachine.new()
+		add_child(sm)
+
 func _is_on_floor() -> Node:
 	var collision_info: KinematicCollision3D = move_and_collide(Vector3(0, -0.1, 0), true)
 	if !collision_info: return null

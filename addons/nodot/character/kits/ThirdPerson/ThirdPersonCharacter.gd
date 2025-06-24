@@ -44,6 +44,8 @@ var direction3d: Vector3 = Vector3.ZERO
 var third_person_camera_container: Node3D
 
 func _enter_tree() -> void:
+	super._enter_tree()
+	
 	# Set up camera container
 	for child in get_children():
 		if child is ThirdPersonCamera:
@@ -58,10 +60,6 @@ func _enter_tree() -> void:
 	if is_current_player:
 		PlayerManager.node = self
 		set_current_camera(camera)
-			
-	if !sm:
-		sm = StateMachine.new()
-		add_child(sm)
 		
 	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 
@@ -110,10 +108,21 @@ func move(delta: float) -> void:
 	
 	var basis: Basis
 	if camera:
-		basis = current_camera.global_transform.basis
+		var camera_basis = current_camera.global_transform.basis
+
+		# Flattened forward and right vectors (ignore Y component)
+		var flat_forward = camera_basis.z
+		flat_forward.y = 0
+
+		var flat_right = camera_basis.x
+		flat_right.y = 0
+
+		# Construct movement direction on XZ plane
+		direction3d = (flat_forward * direction2d.y + flat_right * direction2d.x)
+
 	else:
 		basis = transform.basis
-	direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
+		direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
 		
 	if !was_on_floor:
 		move_air(delta)
@@ -144,7 +153,7 @@ func move_air(delta: float) -> void:
 	
 	var final_speed: float = movement_speed * delta * 100
 	
-	if direction3d != Vector3.ZERO:
+	if direction3d == Vector3.ZERO:
 		velocity.x = lerp(velocity.x, direction3d.x * final_speed, 0.025)
 		velocity.z = lerp(velocity.z, direction3d.z * final_speed, 0.025)
 	

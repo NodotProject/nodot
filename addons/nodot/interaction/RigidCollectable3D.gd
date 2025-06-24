@@ -3,16 +3,10 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 
 ## Enable the item for collection
 @export var enabled: bool = true
-## The collectables icon.
-@export var icon: Texture2D
-## The collectables name.
-@export var display_name: String = "Item"
-## The collectables description.
-@export_multiline var description: String = "A collectable item."
+## The collectable received
+@export var collectable: Collectable
 ## The quantity of the collectable.
 @export var quantity: int = 1
-## Maximum stack count
-@export var stack_limit: int = 1
 ## The interactive label
 @export var label_text: String = "Take %s"
 ## Allow the item to be collected by colliding with it.
@@ -30,15 +24,26 @@ var actual_collectable_root_node: Node
 signal collected
 
 func _enter_tree():
+	contact_monitor = true
+	max_contacts_reported = 1
 	if collectable_root_node:
 		actual_collectable_root_node = get_node(collectable_root_node)
 		
-	CollectableManager.add(self)
+	CollectableManager.collectables.set(collectable.display_name, collectable)
+
+func _physics_process(delta: float) -> void:
+	if !collect_on_collision: return
+	for body in get_colliding_bodies():
+		if body is CharacterBody3D and body.is_current_player:
+			interact(body)
 
 func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
-	var inventory: CollectableInventory = Nodot.get_first_child_of_type(player_node, CollectableInventory)
-	if !inventory or !enabled or disable_player_collect or !inventory.add(display_name, quantity):
-		return
+	var valid_pickup: bool = false
+	
+	if player_node.has_method("collect"):
+		valid_pickup = player_node.collect(self)
+	
+	if !valid_pickup: return
 	
 	enabled = false
 	visible = false
@@ -54,4 +59,4 @@ func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 
 func label() -> String:
 	if !enabled: return ""
-	return label_text % display_name
+	return label_text % collectable.display_name

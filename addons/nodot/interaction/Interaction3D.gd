@@ -48,6 +48,7 @@ var is_action_pressed: bool = false
 func _ready():
 	if not is_multiplayer_authority(): return
 	
+	# TODO: Check it's not already registered
 	InputManager.register_action(interact_action, KEY_F)
 
 func _input(event: InputEvent):

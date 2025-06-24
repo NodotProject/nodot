@@ -18,6 +18,8 @@ class_name ThirdPersonKeyboardInput extends Node
 
 @onready var character: ThirdPersonCharacter = get_parent()
 
+var is_editor: bool = Engine.is_editor_hint()
+
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !(get_parent() is ThirdPersonCharacter):
@@ -27,7 +29,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _ready():
 	if enabled:
 		enable()
-		
+	
+	if is_editor: return
+	
 	InputManager.register_action(left_action, KEY_A)
 	InputManager.register_action(right_action, KEY_D)
 	InputManager.register_action(up_action, KEY_W)
@@ -35,10 +39,13 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	if !character: return
+	if is_editor: return
 	if not character.is_multiplayer_authority(): return
 	
 	if enabled and character.input_enabled:
 		character.direction2d = Input.get_vector(left_action, right_action, up_action, down_action)
+		if character.direction2d.length() > 0.0:
+			character.camera.time_since_last_move = 0.0
 
 func enable():
 	enabled = true

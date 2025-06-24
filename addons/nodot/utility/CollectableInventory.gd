@@ -14,7 +14,7 @@ class_name CollectableInventory extends Node
 @export var collectable_stacks: Array = []
 
 ## Triggered when a stack or slot is updated
-signal collectable_added(index: int, collectable_id: String, quantity: int)
+signal collectable_updated(index: int, collectable_id: String, quantity: int)
 ## Triggered when the inventory overflows (useful to spawn excess items back into the world)
 signal overflow(collectable_id: String, quantity: int)
 ## Triggered when the inventory is too heavy
@@ -25,6 +25,7 @@ signal capacity_reached
 func _enter_tree():
 	for i in capacity:
 		collectable_stacks.append(["", 0])
+	CollectableManager.inventories.set(name, self)
 
 ## Add a collectable to the inventory
 func add(collectable_id: String, quantity: int) -> bool:
@@ -53,7 +54,6 @@ func add(collectable_id: String, quantity: int) -> bool:
 	elif remaining_quantity == 0:
 		return true
 		
-	
 	if remaining_quantity > 0:
 		overflow.emit(remaining_quantity)
 	capacity_reached.emit()
@@ -109,11 +109,11 @@ func update_available_stack(collectable_id: String, quantity: int):
 			var available = stored_stack_quantity + quantity
 			if available > collectable.stack_limit:
 				collectable_stacks[i][1] = collectable.stack_limit
-				collectable_added.emit(i, collectable_id, collectable.stack_limit)
+				collectable_updated.emit(i, collectable_id, collectable.stack_limit)
 				return update_available_stack(collectable_id, available - collectable.stack_limit)
 			else:
 				collectable_stacks[i][1] = available
-				collectable_added.emit(i, collectable_id, available)
+				collectable_updated.emit(i, collectable_id, available)
 				return 0
 
 	return quantity
@@ -150,7 +150,7 @@ func update_available_slot(collectable_id: String, quantity: int) -> int:
 			update_available_slot(collectable_id, quantity - new_quantity)
 		overflow = quantity - new_quantity
 		collectable_stacks[available_slot] = [collectable_id, new_quantity]
-		collectable_added.emit(available_slot, collectable_id, new_quantity)
+		collectable_updated.emit(available_slot, collectable_id, new_quantity)
 		return overflow
 	
 	return 0
@@ -175,15 +175,15 @@ func get_collectable_count(collectable_id: String) -> int:
 func update_slot(slot_index: int, collectable_id: String, quantity: int, _overflow: int):
 	if quantity > 0:
 		collectable_stacks[slot_index] = [collectable_id, quantity]
-		collectable_added.emit(slot_index, collectable_id, quantity)
+		collectable_updated.emit(slot_index, collectable_id, quantity)
 	else:
 		collectable_stacks[slot_index] = ["", 0]
-		collectable_added.emit(slot_index, "", 0)
+		collectable_updated.emit(slot_index, collectable_id, 0)
 
 ## Drop a slot item back into the real world
 func drop_slot(slot_index: int, collectable_id: String, quantity: int):
 	collectable_stacks[slot_index] = ["", 0]
-	collectable_added.emit(slot_index, "", 0)
+	collectable_updated.emit(slot_index, "", 0)
 	var collectable_info = CollectableManager.get_info(collectable_id)
 	if !collectable_info: return
 	

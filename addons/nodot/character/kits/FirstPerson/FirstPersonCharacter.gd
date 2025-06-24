@@ -43,9 +43,7 @@ var input_states: Dictionary = {}
 var direction3d: Vector3 = Vector3.ZERO
 
 func _enter_tree() -> void:
-	if !sm:
-		sm = StateMachine.new()
-		add_child(sm)
+	super._enter_tree()
 	
 	if !has_node("Head"):
 		head = Node3D.new()

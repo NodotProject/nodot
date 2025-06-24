@@ -5,25 +5,24 @@ class_name FootStepSFX extends RayCast3D
 
 ## How many meters per step
 @export var frequency: float = 2.0
-## The SFXPlayer that will play the SFX
-@export var active_node: NodePath
 
 @onready var parent: CharacterBody3D = get_parent()
 
-var default_node: NodePath
+var active_node: Node
+var default_node: Node
 var distance_traveled: float = 0.0
 var last_position: Vector3 = Vector3.ZERO
 
 func _ready():
 	if Engine.is_editor_hint(): set_physics_process(false)
 	if !active_node:
-		active_node = NodePath(get_child(0).name)
+		active_node = get_child(0)
 	default_node = active_node
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
-	if !(get_parent() is FirstPersonCharacter):
-		warnings.append("Parent should be a FirstPersonCharacter")
+	if !(get_parent() is NodotCharacter3D):
+		warnings.append("Parent should be a NodotCharacter3D")
 
 	if !Nodot.get_first_child_of_type(self, SFXPlayer3D):
 		warnings.append("Should contain at least one SFXPlayer3D")
@@ -46,12 +45,12 @@ func _physics_process(delta: float) -> void:
 		var collider = get_collider()
 		if !collider: return
 		if collider.has_meta("floor_material"):
-			active_node = NodePath(collider.get_meta("floor_material"))
+			active_node = get_node(collider.get_meta("floor_material"))
 		else:
 			active_node = default_node
-		if has_node(active_node):
+		if active_node:
 			distance_traveled = 0.0
-			get_node(active_node).action()
+			active_node.action()
 
 func activate():
 	enabled = true

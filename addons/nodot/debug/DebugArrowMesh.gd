@@ -1,16 +1,54 @@
 @tool
 class_name DebugArrowMesh extends MeshInstance3D
 
-@export var size: float = 1
-@export var fat:  float = 1
-@export var color: Color = Color.WHITE_SMOKE
+@export var size: float = 1:
+	set(new_value):
+		size = new_value
+		draw_arrow()
+@export var fat:  float = 1:
+	set(new_value):
+		fat = new_value
+		draw_arrow()
+@export var color: Color = Color.WHITE_SMOKE:
+	set(new_value):
+		color = new_value
+		draw_arrow()
 
-var arrowmesh: MeshInstance3D
+var is_editor: bool = Engine.is_editor_hint()
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	arrowmesh = fancyArrow( size , color )
-	add_child( arrowmesh )
+func _init():
+	draw_arrow()
+	
+func draw_arrow():
+	if !is_editor: return
+	var immediate_mesh := ImmediateMesh.new()
+	var material := getArrowMaterial()
+
+	set_cast_shadows_setting(SHADOW_CASTING_SETTING_OFF)
+
+	immediate_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, material)
+
+	# Define triangles
+	addTriangle(immediate_mesh, vb(0,0,0), vb(0.05,-1.9,-0.025), vb(-0.05,-1.9,-0.025))
+	addTriangle(immediate_mesh, vb(0,0,0), vb(-0.05,-1.9,-0.025), vb(-0.05,-1.9,0.025))
+	addTriangle(immediate_mesh, vb(0,0,0), vb(-0.05,-1.9,0.025), vb(0.05,-1.9,0.025))
+	addTriangle(immediate_mesh, vb(0,0,0), vb(0.05,-1.9,0.025), vb(0.05,-1.9,-0.025))
+
+	addTriangle(immediate_mesh, vb(0.1,-1.9,0), vb(0.05,-1.9,-0.025), vb(0.05,-1.9,0.025))
+	addTriangle(immediate_mesh, vb(-0.1,-1.9,0), vb(-0.05,-1.9,0.025), vb(-0.05,-1.9,-0.025))
+
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(-0.1,-1.9,0), vb(-0.05,-1.9,-0.025))
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(-0.05,-1.9,-0.025), vb(0.05,-1.9,-0.025))
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(0.05,-1.9,-0.025), vb(0.1,-1.9,0))
+
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(-0.05,-1.9,0.025), vb(-0.1,-1.9,0))
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(0.05,-1.9,0.025), vb(-0.05,-1.9,0.025))
+	addTriangle(immediate_mesh, vb(0,-2,0), vb(0.1,-1.9,0), vb(0.05,-1.9,0.025))
+
+	immediate_mesh.surface_end()
+
+	scale = Vector3(fat, fat, size / 2)
+	mesh = immediate_mesh
 
 # Create a material based on the color ( you can put transparency )
 func getArrowMaterial() -> Material:
@@ -34,35 +72,7 @@ func addStrip( m: ImmediateMesh, v1: Vector3, v2: Vector3, v3: Vector3 , mat: Ma
 	m.surface_add_vertex(v3)
 	m.surface_end()
 
-# draw the fancy arrow
-func fancyArrow( size: float, color = Color.RED) -> MeshInstance3D:
-	var mesh_instance := MeshInstance3D.new()
-	var immediate_mesh := ImmediateMesh.new()
-	var material := getArrowMaterial()
-	
-	mesh_instance.mesh = immediate_mesh
-	mesh_instance.set_cast_shadows_setting( mesh_instance.SHADOW_CASTING_SETTING_OFF )
-	
-	addStrip(immediate_mesh,vb(0,0,0),vb(0.05,-1.9,-0.025),vb(-0.05,-1.9,-0.025),material)
-	addStrip(immediate_mesh,vb(0,0,0),vb(-0.05,-1.9,-0.025),vb(-0.05,-1.9,0.025),material)
-	addStrip(immediate_mesh,vb(0,0,0),vb(-0.05,-1.9,0.025),vb(0.05,-1.9,0.025),material)
-	addStrip(immediate_mesh,vb(0,0,0),vb(0.05,-1.9,0.025),vb(0.05,-1.9,-0.025),material)
-	
-	addStrip(immediate_mesh,vb(0.1,-1.9,0),vb(0.05,-1.9,-0.025),vb(0.05,-1.9,0.025),material)
-	addStrip(immediate_mesh,vb(-0.1,-1.9,0),vb(-0.05,-1.9,0.025),vb(-0.05,-1.9,-0.025),material)
-
-	addStrip(immediate_mesh,vb(0,-2,0),vb(-0.1,-1.9,0),vb(-0.05,-1.9,-0.025),material)
-	addStrip(immediate_mesh,vb(0,-2,0),vb(-0.05,-1.9,-0.025),vb(0.05,-1.9,-0.025),material)
-	addStrip(immediate_mesh,vb(0,-2,0),vb(0.05,-1.9,-0.025),vb(0.1,-1.9,0),material)
-
-	addStrip(immediate_mesh,vb(0,-2,0),vb(-0.05,-1.9,0.025),vb(-0.1,-1.9,0),material)
-	addStrip(immediate_mesh,vb(0,-2,0),vb(0.05,-1.9,0.025),vb(-0.05,-1.9,0.025),material)
-	addStrip(immediate_mesh,vb(0,-2,0),vb(0.1,-1.9,0),vb(0.05,-1.9,0.025),material)
-	
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = color
-	
-	mesh_instance.transform.origin = Vector3(0,0,0) 
-	set_scale( Vector3(fat,fat,size/2) )
-	
-	return mesh_instance
+func addTriangle(mesh: ImmediateMesh, v1: Vector3, v2: Vector3, v3: Vector3):
+	mesh.surface_add_vertex(v1)
+	mesh.surface_add_vertex(v2)
+	mesh.surface_add_vertex(v3)

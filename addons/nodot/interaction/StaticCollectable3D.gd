@@ -1,20 +1,12 @@
 ## A collectable StaticBody3D that can be placed in inventories.
-class_name StaticCollectable3D extends NodeStaticBody3D
+class_name StaticCollectable3D extends NodotStaticBody3D
 
 ## Enable the item for collection
 @export var enabled: bool = true
-## The collectables icon.
-@export var icon: Texture2D
-## The collectables name.
-@export var display_name: String = "Item"
-## The collectables description.
-@export_multiline var description: String = "A collectable item."
+## The collectable received
+@export var collectable: Collectable
 ## The quantity of the collectable.
 @export var quantity: int = 1
-## The weight of the collectable (kg each).
-@export var mass: float = 0.1
-## Maximum stack count
-@export var stack_limit: int = 1
 ## The interactive label
 @export var label_text: String = "Take %s"
 ## Allow the item to be collected by colliding with it.
@@ -24,7 +16,7 @@ class_name StaticCollectable3D extends NodeStaticBody3D
 signal collected
 
 func _init():
-	CollectableManager.add(self)
+	CollectableManager.collectables.set(collectable.display_name, collectable)
 	
 #func _physics_process(delta: float) -> void:
 #	if collect_on_collision:
@@ -39,4 +31,4 @@ func interact(player_node: CharacterBody3D) -> void:
 		queue_free()
 
 func label() -> String:
-	return label_text % display_name
+	return label_text % collectable.display_name

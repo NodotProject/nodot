@@ -34,7 +34,7 @@ func change_to(menu_name: String) -> void:
 	var menu_node: MenuContainer = get_node(menu_name)
 	if !is_instance_valid(menu_node):
 		return
-		
+
 	menu_node._show()
 	active_menu = menu_name
 	active_menu_index = menu_node.get_index()
