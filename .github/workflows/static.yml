@@ -54,7 +54,7 @@ jobs:
           cp logo.png docs/logo.png
           cp README.md docs/README.md
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: "./docs"
