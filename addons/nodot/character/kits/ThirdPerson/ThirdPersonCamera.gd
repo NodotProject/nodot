@@ -39,8 +39,7 @@ func _ready():
 	container = get_parent()
 
 func _process(delta: float) -> void:
-	if !current:
-		return
+	if !current: return
 		
 	if target_node:
 		global_position = lerp(global_position, target_node.global_position, chase_speed * delta)

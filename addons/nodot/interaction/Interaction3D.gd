@@ -44,6 +44,7 @@ var carried_body_prev_mask: int = 1
 var carried_body_prev_layer: int = 1
 var carried_body_physics_material: PhysicsMaterial
 var is_action_pressed: bool = false
+var current_label_text: String = ""
 	
 func _ready():
 	if not is_multiplayer_authority(): return
@@ -131,20 +132,24 @@ func _physics_process(delta):
 
 		if is_instance_valid(collider):
 			if collider.has_method("label"):
-				interaction_label_updated.emit(collider.label())
+				set_current_label_text(collider.label())
 			else:
-				interaction_label_updated.emit("")
+				set_current_label_text("")
 
 			if collider.has_method("focussed") and not collider.has_meta("NonPickable"):
 				collider.focussed()
-				if collider is RigidBody3D and collider.mass <= max_mass:
-					interaction_label_updated.emit("Carry")
+				if enable_pickup and collider is RigidBody3D and collider.mass <= max_mass:
+					set_current_label_text("Carry")
 		else:
-			interaction_label_updated.emit("")
-
+			set_current_label_text("")
+		
+func set_current_label_text(new_text: String):
+	if current_label_text != new_text:
+		current_label_text = new_text
+		interaction_label_updated.emit(new_text)
 
 func carry_begin(collider: Node):
-	interaction_label_updated.emit("")
+	set_current_label_text("")
 	if enable_pickup and is_instance_valid(collider) and collider is RigidBody3D and collider.mass <= max_mass:
 		carried_body = collider
 		
@@ -189,6 +194,6 @@ func throw():
 		carry_end()
 
 func collide_ended(body: Node3D):
-	interaction_label_updated.emit("")
+	set_current_label_text("")
 	if body.has_method("unfocussed"):
 		body.unfocussed()

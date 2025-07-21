@@ -17,13 +17,16 @@ func add_listener(signal_name: String, node: Node, method: StringName):
 		})
 
 ## Remove a listener for a specific key
-func remove_listener(signal_name: String, callable: Callable):
+func remove_listener(signal_name: String, node: Node, method: StringName):
 	if not signals.has(signal_name):
 		return
 
 	for i in range(signals[signal_name].size()):
-		if signals[signal_name][i].callable == callable:
-			signals[signal_name].remove(i)
+		if signals[signal_name][i] == {
+			"node": node,
+			"method": method
+		}:
+			signals[signal_name].remove_at(i)
 			return
 
 ## Trigger a signal for a specific key

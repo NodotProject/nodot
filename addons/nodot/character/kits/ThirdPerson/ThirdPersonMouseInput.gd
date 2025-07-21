@@ -58,18 +58,21 @@ func _input(event: InputEvent) -> void:
 		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
 		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
 		character.camera.time_since_last_move = 0.0
-		
-	if event.is_action_pressed(camera_zoom_in_action):
-		character.camera.distance -= 1.0
-	elif event.is_action_pressed(camera_zoom_out_action):
-		character.camera.distance += 1.0
+	
+	if Input.is_action_pressed("zoom_camera_mode"):
+		if event.is_action_pressed(camera_zoom_in_action):
+			character.camera.distance -= 1.0
+		elif event.is_action_pressed(camera_zoom_out_action):
+			character.camera.distance += 1.0
 
 func _physics_process(delta: float) -> void:
 	if is_editor or character and character.is_multiplayer_authority() == false: return
 	if !enabled or is_editor or !character.input_enabled or !camera_container: return
-	if (!lock_camera_rotation or Input.is_action_pressed(camera_rotate_action)):
-		var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
-		# character.look_angle = Vector2(look_angle.y, look_angle.x)
+	
+	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
+	character.look_angle = Vector2(look_angle.y, look_angle.x)
+	
+	if !lock_camera_rotation:
 		# Handle look left and right
 		if lock_character_rotation:
 			# Lerp character's Y rotation towards the target using character.turn_rate
@@ -86,7 +89,7 @@ func _physics_process(delta: float) -> void:
 		camera_container.rotation.x = clamp(camera_container.rotation.x, vertical_clamp.x, vertical_clamp.y)
 		camera_container.rotation.z = 0
 			
-		mouse_rotation = Vector2.ZERO
+	mouse_rotation = Vector2.ZERO
 
 ## Disable input and release mouse
 func disable() -> void:
@@ -98,5 +101,4 @@ func disable() -> void:
 func enable() -> void:
 	enabled = true
 	if is_editor: return
-	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

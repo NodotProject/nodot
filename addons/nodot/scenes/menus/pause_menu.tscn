@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://clvaldaec2uum"]
 
-[ext_resource type="Script" uid="uid://bcbxhmjoythj1" path="res://addons/nodot/menus/MenuContainer.gd" id="1_jfhkd"]
-[ext_resource type="Script" uid="uid://d0xxbusf24atk" path="res://addons/nodot/global/Pause.gd" id="2_m0bhf"]
-[ext_resource type="Script" uid="uid://qva3d4dek0pp" path="res://addons/nodot/signaling/InputActionConnector.gd" id="3_ubt1a"]
-[ext_resource type="Script" uid="uid://dx8ygrcaflqan" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="4_8t53l"]
+[ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_jfhkd"]
+[ext_resource type="Script" path="res://addons/nodot/global/Pause.gd" id="2_m0bhf"]
+[ext_resource type="Script" path="res://addons/nodot/signaling/InputActionConnector.gd" id="3_ubt1a"]
+[ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="4_8t53l"]
 
 [sub_resource type="GDScript" id="GDScript_1o2ip"]
 resource_name = "pause_menu_control"

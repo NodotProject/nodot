@@ -61,7 +61,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _init():
-	if enabled:
+	if enabled and !is_editor:
 		var action_names = [
 			left_action, right_action, up_action, down_action, jump_action, zoom_camera_mode_action, "escape"
 		]

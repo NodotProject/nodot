@@ -113,13 +113,17 @@ func move(delta: float) -> void:
 		# Flattened forward and right vectors (ignore Y component)
 		var flat_forward = camera_basis.z
 		flat_forward.y = 0
+		flat_forward = flat_forward.normalized()
 
 		var flat_right = camera_basis.x
 		flat_right.y = 0
+		flat_right = flat_right.normalized()
 
 		# Construct movement direction on XZ plane
 		direction3d = (flat_forward * direction2d.y + flat_right * direction2d.x)
 
+		if direction3d != Vector3.ZERO:
+			direction3d = direction3d.normalized()
 	else:
 		basis = transform.basis
 		direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
@@ -218,17 +222,27 @@ func stair_step(delta: float):
 
 ## Disable player input
 func disable_input() -> void:
+	direction2d = Vector2.ZERO
 	for child in get_children():
 		if child is ThirdPersonKeyboardInput:
 			child.disable()
 		if child is ThirdPersonMouseInput:
 			child.disable()
 
-
 ## Enable player input
 func enable_input() -> void:
 	for child in get_children():
 		if child is ThirdPersonKeyboardInput:
 			child.enable()
+		if child is ThirdPersonMouseInput:
+			child.enable()
+
+func disable_mouse_input():
+	for child in get_children():
+		if child is ThirdPersonMouseInput:
+			child.disable()
+			
+func enable_mouse_input() -> void:
+	for child in get_children():
 		if child is ThirdPersonMouseInput:
 			child.enable()

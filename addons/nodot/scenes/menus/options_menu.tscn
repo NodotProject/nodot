@@ -12,7 +12,7 @@ script/source = "extends Node
 @onready var menu_manager: MenuManager = get_parent().get_parent()
 
 func _input(event: InputEvent):
-	if menu_container.visible and event.is_action_pressed(\"escape\"):
+	if menu_container.visible and %InputEntryPanel.visible == false and event.is_action_pressed(\"escape\"):
 		menu_manager.go_back()
 "
 
@@ -288,36 +288,40 @@ func _input(event: InputEvent):
 		
 		InputManager.remove_action(target_action_name, target_key_name)
 		if event is InputEventKey:
-			InputManager.add_action(target_action_name, event.keycode, 0)
+			InputManager.register_action(target_action_name, event.keycode, 0)
 		if event is InputEventMouseButton:
-			InputManager.add_action(target_action_name, event.button_index, 1)
+			InputManager.register_action(target_action_name, event.button_index, 1)
 		if event is InputEventJoypadButton:
-			InputManager.add_action(target_action_name, event.button_index, 2)
+			InputManager.register_action(target_action_name, event.button_index, 2)
 			
 		target_button.text = _clean_key_name_text(InputManager.get_action_key(target_action_name))
 		
 		target_action_name = \"\"
 		target_key_name = \"\"
+		# Wait for all other input methods to propegate before hiding this panel
+		await get_tree().process_frame
+		PauseManager.enabled = true
 		%InputEntryPanel.visible = false
 		
 func _input_button_clicked(action_name: String, button: Button):
 	target_action_name = action_name
 	target_key_name = button.text
 	target_button = button
+	PauseManager.enabled = false
 	%InputEntryPanel.visible = true
 
 func _clean_key_name_text(key_name: String):
 	return key_name.get_slice(\"(\", 0)
 "
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f47jc"]
-bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.431373)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0kid"]
+bg_color = Color(0.0901961, 0.0901961, 0.0901961, 0.431373)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6rt3"]
 bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.431373)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0kid"]
-bg_color = Color(0.0901961, 0.0901961, 0.0901961, 0.431373)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f47jc"]
+bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.431373)
 
 [sub_resource type="GDScript" id="GDScript_yprk4"]
 resource_name = "closebtn"
@@ -338,6 +342,7 @@ func hover():
 	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
 
 func action():
+	if %InputEntryPanel.visible: return
 	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	AudioManager.save_config()
 	VideoManager.save_config()
@@ -381,16 +386,16 @@ func _on_game_pressed():
 	menus[3].show();
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6qco"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 0.431373)
+skew = Vector2(-0.2, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bw13l"]
 bg_color = Color(0.0470588, 0.0470588, 0.0470588, 0.431373)
 skew = Vector2(-0.2, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sp650"]
 bg_color = Color(0.0784314, 0.0784314, 0.0784314, 0.431373)
-skew = Vector2(-0.2, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6qco"]
-bg_color = Color(0.145098, 0.145098, 0.145098, 0.431373)
 skew = Vector2(-0.2, 0)
 
 [node name="OptionsMenuContainer" type="Node2D" node_paths=PackedStringArray("selectable_items")]
@@ -492,6 +497,7 @@ size_flags_horizontal = 0
 text = "Exclusive Fullscreen"
 item_count = 3
 popup/item_0/text = "Windowed"
+popup/item_0/id = 0
 popup/item_1/text = "Fullscreen"
 popup/item_1/id = 3
 popup/item_2/text = "Exclusive Fullscreen"
@@ -516,6 +522,7 @@ text = "FPS Limit"
 layout_mode = 2
 item_count = 7
 popup/item_0/text = "No Limit"
+popup/item_0/id = 0
 popup/item_1/text = "25"
 popup/item_1/id = 1
 popup/item_2/text = "30"
@@ -548,6 +555,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 item_count = 4
 popup/item_0/text = "Disabled"
+popup/item_0/id = 0
 popup/item_1/text = "2x"
 popup/item_1/id = 1
 popup/item_2/text = "4x"
@@ -698,9 +706,9 @@ grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 28
-theme_override_styles/hover = SubResource("StyleBoxFlat_f47jc")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_f6rt3")
 theme_override_styles/normal = SubResource("StyleBoxFlat_w0kid")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_f6rt3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_f47jc")
 text = "Back"
 script = SubResource("GDScript_yprk4")
 
@@ -721,10 +729,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Video"
 
 [node name="Audio" type="Button" parent="Control/TabsContainer"]
@@ -733,10 +741,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Audio
 "
 
@@ -746,10 +754,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Controls"
 
 [node name="Game" type="Button" parent="Control/TabsContainer"]
@@ -758,10 +766,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Game"
 
 [node name="InputEntryPanel" type="Panel" parent="Control"]

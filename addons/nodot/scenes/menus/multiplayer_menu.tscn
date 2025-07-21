@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bigmdsd7jk3kv"]
 
-[ext_resource type="Script" uid="uid://bcbxhmjoythj1" path="res://addons/nodot/menus/MenuContainer.gd" id="1_gyir0"]
-[ext_resource type="Script" uid="uid://dx8ygrcaflqan" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_sljgc"]
+[ext_resource type="Script" path="res://addons/nodot/menus/MenuContainer.gd" id="1_gyir0"]
+[ext_resource type="Script" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_sljgc"]
 
 [sub_resource type="GDScript" id="GDScript_oevdl"]
 resource_name = "joinbtn"

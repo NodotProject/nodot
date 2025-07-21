@@ -3,8 +3,6 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 
 ## Enable the item for collection
 @export var enabled: bool = true
-## The collectable received
-@export var collectable: Collectable
 ## The quantity of the collectable.
 @export var quantity: int = 1
 ## The interactive label
@@ -17,7 +15,10 @@ class_name RigidCollectable3D extends NodotRigidBody3D
 @export var collectable_root_node: NodePath
 ## Time before the object is freed
 @export var free_delay: float = 0.0
+## The collectable path associated with this node
+@export_file("*.tres") var collectable_path: String
 
+var collectable: Collectable
 var actual_collectable_root_node: Node
 
 ## Triggered on collection
@@ -28,8 +29,9 @@ func _enter_tree():
 	max_contacts_reported = 1
 	if collectable_root_node:
 		actual_collectable_root_node = get_node(collectable_root_node)
-		
-	CollectableManager.collectables.set(collectable.display_name, collectable)
+	
+	collectable = load(collectable_path)
+	CollectableManager.add(collectable)
 
 func _physics_process(delta: float) -> void:
 	if !collect_on_collision: return
@@ -59,4 +61,5 @@ func interact(player_node: CharacterBody3D = PlayerManager.node) -> void:
 
 func label() -> String:
 	if !enabled: return ""
+	
 	return label_text % collectable.display_name

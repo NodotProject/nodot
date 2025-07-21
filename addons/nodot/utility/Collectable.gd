@@ -14,6 +14,10 @@ class_name Collectable extends Resource
 @export var mass: float = 0.1
 ## The in-game value of the item (-1 for not tradable)
 @export var value: int
+## Use item_groups to categorize your items
+@export var item_groups: Array[String] = []
+## The scene for this collactable
+@export var scene: PackedScene
 
 @export_group("Buffs")
 @export var armor: float = 0.0
