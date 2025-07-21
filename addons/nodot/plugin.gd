@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-@export var version = 0.2
+@export var version = 0.3
 
 func _init():
 	var is_editor: bool = Engine.is_editor_hint()
