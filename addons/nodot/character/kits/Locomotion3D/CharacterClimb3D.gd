@@ -53,7 +53,7 @@ func physics_process(delta: float):
 
 	var is_on_floor = character._is_on_floor()
 	if is_on_floor and was_on_floor == false:
-		state_machine.set_state(idle_state_handler.name)
+		state_machine.transition(idle_state_handler.name)
 	
 	was_on_floor = is_on_floor != null
 		

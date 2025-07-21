@@ -144,4 +144,3 @@ func set_colors():
 	smoke_gradient.colors = [Color(Color.BLACK, smoke_color_alpha), smoke_next_hue, smoke_color, smoke_next_hue, Color(Color.BLACK, smoke_color_alpha)]
 	smoke_gradient_texture.gradient = smoke_gradient
 	smoke_particle.process_material.color_ramp = smoke_gradient_texture
-

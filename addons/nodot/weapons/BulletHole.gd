@@ -46,7 +46,9 @@ func action(hit_target: HitTarget) -> void:
 	decal_node.texture_emission = material.emission_texture
 	decal_node.texture_normal = material.normal_texture
 	decal_node.size = Vector3(randf_range(hole_minimum_size, hole_maximum_size), 0.02, randf_range(hole_minimum_size, hole_maximum_size))
-
+	_position_decal.call_deferred(decal_node, hit_target)
+	
+func _position_decal(decal_node: Decal, hit_target: HitTarget):
 	decal_node.global_transform = Transform3D(hit_target.raycast_basis, hit_target.collision_point) * Transform3D(Basis().rotated(Vector3(1, 0, 0), deg_to_rad(90)), Vector3())
 	decal_node.global_basis = Basis(Quaternion(decal_node.global_basis.y, hit_target.collision_normal)) * decal_node.global_basis
 	

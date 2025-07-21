@@ -315,9 +315,8 @@ func drop_slot(slot_index: int, collectable_id: String, quantity: int):
 		var item_instance = item_scene.instantiate()
 		item_instance.top_level = true
 		if spawn_location_node:
-			GameManager.world_root.add_child(item_instance)
+			spawn_location_node.add_child(item_instance)
 			item_instance.global_position = spawn_location_node.global_position
-			item_instance.add_to_group("despawnable_item")
 		else:
 			push_error("No spawn location node set")
 

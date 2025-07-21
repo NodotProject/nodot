@@ -32,7 +32,7 @@ func _enter_tree() -> void:
 	
 	if unbind_count > 0:
 		trigger_node.connect(trigger_signal, action.unbind(unbind_count))
-	elif !trigger_node.is_connected(trigger_signal, action):
+	elif trigger_node and !trigger_node.is_connected(trigger_signal, action):
 		trigger_node.connect(trigger_signal, action)
 		
 func _ready():

@@ -174,6 +174,8 @@ func load_config():
 			var keycode_dicts = input_actions_exported[action_name]
 			var keycodes = []
 			for keycode_dict in keycode_dicts:
+				if keycode_dict is Array:
+					return reset_to_defaults()
 				keycodes.append(InputKeyCode.create(keycode_dict))
 			input_actions[action_name] = keycodes
 		set_all_input_actions(input_actions)
