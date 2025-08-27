@@ -422,7 +422,7 @@ func _spawn_items_into_world(collectable_id: String, quantity: int) -> void:
 	for i in quantity:
 		var item_instance = item_scene.instantiate()
 		item_instance.top_level = true
-		GameManager.world_root.add_child(item_instance)
+		add_child(item_instance)
 		item_instance.global_position = spawn_location_node.global_position
 		item_instance.add_to_group("despawnable_item")
 
