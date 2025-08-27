@@ -3,7 +3,7 @@ class_name Collectable extends Resource
 ## The icon of the collectable.
 @export var icon: Texture2D
 ## The sound effect when picking up the item
-@export var sfx: AudioStream
+@export var pickup_sfx: AudioStream
 ## The collectables name.
 @export var display_name: String = "Item"
 ## The collectables description.
@@ -18,6 +18,3 @@ class_name Collectable extends Resource
 @export var item_groups: Array[String] = []
 ## The scene for this collactable
 @export var scene: PackedScene
-
-@export_group("Buffs")
-@export var armor: float = 0.0

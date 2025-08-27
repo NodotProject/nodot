@@ -44,3 +44,8 @@ func get_next_item() -> Variant:
 ## Gets the number of items in the set
 func get_size() -> int:
 	return items.size()
+
+## Clears all data from the uniqueset
+func clear() -> void:
+	items = []
+	current_index = 0

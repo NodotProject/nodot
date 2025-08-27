@@ -1,6 +1,7 @@
 ## An area that, when entered, deals damage (or heals) the colliding body
 class_name DamageArea3D extends Area3D
 
+@export var enabled: bool = true
 ## Damage to deal (negative numbers for healing)
 @export var damage: float = 1.0
 ## The interval to deal the damage
@@ -18,7 +19,9 @@ func _init():
 
 ## Deals damage to all overlapping bodies
 func action():
-	var colliders = has_overlapping_bodies()
+	if !enabled: return
+	
+	var colliders = get_overlapping_bodies()
 	if colliders.size() <= 0:
 		return
 	

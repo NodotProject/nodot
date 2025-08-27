@@ -31,6 +31,9 @@ func _enter_tree():
 		actual_collectable_root_node = get_node(collectable_root_node)
 	
 	collectable = load(collectable_path)
+	if !collectable:
+		push_error("Unable to load collectable: %s" % collectable_path)
+		return
 	CollectableManager.add(collectable)
 
 func _physics_process(delta: float) -> void:

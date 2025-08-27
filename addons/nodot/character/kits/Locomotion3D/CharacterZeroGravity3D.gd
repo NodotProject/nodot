@@ -34,7 +34,7 @@ class_name CharacterZeroGravity3D extends CharacterExtensionBase3D
 var direction: Vector3 = Vector3.ZERO
 var default_speed: float
 
-func _get_configuration_warnings() -> PackedStringArray:
+func _get_configuration_warnings():
 	var warnings: PackedStringArray = []
 	if !(get_parent() is NodotCharacter3D):
 		warnings.append("Parent should be a NodotCharacter3D")

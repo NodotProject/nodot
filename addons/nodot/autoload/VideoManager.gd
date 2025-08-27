@@ -9,9 +9,18 @@ var screen: int = DisplayServer.window_get_current_screen(0): set = _set_screen
 var fps_limit: int = Engine.max_fps: set = _set_fps_limit
 var vsync: bool = DisplayServer.window_get_vsync_mode(0): set = _set_vsync
 var msaa: Viewport.MSAA = 2: set = _set_msaa
-var brightness: float = 1.0: set = _set_brightness
-var contrast: float = 1.0: set = _set_contrast
+var brightness: float = 2.0: set = _set_brightness
+var contrast: float = 2.0: set = _set_contrast
 var low_spec: bool = false: set = _set_low_spec
+
+var original_display_mode: DisplayServer.WindowMode
+var original_screen: int
+var original_fps_limit: int
+var original_vsync: bool
+var original_msaa: Viewport.MSAA
+var original_brightness: float
+var original_contrast: float
+var original_low_spec: bool
 
 ## Triggered when the window is resized
 signal window_resized
@@ -19,11 +28,37 @@ signal window_resized
 signal low_spec_toggled
 
 func _ready() -> void:
+	get_tree().node_added.connect(_on_node_added)
+	get_tree().node_removed.connect(_on_node_removed)
 	get_tree().root.connect("size_changed", _on_window_resized)
+
+
+	original_display_mode = display_mode
+	original_screen = screen
+	original_fps_limit = fps_limit
+	original_vsync = vsync
+	original_msaa = msaa
+	original_brightness = brightness
+	original_contrast = contrast
+	original_low_spec = low_spec
+
 	set_minimum_window_size()
 	_on_window_resized()
 	load_config()
 
+func _on_node_added(node: Node) -> void:
+	if node is WorldEnvironment:
+		node.environment.adjustment_enabled = true
+		world_environments.append(node)
+	if node is SubViewport:
+		subviewports.append(node)
+
+func _on_node_removed(node: Node) -> void:
+	if node is WorldEnvironment:
+		world_environments.erase(node)
+	if node is SubViewport:
+		subviewports.erase(node)
+		
 func _on_window_resized() -> void:
 	var new_size: Vector2 = get_viewport().size
 	window_resized.emit(new_size)
@@ -69,14 +104,13 @@ func _set_msaa(new_value: Viewport.MSAA):
 func _set_brightness(new_value: float):
 	brightness = new_value
 	for world_environment in world_environments:
-		world_environment.environment.adjustment_brightness = new_value
+		world_environment.environment.adjustment_brightness = new_value * 0.5
 		
 ## Set contrast
 func _set_contrast(new_value: float):
 	contrast = new_value
 	for world_environment in world_environments:
-		world_environment.environment.adjustment_contrast = new_value
-
+		world_environment.environment.adjustment_contrast = new_value * 0.5
 
 ## Set Low Spec
 func _set_low_spec(new_value: bool):
@@ -152,3 +186,15 @@ func save_config():
 	SaveManager.config.set_item("contrast", contrast)
 	SaveManager.config.set_item("low_spec", low_spec)
 	SaveManager.save_config()
+
+func reset_to_defaults():
+	display_mode = original_display_mode
+	screen = original_screen
+	fps_limit = original_fps_limit
+	vsync = original_vsync
+	msaa = original_msaa
+	brightness = original_brightness
+	contrast = original_contrast
+	low_spec = original_low_spec
+	save_config()
+	bump()

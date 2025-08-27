@@ -16,14 +16,14 @@ class_name SFXPlayer extends AudioStreamPlayer
 ## Arguments to unbind from signal
 @export var unbind_count: int = 0
 ## Fade speed
-@export var fade_speed: float = 1.0
+@export var fade_speed: float = 0.01
 ## Tweak the pitch a bit to add variety
 @export var tweak_pitch: float = 0.0
 
 ## The name of the signal
 var trigger_signal: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-var original_volume = volume_db
+var original_volume = volume_linear
 
 func _enter_tree() -> void:
 	if trigger_signal == "": return
@@ -57,8 +57,9 @@ func action(index: int = -1) -> void:
 ## Fade the sound effect in
 func fade_in(index: int = -1):
 	if !stream_paused and playing == false: action()
+	volume_linear = 0.0 # Start from silence for fade-in
 	var tween = get_tree().create_tween()
-	tween.tween_property(self, "volume_db", original_volume, fade_speed)
+	tween.tween_property(self, "volume_linear", original_volume, fade_speed)
 	stream_paused = false
 	tween.play()
 
@@ -72,11 +73,11 @@ func fade_out(pause_on_finish: bool = false, index: int = -1):
 		)
 	else:
 		tween.connect("finished", stop)
-	tween.tween_property(self, "volume_db", -80, fade_speed)
+	tween.tween_property(self, "volume_linear", 0.0, fade_speed)
 	tween.play()
 
 func _get_property_list() -> Array[Dictionary]:
-	var property_list: Array[Dictionary] = [{
+	var property_list: Array[Dictionary] = [ {
 		name = "Trigger",
 		type = TYPE_NIL,
 		usage = PROPERTY_USAGE_SUBGROUP

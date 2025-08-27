@@ -27,7 +27,8 @@ func register_saver(saver_node: Saver):
 ## Unregister a saver node
 func unregister_saver(saver_node: Saver):
 	var index = savers.find(saver_node)
-	savers.remove_at(index)
+	if index >= 0:
+		savers.remove_at(index)
 
 ## Saves the data in the current scene
 func save(slot: int = 0) -> void:
@@ -46,20 +47,25 @@ func save(slot: int = 0) -> void:
 
 ## Loads a save file and applies it to the nodes in the current scene
 func load(slot: int = 0) -> void:
+	var save_data = load_save_file(slot)
+	if !save_data: return
+	custom_values = save_data._custom_values
 
+	for saver_id in save_data:
+		for saver in savers:
+			if get_special_id(saver) == saver_id:
+				saver.load(save_data[saver_id])
+	loaded.emit()
+
+## Load a save but without applying values or triggering signals
+func load_save_file(slot: int = 0) -> Variant:
 	var file_path = "user://save%s.sav" % slot
 	if FileAccess.file_exists(file_path):
 		var file := FileAccess.open(file_path, FileAccess.READ)
 		var save_data = file.get_var(true)
-		custom_values = save_data._custom_values
-
-		for saver_id in save_data:
-			for saver in savers:
-				if get_special_id(saver) == saver_id:
-					saver.load(save_data[saver_id])
 		file.close()
-		loaded.emit()
-
+		return save_data
+	return null
 
 ## Generate a unique ID for the save component
 func get_special_id(input_node: Node):
@@ -84,7 +90,11 @@ func remove_value(key: String):
 	
 ## Resets the save data to default
 func reset():
-	savers = []
+	var new_savers: Array[Saver] = []
+	for saver in savers:
+		if is_instance_valid(saver):
+			new_savers.append(saver)
+	savers = new_savers
 	custom_values = {}
 	load_config()
 

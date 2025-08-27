@@ -2,6 +2,8 @@
 ## Creates customizable snow effect
 class_name Snow3D extends Node3D
 
+## Whether the effect is emitting or not
+@export var enabled: bool = true: set = _set_enabled
 ## Texture used for snowflakes
 @export var texture: Texture2D = load("res://addons/nodot/textures/snowflake.png"): set = _set_texture
 ## Color of snowflakes
@@ -76,3 +78,8 @@ func _set_shaded(new_value: bool):
 func _set_size(new_value: Vector2):
 	size = new_value
 	particle_material.emission_box_extents = Vector3(size.x, 0.0, size.y)
+
+func _set_enabled(new_value: bool):
+	enabled = new_value
+	if !particles_node: return
+	particles_node.emitting = enabled
