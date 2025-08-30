@@ -2,6 +2,8 @@
 ## Creates customizable rain effect
 class_name Rain3D extends Node3D
 
+## Whether the effect is emitting or not
+@export var enabled: bool = true: set = _set_enabled
 ## The texture for each raindrop
 @export var texture: Texture2D = load("res://addons/nodot/textures/raindrop.png"): set = _set_texture
 ## The color of the raindrops
@@ -41,7 +43,7 @@ func _init():
 	
 	particles_node.process_material = particle_material
 	particles_node.draw_pass_1 = mesh
-	particles_node.emitting = true
+	particles_node.emitting = enabled
 	particles_node.amount = amount
 	
 	add_child(particles_node)
@@ -68,3 +70,8 @@ func _set_shaded(new_value: bool):
 func _set_size(new_value: Vector2):
 	size = new_value
 	particle_material.emission_box_extents = Vector3(size.x, 0.0, size.y)
+
+func _set_enabled(new_value: bool):
+	enabled = new_value
+	if !particles_node: return
+	particles_node.emitting = enabled

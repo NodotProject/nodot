@@ -39,18 +39,18 @@ var _available_states: Dictionary = {}
 ## [br][br]
 ## Does nothing if transitioning to the currently active state. Emits a warning
 ## and does nothing when transitioning to an unknown state.
-func transition(new_state_name: StringName) -> void:
+func transition(new_state_name: StringName) -> bool:
 	if state == new_state_name:
-		return
+		return false
 	
 	if not _available_states.has(new_state_name):
 		printerr("Attempted to transition from state '%s' into unknown state '%s'" % [state, new_state_name])
-		return
+		return false
 		
 	var new_state: StateHandler = _available_states[new_state_name]
 	if _state_object:
 		if !_state_object.can_exit(new_state) or !new_state.can_enter(_state_object):
-			return
+			return false
 	
 		_state_object.exit(new_state)
 	
@@ -58,6 +58,7 @@ func transition(new_state_name: StringName) -> void:
 	_state_object = new_state
 	on_state_changed.emit(_previous_state, new_state)
 	_state_object.enter(_previous_state)
+	return true
 
 func _input(event: InputEvent) -> void:
 	if _state_object:

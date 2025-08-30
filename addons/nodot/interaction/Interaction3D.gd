@@ -54,7 +54,6 @@ func _ready():
 
 func _input(event: InputEvent):
 	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
-	if is_action_pressed: return
 	
 	var collider = get_collider()
 	if collider and collider.has_meta("NonPickable") and collider.get_meta("NonPickable"): return
@@ -76,8 +75,6 @@ func _input(event: InputEvent):
 
 func _physics_process(delta):
 	if !is_multiplayer_authority(): return
-	
-	is_action_pressed = Input.is_action_pressed("action")
 	
 	if is_instance_valid(carried_body):
 		was_carrying_body = true

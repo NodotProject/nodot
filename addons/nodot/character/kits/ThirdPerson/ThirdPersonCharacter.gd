@@ -60,7 +60,8 @@ func _enter_tree() -> void:
 	if is_current_player:
 		PlayerManager.node = self
 		set_current_camera(camera)
-		
+	
+	health = Nodot.get_first_child_of_type(self, Health)
 	submerge_handler = Nodot.get_first_child_of_type(self, CharacterSwim3D)
 
 func _physics_process(delta: float) -> void:
@@ -107,7 +108,7 @@ func move(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
 	var basis: Basis
-	if camera:
+	if current_camera:
 		var camera_basis = current_camera.global_transform.basis
 
 		# Flattened forward and right vectors (ignore Y component)
@@ -174,10 +175,19 @@ func move_ground(delta: float) -> void:
 		velocity.x = direction3d.x * final_speed
 		velocity.z = direction3d.z * final_speed
 		
-		if camera and !strafing:
-			var cached_rotation = third_person_camera_container.global_rotation
+		if current_camera and !strafing:
+			var cached_rotation := Vector3.ZERO
+			if current_camera is ThirdPersonCamera:
+				cached_rotation = third_person_camera_container.global_rotation
+			else:
+				cached_rotation = current_camera.global_rotation
+				
 			face_target(position + direction3d, turn_rate)
-			third_person_camera_container.global_rotation = cached_rotation
+			
+			if current_camera is ThirdPersonCamera:
+				third_person_camera_container.global_rotation = cached_rotation
+			else:
+				current_camera.global_rotation = cached_rotation
 			
 	stair_step(delta)
 	
@@ -222,6 +232,7 @@ func stair_step(delta: float):
 
 ## Disable player input
 func disable_input() -> void:
+	input_enabled = false
 	direction2d = Vector2.ZERO
 	for child in get_children():
 		if child is ThirdPersonKeyboardInput:
@@ -231,6 +242,7 @@ func disable_input() -> void:
 
 ## Enable player input
 func enable_input() -> void:
+	input_enabled = true
 	for child in get_children():
 		if child is ThirdPersonKeyboardInput:
 			child.enable()

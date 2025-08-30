@@ -79,9 +79,9 @@ frequency = 0.002
 fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0sg6a"]
+noise = SubResource("FastNoiseLite_i5ash")
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_i5ash")
 
 [resource]
 render_priority = 1

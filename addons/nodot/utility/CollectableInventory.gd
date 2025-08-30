@@ -13,6 +13,26 @@ class_name CollectableInventory extends Node
 @export var item_group_allowlist: Array[String] = []
 ## These item groups are not allowed in this inventory
 @export var item_group_blocklist: Array[String] = []
+## Add an inventory to overflow into if the current one is full
+@export var overflow_inventory: CollectableInventory
+
+# Constants for better readability
+const INFINITE_CAPACITY = 0
+const INFINITE_WEIGHT = 0.0
+const EMPTY_SLOT_ID = ""
+const EMPTY_SLOT_QUANTITY = 0
+
+## Triggered when a stack or slot is updated
+signal collectable_updated(index: int, collectable_id: String, quantity: int)
+## Triggered when the inventory overflows (useful to spawn excess items back into the world)
+signal overflow(collectable_id: String, quantity: int)
+## Triggered when the inventory is too heavy
+signal max_weight_reached
+## Triggered when the capacity is reached
+signal capacity_reached
+
+## Unique identifier for this inventory
+var unique_name: String = ""
 
 # Array of tuples. Collectable id (string) and quantity (int)
 var _collectable_stacks: Array = []
@@ -26,18 +46,18 @@ func _set_slot(index: int, collectable_id: String, quantity: int) -> void:
 	if index < 0 or index >= _collectable_stacks.size():
 		push_error("Invalid slot index: %d" % index)
 		return
-	if collectable_id != "" and not is_allowed(collectable_id):
+	if collectable_id != EMPTY_SLOT_ID and not is_allowed(collectable_id):
 		push_error("Collectable %s is not allowed in this inventory" % collectable_id)
 		return
 	var collectable = null
-	if collectable_id != "":
+	if collectable_id != EMPTY_SLOT_ID:
 		collectable = CollectableManager.get_info(collectable_id)
 	var final_quantity = quantity
 	if collectable and quantity > collectable.stack_limit:
 		final_quantity = collectable.stack_limit
-	if final_quantity <= 0 or collectable_id == "":
-		_collectable_stacks[index] = ["", 0]
-		collectable_updated.emit(index, "", 0)
+	if final_quantity <= 0 or collectable_id == EMPTY_SLOT_ID:
+		_collectable_stacks[index] = [EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY]
+		collectable_updated.emit(index, EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY)
 	else:
 		_collectable_stacks[index] = [collectable_id, final_quantity]
 		collectable_updated.emit(index, collectable_id, final_quantity)
@@ -61,228 +81,306 @@ func is_allowed(collectable_id: String) -> bool:
 				return false
 	return true
 
-## Triggered when a stack or slot is updated
-signal collectable_updated(index: int, collectable_id: String, quantity: int)
-## Triggered when the inventory overflows (useful to spawn excess items back into the world)
-signal overflow(collectable_id: String, quantity: int)
-## Triggered when the inventory is too heavy
-signal max_weight_reached
-## Triggered when the capacity is reached
-signal capacity_reached
 
-## Unique identifier for this inventory
-@onready var unique_name: String = "%s-%s" % [get_parent().name, name]
-
-# Returns true if there is space for at least one of the given collectable
+## Returns true if there is space for at least one of the given collectable
 func has_space_for(collectable_id: String, quantity: int) -> bool:
 	var collectable = CollectableManager.get_info(collectable_id)
 	if !collectable:
 		return false
 	# Check for existing stack with space
-	for stack in _collectable_stacks:
-		if stack[0] == collectable_id and stack[1] < collectable.stack_limit:
-			return true
+	if _find_stackable_slot(collectable_id) >= 0:
+		return true
 	# Check for empty slot
-	for stack in _collectable_stacks:
-		if stack[0] == "" or stack[1] == 0:
-			return true
-	# If capacity is 0 (infinite), always has space
-	if capacity == 0 or _collectable_stacks.size() < capacity:
+	if _find_empty_slot() >= 0:
+		return true
+	# If capacity is infinite, always has space
+	if capacity == INFINITE_CAPACITY or _collectable_stacks.size() < capacity:
 		return true
 	return false
+
+## Find the first slot that can stack more of the given collectable
+func _find_stackable_slot(collectable_id: String) -> int:
+	var collectable = CollectableManager.get_info(collectable_id)
+	if !collectable:
+		return -1
+	for i in range(_collectable_stacks.size()):
+		var stack = _collectable_stacks[i]
+		if stack[0] == collectable_id and stack[1] < collectable.stack_limit:
+			return i
+	return -1
+
+## Find the first empty slot
+func _find_empty_slot() -> int:
+	for i in range(_collectable_stacks.size()):
+		var stack = _collectable_stacks[i]
+		if stack[0] == EMPTY_SLOT_ID or stack[1] == EMPTY_SLOT_QUANTITY:
+			return i
+	return -1
 
 func _enter_tree():
 	for i in capacity:
-		_collectable_stacks.append(["", 0])
+		_collectable_stacks.append([EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY])
+	unique_name = "%s-%s" % [get_parent().name, name]
 	CollectableManager.inventories.set(unique_name, self)
 
-## Add a collectable to the inventory
-func add(collectable_id: String, quantity: int) -> bool:
+## Internal validation for collectable actions
+func _validate_collectable_action(collectable_id: String, quantity: int, slot_index: int = -1) -> Dictionary:
+	var result = {
+		"valid": true,
+		"error": "",
+		"collectable": null
+	}
 	var collectable = CollectableManager.get_info(collectable_id)
 	if !collectable:
-		push_error("%s has not been registered in CollectableManager" % collectable_id)
-		return false
+		result.valid = false
+		result.error = "%s has not been registered in CollectableManager" % collectable_id
+		return result
 
 	if not is_allowed(collectable_id):
-		return false
+		result.valid = false
+		result.error = "Collectable %s is not allowed in this inventory" % collectable_id
+		return result
 
-	if not has_space_for(collectable_id, quantity):
-		capacity_reached.emit()
-		return false
+	if quantity <= 0:
+		result.valid = false
+		result.error = "Quantity must be greater than zero"
+		return result
 
-	var weight = collectable.mass
+	if slot_index >= 0 and slot_index >= _collectable_stacks.size():
+		result.valid = false
+		result.error = "Invalid slot index: %d" % slot_index
+		return result
 
-	if max_weight > 0.0:
-		var stack_weight = quantity * weight
-		var total = get_total_weight(stack_weight)
-		if total > max_weight:
-			max_weight_reached.emit()
-			return false
+	result.collectable = collectable
+	return result
 
-	var remaining_quantity = _update_available_stack(collectable_id, quantity)
-	if remaining_quantity > 0:
-		var overflow = _update_available_slot(collectable_id, remaining_quantity)
-		if overflow > 0:
-			return add(collectable_id, overflow)
-		else:
-			return true
-	elif remaining_quantity == 0:
-		return true
+## Internal add logic (used by add and add_to_slot)
+func _add(collectable_id: String, quantity: int, slot_index: int = -1) -> Dictionary:
+	var result = {"success": false, "overflow": 0}
+	
+	var validation = _validate_collectable_action(collectable_id, quantity, slot_index)
+	if !validation.valid:
+		push_error(validation.error)
+		return result
 
-	if remaining_quantity > 0:
-		overflow.emit(remaining_quantity)
-	capacity_reached.emit()
-	return false
+	var collectable = validation.collectable
 
-## Remove a collectable from the inventory
-func remove(collectable_id: String, quantity: int) -> bool:
-	var collectable = CollectableManager.get_info(collectable_id)
-	if !collectable or quantity == 0:
-		push_error("%s has not been registered in CollectableManager" % collectable_id)
-		return false
-
-	var collectable_index = get_collectable_index(collectable_id)
-	if collectable_index < 0:
-		return false
-
-	var stack_quantity = _collectable_stacks[collectable_index][1]
-	if stack_quantity >= quantity:
-		_set_slot(collectable_index, collectable_id, stack_quantity - quantity)
-		return true
-	if stack_quantity > 0:
-		_set_slot(collectable_index, collectable_id, 0)
-		return remove(collectable_id, quantity - stack_quantity)
-
-	return false
-
-func add_to_slot(slot_index: int, collectable_id: String, quantity: int) -> bool:
-	if slot_index < 0 or slot_index >= _collectable_stacks.size():
-		push_error("Invalid slot index: %d" % slot_index)
-		return false
-
-	if not is_allowed(collectable_id):
-		return false
-
-	var collectable = CollectableManager.get_info(collectable_id)
-	if !collectable:
-		push_error("%s has not been registered in CollectableManager" % collectable_id)
-		return false
-
-	var weight = collectable.mass
-	var stack_weight = quantity * weight
-	var total_weight = get_total_weight(stack_weight)
-	if max_weight > 0.0 and total_weight > max_weight:
+	# Weight check
+	if not _check_weight_capacity(collectable, quantity):
 		max_weight_reached.emit()
-		return false
+		return result
 
-	var current_stack = _collectable_stacks[slot_index]
-	if current_stack[0] == "" or current_stack[0] == collectable_id:
-		var current_quantity = current_stack[1]
-		var new_quantity = current_quantity + quantity
-		var final_quantity = min(new_quantity, collectable.stack_limit)
-		var overflow_quantity = new_quantity - final_quantity
+	# Handle specific slot addition
+	if slot_index >= 0:
+		return _add_to_specific_slot(slot_index, collectable_id, quantity, collectable)
+	
+	# Handle general addition with capacity check
+	if not has_space_for(collectable_id, quantity):
+		return _handle_overflow(collectable_id, quantity)
+	
+	# Distribute items across available slots
+	return _distribute_items(collectable_id, quantity, collectable)
 
-		_set_slot(slot_index, collectable_id, final_quantity)
-
-		if overflow_quantity > 0:
-			overflow.emit(collectable_id, overflow_quantity)
-			return false
+## Check if adding items would exceed weight capacity
+func _check_weight_capacity(collectable: Collectable, quantity: int) -> bool:
+	if max_weight <= INFINITE_WEIGHT:
 		return true
-	else:
+	var stack_weight = quantity * collectable.mass
+	var total = get_total_weight(stack_weight)
+	return total <= max_weight
+
+## Add items to a specific slot
+func _add_to_specific_slot(slot_index: int, collectable_id: String, quantity: int, collectable: Collectable) -> Dictionary:
+	var result = {"success": false, "overflow": 0}
+	var current_stack = _collectable_stacks[slot_index]
+	
+	if current_stack[0] != EMPTY_SLOT_ID and current_stack[0] != collectable_id:
 		push_error("Slot %d is occupied by a different collectable: %s" % [slot_index, current_stack[0]])
+		return result
+	
+	var current_quantity = current_stack[1]
+	var new_quantity = current_quantity + quantity
+	var final_quantity = min(new_quantity, collectable.stack_limit)
+	var overflow_quantity = new_quantity - final_quantity
+	
+	_set_slot(slot_index, collectable_id, final_quantity)
+	result.success = true
+	
+	if overflow_quantity > 0:
+		overflow.emit(collectable_id, overflow_quantity)
+		result.overflow = overflow_quantity
+	
+	return result
+
+## Handle overflow when inventory is full
+func _handle_overflow(collectable_id: String, quantity: int) -> Dictionary:
+	var result = {"success": false, "overflow": quantity}
+	
+	if overflow_inventory != null:
+		var overflow_result = overflow_inventory._add(collectable_id, quantity)
+		if overflow_result.success:
+			result.success = true
+			result.overflow = 0
+		else:
+			_emit_overflow_signals(collectable_id, quantity)
+	else:
+		_emit_overflow_signals(collectable_id, quantity)
+	
+	return result
+
+## Emit overflow and capacity signals
+func _emit_overflow_signals(collectable_id: String, quantity: int) -> void:
+	overflow.emit(collectable_id, quantity)
+	capacity_reached.emit()
+
+## Distribute items across available slots
+func _distribute_items(collectable_id: String, quantity: int, collectable: Collectable) -> Dictionary:
+	var result = {"success": false, "overflow": 0}
+	var remaining_quantity = quantity
+	
+	# Fill existing stacks first
+	remaining_quantity = _fill_existing_stacks(collectable_id, remaining_quantity, collectable)
+	if remaining_quantity <= 0:
+		result.success = true
+		return result
+	
+	# Fill empty slots
+	remaining_quantity = _fill_empty_slots(collectable_id, remaining_quantity, collectable)
+	if remaining_quantity <= 0:
+		result.success = true
+		return result
+	
+	# Add new slots if capacity allows
+	remaining_quantity = _add_new_slots(collectable_id, remaining_quantity, collectable)
+	if remaining_quantity <= 0:
+		result.success = true
+		return result
+	
+	# Handle any remaining overflow
+	if remaining_quantity > 0:
+		return _handle_overflow(collectable_id, remaining_quantity)
+	
+	result.success = true
+	return result
+
+## Fill existing stacks with available space
+func _fill_existing_stacks(collectable_id: String, quantity: int, collectable: Collectable) -> int:
+	var remaining = quantity
+	for i in range(_collectable_stacks.size()):
+		var stack = _collectable_stacks[i]
+		if stack[0] == collectable_id and stack[1] < collectable.stack_limit:
+			var can_add = min(collectable.stack_limit - stack[1], remaining)
+			_set_slot(i, collectable_id, stack[1] + can_add)
+			remaining -= can_add
+			if remaining <= 0:
+				break
+	return remaining
+
+## Fill empty slots with items
+func _fill_empty_slots(collectable_id: String, quantity: int, collectable: Collectable) -> int:
+	var remaining = quantity
+	for i in range(_collectable_stacks.size()):
+		var stack = _collectable_stacks[i]
+		if stack[0] == EMPTY_SLOT_ID or stack[1] == EMPTY_SLOT_QUANTITY:
+			var can_add = min(collectable.stack_limit, remaining)
+			_set_slot(i, collectable_id, can_add)
+			remaining -= can_add
+			if remaining <= 0:
+				break
+	return remaining
+
+## Add new slots if capacity allows
+func _add_new_slots(collectable_id: String, quantity: int, collectable: Collectable) -> int:
+	var remaining = quantity
+	while (capacity == INFINITE_CAPACITY or _collectable_stacks.size() < capacity) and remaining > 0:
+		var can_add = min(collectable.stack_limit, remaining)
+		_collectable_stacks.append([EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY])
+		_set_slot(_collectable_stacks.size() - 1, collectable_id, can_add)
+		remaining -= can_add
+	return remaining
+
+## Internal remove logic (used by remove and remove_from_slot)
+func _remove(collectable_id: String, quantity: int, slot_index: int = -1) -> bool:
+	var validation = _validate_collectable_action(collectable_id, quantity, slot_index)
+	if !validation.valid:
+		push_error(validation.error)
 		return false
 
+	if slot_index >= 0:
+		return _remove_from_specific_slot(slot_index, collectable_id, quantity)
+	else:
+		return _remove_from_a_stack(collectable_id, quantity)
+
+## Remove items from a specific slot
+func _remove_from_specific_slot(slot_index: int, collectable_id: String, quantity: int) -> bool:
+	var current_stack = _collectable_stacks[slot_index]
+	if current_stack[0] != collectable_id or current_stack[1] == EMPTY_SLOT_QUANTITY:
+		return false
+	
+	var remove_qty = min(quantity, current_stack[1])
+	var new_qty = current_stack[1] - remove_qty
+	var final_id = collectable_id if new_qty > 0 else EMPTY_SLOT_ID
+	_set_slot(slot_index, final_id, new_qty)
+	return true
+
+## Remove items from a matching stacks
+func _remove_from_a_stack(collectable_id: String, quantity: int) -> bool:
+	var remaining = quantity
+	for i in range(_collectable_stacks.size()):
+		var stack = _collectable_stacks[i]
+		if stack[0] == collectable_id and stack[1] > 0 and remaining > 0:
+			var remove_qty = min(stack[1], remaining)
+			var new_qty = stack[1] - remove_qty
+			var final_id = collectable_id if new_qty > 0 else EMPTY_SLOT_ID
+			_set_slot(i, final_id, new_qty)
+			remaining -= remove_qty
+			if remaining <= 0:
+				return true
+			break
+	return remaining <= 0
+
+## Add a collectable to the inventory (public API)
+func add(collectable_id: String, quantity: int) -> bool:
+	var result = _add(collectable_id, quantity)
+	return result.success
+
+## Remove a collectable from the inventory (public API)
+func remove(collectable_id: String, quantity: int) -> bool:
+	return _remove(collectable_id, quantity)
+
+## Add a collectable to a specific slot (public API)
+func add_to_slot(slot_index: int, collectable_id: String, quantity: int) -> bool:
+	var result = _add(collectable_id, quantity, slot_index)
+	return result.success
+
+## Remove a collectable from a specific slot (public API)
 func remove_from_slot(slot_index: int, quantity: int) -> bool:
 	if slot_index < 0 or slot_index >= _collectable_stacks.size():
 		push_error("Invalid slot index: %d" % slot_index)
 		return false
-
 	var current_stack = _collectable_stacks[slot_index]
 	var collectable_id = current_stack[0]
-	if collectable_id == "" or quantity <= 0:
+	if collectable_id == EMPTY_SLOT_ID or quantity <= 0:
 		return false
-
-	var current_quantity = current_stack[1]
-	if quantity >= current_quantity:
-		# Clear the slot
-		_set_slot(slot_index, "", 0)
-	else:
-		_set_slot(slot_index, collectable_id, current_quantity - quantity)
-
-	return true
+	return _remove(collectable_id, quantity, slot_index)
 
 ## Get the total weight of the inventory
-func get_total_weight(additional_weight: float = 0.0):
-	var total_weight = 0
+func get_total_weight(additional_weight: float = 0.0) -> float:
+	var total_weight = 0.0
 	for stack in _collectable_stacks:
 		var id = stack[0]
-		if id != "":
+		if id != EMPTY_SLOT_ID:
 			var quantity = stack[1]
 			var collectable = CollectableManager.get_info(id)
-			var weight = collectable.mass
-			var stack_weight = quantity * weight
-			total_weight += stack_weight
+			if collectable:
+				var stack_weight = quantity * collectable.mass
+				total_weight += stack_weight
 	total_weight += additional_weight
 	return total_weight
 
 
-## Update an available stack for the collectable
-func _update_available_stack(collectable_id: String, quantity: int):
-	for i in range(_collectable_stacks.size()):
-		var stored_stack = _collectable_stacks[i]
-		var stored_stack_id = stored_stack[0]
-		if stored_stack_id == collectable_id:
-			var collectable = CollectableManager.get_info(collectable_id)
-			var stored_stack_quantity = stored_stack[1]
-			if stored_stack_quantity >= collectable.stack_limit:
-				continue
-			var available = stored_stack_quantity + quantity
-			if available > collectable.stack_limit:
-				_set_slot(i, collectable_id, collectable.stack_limit)
-				return _update_available_stack(collectable_id, available - collectable.stack_limit)
-			else:
-				_set_slot(i, collectable_id, available)
-				return 0
-
-	return quantity
-
-
-## Get available slot
-func _update_available_slot(collectable_id: String, quantity: int) -> int:
-	if quantity <= 0: return 0
-
-	var available_slot
-
-	var current_stack_size = _collectable_stacks.size()
-
-	# Get first empty slot
-	for i in current_stack_size:
-		var stored_stack = _collectable_stacks[i]
-		var stored_stack_quantity = stored_stack[1]
-		if stored_stack_quantity == 0:
-			available_slot = i
-			break
-
-	if available_slot == null:
-		# TODO: Add a test for when capacity is 0 (infinite)
-		if capacity == 0 or current_stack_size < capacity:
-			available_slot = current_stack_size
-			_collectable_stacks.append(["", 0])
-	else:
-		var collectable := CollectableManager.get_info(collectable_id)
-		var new_quantity := quantity
-		var overflow = 0
-		if quantity > collectable.stack_limit:
-			new_quantity = collectable.stack_limit
-			_update_available_slot(collectable_id, quantity - new_quantity)
-		overflow = quantity - new_quantity
-		_set_slot(available_slot, collectable_id, new_quantity)
-		return overflow
-	
-	return 0
-
-## Get the last index of a specific collectable
-func get_collectable_index(collectable_id: String):
+## Get the first index of a specific collectable
+func get_collectable_index(collectable_id: String) -> int:
 	for i in _collectable_stacks.size():
 		var stack = _collectable_stacks[i]
 		if stack[0] == collectable_id:
@@ -291,10 +389,10 @@ func get_collectable_index(collectable_id: String):
 
 ## Get a total count of all items of a specific type
 func get_collectable_count(collectable_id: String) -> int:
-	return _collectable_stacks.reduce(func(accum, stack):
+	return _collectable_stacks.reduce(func(total, stack):
 		if stack[0] == collectable_id:
-			return accum + stack[1]
-		return accum
+			return total + stack[1]
+		return total
 	, 0)
 	
 ## Update a specific slot
@@ -302,76 +400,96 @@ func update_slot(slot_index: int, collectable_id: String, quantity: int, _overfl
 	if quantity > 0:
 		_set_slot(slot_index, collectable_id, quantity)
 	else:
-		_set_slot(slot_index, "", 0)
+		_set_slot(slot_index, EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY)
 
 ## Drop a slot item back into the real world
 func drop_slot(slot_index: int, collectable_id: String, quantity: int):
-	update_slot(slot_index, "", 0, 0)
+	update_slot(slot_index, EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY, 0)
+	_spawn_items_into_world(collectable_id, quantity)
+
+## Spawn items into the world at the spawn location
+func _spawn_items_into_world(collectable_id: String, quantity: int) -> void:
 	var collectable_info = CollectableManager.get_info(collectable_id)
-	if !collectable_info: return
+	if !collectable_info:
+		push_error("Cannot spawn unknown collectable: %s" % collectable_id)
+		return
 	
+	if !spawn_location_node:
+		push_error("No spawn location node set for inventory")
+		return
+		
 	var item_scene = collectable_info.scene
 	for i in quantity:
 		var item_instance = item_scene.instantiate()
 		item_instance.top_level = true
-		if spawn_location_node:
-			spawn_location_node.add_child(item_instance)
-			item_instance.global_position = spawn_location_node.global_position
-		else:
-			push_error("No spawn location node set")
+		add_child(item_instance)
+		item_instance.global_position = spawn_location_node.global_position
+		item_instance.add_to_group("despawnable_item")
 
 
-func _check_allowlist(collectable: Collectable):
-	if item_group_allowlist.size() == 0:
-		return true
-	for group in collectable.item_groups:
-		if group in item_group_allowlist:
-			return true
-	return false
-	
-func _check_blocklist(collectable: Collectable):
-	if item_group_blocklist.size() == 0:
-		return true
-	for group in collectable.item_groups:
-		if group in item_group_blocklist:
-			return false
-	return true
-# Move a stack from one slot to another (for HUD drag-and-drop)
-func move_between_slots(from_slot: int, to_slot: int) -> void:
-	if from_slot == to_slot:
-		return
-	if from_slot < 0 or from_slot >= _collectable_stacks.size():
-		return
-	if to_slot < 0 or to_slot >= _collectable_stacks.size():
+## Move a stack from one inventory/slot to another (for HUD drag-and-drop)
+func move_between_slots(from_inventory: CollectableInventory, from_slot: int, to_inventory: CollectableInventory, to_slot: int) -> void:
+	if not _validate_move_parameters(from_inventory, from_slot, to_inventory, to_slot):
 		return
 
-	var from_stack = _collectable_stacks[from_slot]
-	var to_stack = _collectable_stacks[to_slot]
+	var from_stack = from_inventory._collectable_stacks[from_slot]
+	var to_stack = to_inventory._collectable_stacks[to_slot]
 
 	var from_id = from_stack[0]
 	var from_qty = from_stack[1]
-	if from_id == "" or from_qty == 0:
+	if from_id == EMPTY_SLOT_ID or from_qty == EMPTY_SLOT_QUANTITY:
 		return
 
 	var to_id = to_stack[0]
 	var to_qty = to_stack[1]
 
-	if to_id == "":
-		# Move stack to empty slot
-		_set_slot(to_slot, from_id, from_qty)
-		_set_slot(from_slot, "", 0)
+	# Check if the item is allowed in the target inventory
+	if not to_inventory.is_allowed(from_id):
+		return
+
+	_execute_move_operation(from_inventory, from_slot, to_inventory, to_slot, from_id, from_qty, to_id, to_qty)
+
+## Validate parameters for move operation
+func _validate_move_parameters(from_inventory: CollectableInventory, from_slot: int, to_inventory: CollectableInventory, to_slot: int) -> bool:
+	if from_inventory == null or to_inventory == null:
+		return false
+	if from_slot == to_slot and from_inventory == to_inventory:
+		return false
+	if from_slot < 0 or from_slot >= from_inventory._collectable_stacks.size():
+		return false
+	if to_slot < 0 or to_slot >= to_inventory._collectable_stacks.size():
+		return false
+	return true
+
+## Execute the actual move operation based on slot contents
+func _execute_move_operation(from_inventory: CollectableInventory, from_slot: int, to_inventory: CollectableInventory, to_slot: int, from_id: String, from_qty: int, to_id: String, to_qty: int) -> void:
+	# If target slot is empty, move the stack
+	if to_id == EMPTY_SLOT_ID:
+		to_inventory._set_slot(to_slot, from_id, from_qty)
+		from_inventory._set_slot(from_slot, EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY)
+	# If same item type, merge stacks up to stack limit
 	elif to_id == from_id:
-		var collectable = CollectableManager.get_info(from_id)
-		var stack_limit = collectable.stack_limit
-		var total = from_qty + to_qty
-		var new_to_qty = min(total, stack_limit)
-		var overflow = total - new_to_qty
-		_set_slot(to_slot, from_id, new_to_qty)
-		if new_to_qty == total:
-			_set_slot(from_slot, "", 0)
-		else:
-			_set_slot(from_slot, from_id, overflow)
+		_merge_stacks(from_inventory, from_slot, to_inventory, to_slot, from_id, from_qty, to_qty)
+	# If different item types, swap the stacks (if both are allowed in their new inventories)
 	else:
-		# Swap stacks
-		_set_slot(to_slot, from_id, from_qty)
-		_set_slot(from_slot, to_id, to_qty)
+		_swap_stacks(from_inventory, from_slot, to_inventory, to_slot, from_id, from_qty, to_id, to_qty)
+
+## Merge two stacks of the same item type
+func _merge_stacks(from_inventory: CollectableInventory, from_slot: int, to_inventory: CollectableInventory, to_slot: int, item_id: String, from_qty: int, to_qty: int) -> void:
+	var collectable = CollectableManager.get_info(item_id)
+	var stack_limit = collectable.stack_limit
+	var total = from_qty + to_qty
+	var new_to_qty = min(total, stack_limit)
+	var overflow = total - new_to_qty
+	
+	to_inventory._set_slot(to_slot, item_id, new_to_qty)
+	if overflow > 0:
+		from_inventory._set_slot(from_slot, item_id, overflow)
+	else:
+		from_inventory._set_slot(from_slot, EMPTY_SLOT_ID, EMPTY_SLOT_QUANTITY)
+
+## Swap stacks between two slots
+func _swap_stacks(from_inventory: CollectableInventory, from_slot: int, to_inventory: CollectableInventory, to_slot: int, from_id: String, from_qty: int, to_id: String, to_qty: int) -> void:
+	if from_inventory.is_allowed(to_id):
+		to_inventory._set_slot(to_slot, from_id, from_qty)
+		from_inventory._set_slot(from_slot, to_id, to_qty)

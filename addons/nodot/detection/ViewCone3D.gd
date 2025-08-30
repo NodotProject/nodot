@@ -10,7 +10,6 @@ signal body_lost(body: Node3D)
 
 var detected_bodies: Array[Node] = []
 
-
 func _physics_process(_delta):
 	if !enabled:
 		return
@@ -52,6 +51,8 @@ func _physics_process(_delta):
 
 	var removed_bodies: Array[Node] = []
 	for detected_body in detected_bodies:
+		if !is_instance_valid(detected_body):
+			continue
 		if !detected_bodies_this_pass.has(detected_body):
 			removed_bodies.append(detected_body)
 			

@@ -38,6 +38,9 @@ func _enter_tree() -> void:
 func _ready():
 	original_volume = volume_db
 	
+	if !Engine.is_editor_hint() and autoplay:
+		action()
+	
 func _tweak_pitch():
 	pitch_scale = rng.randf_range(1.0 - tweak_pitch, 1.0 + tweak_pitch)
 

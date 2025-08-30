@@ -32,14 +32,8 @@ func _ready():
 	notify_property_list_changed()
 	
 	if target_method == "" or !is_instance_valid(target_node): return
-	
-	if state_machine is NodotCharacter3D:
-		final_state_machine = state_machine.sm
-	elif state_machine is StateMachine:
-		final_state_machine = state_machine
 		
-	final_state_machine.
-	final_state_machine.on_state_changed.connect(_state_updated)
+	state_machine.on_state_changed.connect(_state_updated)
 
 func _get_property_list() -> Array[Dictionary]:
 	var property_list: Array[Dictionary] = [ {
@@ -72,7 +66,7 @@ func _get_property_list() -> Array[Dictionary]:
 	return property_list
 
 func _state_updated(old_state: String, new_state: String) -> void:
-	if new_state == trigger_state_id:
+	if new_state == trigger_state:
 		var callback = target_node[target_method]
 		if method_unbind_count > 0:
 			callback = Callable(target_node[target_method].unbind(method_unbind_count))

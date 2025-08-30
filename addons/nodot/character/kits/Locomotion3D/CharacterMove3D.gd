@@ -2,7 +2,7 @@
 class_name CharacterMove3D extends CharacterExtensionBase3D
 
 ## How fast the character can move while sprinting (higher = faster)
-@export var sprint_speed_multiplier := 2.0
+@export var sprint_speed_multiplier := 1.5
 
 @export_subgroup("Input Actions")
 ## The input action name for sprinting
@@ -25,8 +25,8 @@ func physics_process(_delta):
 			sprint_enabled = true
 		else:
 			sprint_enabled = false
-		
+
 	character.movement_speed = final_speed
-	
+
 	if character.direction3d.is_equal_approx(Vector3.ZERO):
 		state_machine.transition(idle_state_node.name)

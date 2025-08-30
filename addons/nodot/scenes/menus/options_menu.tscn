@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dj1v33w5ffysa"]
+[gd_scene load_steps=28 format=3 uid="uid://dj1v33w5ffysa"]
 
 [ext_resource type="Script" uid="uid://bcbxhmjoythj1" path="res://addons/nodot/menus/MenuContainer.gd" id="1_0h6t2"]
 [ext_resource type="Script" uid="uid://dx8ygrcaflqan" path="res://addons/nodot/utility/WindowSizeConnector.gd" id="2_ffg2c"]
@@ -13,6 +13,9 @@ script/source = "extends Node
 
 func _input(event: InputEvent):
 	if menu_container.visible and %InputEntryPanel.visible == false and event.is_action_pressed(\"escape\"):
+		AudioManager.save_config()
+		VideoManager.save_config()
+		InputManager.save_config()
 		menu_manager.go_back()
 "
 
@@ -108,7 +111,7 @@ resource_name = "vsync"
 script/source = "extends CheckButton
 
 func _ready():
-	button_pressed = VideoManager.vsync
+	update_value()
 
 func _on_mouse_entered():
 	%OptionsMenuControl.get_node(\"SFX/HoverTick\").play();
@@ -116,6 +119,9 @@ func _on_mouse_entered():
 func _on_pressed():
 	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	VideoManager.vsync = button_pressed
+
+func update_value():
+	button_pressed = VideoManager.vsync
 "
 
 [sub_resource type="GDScript" id="GDScript_knrud"]
@@ -148,9 +154,43 @@ func update_text():
 resource_name = "brightness"
 script/source = "extends HSlider
 
+func _ready():
+	update_value()
+
 func _on_value_changed(new_value):
 	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
 	VideoManager.brightness = new_value
+
+func update_value():
+	value = VideoManager.brightness
+"
+
+[sub_resource type="GDScript" id="GDScript_atlo5"]
+script/source = "extends HSlider
+
+func _ready():
+	update_value()
+	
+func _on_value_changed(new_value):
+	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
+	VideoManager.contrast = new_value
+
+func update_value():
+	value = VideoManager.contrast
+"
+
+[sub_resource type="GDScript" id="GDScript_tx7i5"]
+script/source = "extends Button
+
+@export var input_components: Array[Control]
+
+func _on_pressed() -> void:
+	VideoManager.reset_to_defaults()
+	for input_component in input_components:
+		if input_component.has_method(\"update_text\"):
+			input_component.update_text()
+		if input_component.has_method(\"update_value\"):
+			input_component.update_value()
 "
 
 [sub_resource type="GDScript" id="GDScript_2332y"]
@@ -233,7 +273,6 @@ func _on_value_changed(new_value):
 resource_name = "keybindings"
 script/source = "extends GridContainer
 
-@export var reset_btn: Button
 @export var ignored_actions: Array[String] = [\"escape\"]
 
 var target_action_name: String = \"\"
@@ -242,7 +281,7 @@ var target_button: Button
 
 func _ready():
 	%InputEntryPanel.visible = false
-	reset_btn.connect(\"pressed\", reset)
+	%ResetSettingsButton.connect(\"pressed\", reset)
 	await get_tree().process_frame
 	populate_controls()
 	
@@ -254,6 +293,7 @@ func reset():
 			child.queue_free()
 	InputManager.reset_to_defaults()
 	populate_controls()
+	InputManager.save_config()
 			
 func populate_controls():
 	for action in InputMap.get_actions():
@@ -312,14 +352,14 @@ func _clean_key_name_text(key_name: String):
 	return key_name.get_slice(\"(\", 0)
 "
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f47jc"]
-bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.431373)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0kid"]
+bg_color = Color(0.0901961, 0.0901961, 0.0901961, 0.431373)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6rt3"]
 bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.431373)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0kid"]
-bg_color = Color(0.0901961, 0.0901961, 0.0901961, 0.431373)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f47jc"]
+bg_color = Color(0.0431373, 0.0431373, 0.0431373, 0.431373)
 
 [sub_resource type="GDScript" id="GDScript_yprk4"]
 resource_name = "closebtn"
@@ -384,16 +424,16 @@ func _on_game_pressed():
 	menus[3].show();
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6qco"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 0.431373)
+skew = Vector2(-0.2, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bw13l"]
 bg_color = Color(0.0470588, 0.0470588, 0.0470588, 0.431373)
 skew = Vector2(-0.2, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sp650"]
 bg_color = Color(0.0784314, 0.0784314, 0.0784314, 0.431373)
-skew = Vector2(-0.2, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6qco"]
-bg_color = Color(0.145098, 0.145098, 0.145098, 0.431373)
 skew = Vector2(-0.2, 0)
 
 [node name="OptionsMenuContainer" type="Node2D" node_paths=PackedStringArray("selectable_items")]
@@ -570,12 +610,28 @@ text = "Brightness"
 layout_mode = 2
 max_value = 8.0
 step = 0.1
-value = 1.0
+value = 2.0
 script = SubResource("GDScript_j2ipi")
 
 [node name="Label7" type="Label" parent="Control/MarginContainer/VideoOptions/GridContainer"]
 layout_mode = 2
 text = "Contrast"
+
+[node name="ContrastHSlider2" type="HSlider" parent="Control/MarginContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+max_value = 8.0
+step = 0.1
+value = 2.0
+script = SubResource("GDScript_atlo5")
+
+[node name="Spacer" type="Control" parent="Control/MarginContainer/VideoOptions/GridContainer"]
+layout_mode = 2
+
+[node name="DefaultsButton" type="Button" parent="Control/MarginContainer/VideoOptions/GridContainer" node_paths=PackedStringArray("input_components")]
+layout_mode = 2
+text = "Reset to Defaults"
+script = SubResource("GDScript_tx7i5")
+input_components = [NodePath("../DisplayModeMenuButton"), NodePath("../ScreenMenuButton"), NodePath("../FPSLimitMenuButton"), NodePath("../VSyncCheckButton"), NodePath("../MSAAMenuButton"), NodePath("../BrightnessHSlider"), NodePath("../ContrastHSlider2")]
 
 [node name="AudioOptions" type="BoxContainer" parent="Control/MarginContainer"]
 visible = false
@@ -659,7 +715,8 @@ step = 0.025
 value = 0.1
 script = SubResource("GDScript_iaxat")
 
-[node name="ResetSettings" type="Button" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
+[node name="ResetSettingsButton" type="Button" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Reset to default"
 
@@ -667,12 +724,11 @@ text = "Reset to default"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/InputOptions/ScrollContainer" node_paths=PackedStringArray("reset_btn")]
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/InputOptions/ScrollContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 30
 columns = 3
 script = SubResource("GDScript_ljq8r")
-reset_btn = NodePath("../../HBoxContainer/ResetSettings")
 ignored_actions = Array[String](["escape", "sprint"])
 
 [node name="Label" type="Label" parent="Control/MarginContainer/InputOptions/ScrollContainer/GridContainer"]
@@ -693,7 +749,7 @@ layout_mode = 2
 
 [node name="CloseButton" type="Button" parent="Control"]
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 41.0
@@ -704,15 +760,15 @@ grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 28
-theme_override_styles/hover = SubResource("StyleBoxFlat_f47jc")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_f6rt3")
 theme_override_styles/normal = SubResource("StyleBoxFlat_w0kid")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_f6rt3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_f47jc")
 text = "Back"
 script = SubResource("GDScript_yprk4")
 
 [node name="TabsContainer" type="HBoxContainer" parent="Control" node_paths=PackedStringArray("menus")]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
 anchor_right = 1.0
 offset_bottom = 85.0
 grow_horizontal = 2
@@ -727,10 +783,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Video"
 
 [node name="Audio" type="Button" parent="Control/TabsContainer"]
@@ -739,10 +795,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Audio
 "
 
@@ -752,10 +808,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Controls"
 
 [node name="Game" type="Button" parent="Control/TabsContainer"]
@@ -764,10 +820,10 @@ size_flags_horizontal = 3
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 40
-theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
-theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
 theme_override_styles/normal = SubResource("StyleBoxFlat_x6qco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bw13l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sp650")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bw13l")
 text = "Game"
 
 [node name="InputEntryPanel" type="Panel" parent="Control"]
@@ -782,7 +838,7 @@ grow_vertical = 2
 
 [node name="Label" type="Label" parent="Control/InputEntryPanel"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -802,6 +858,8 @@ text = "Press Any Key..."
 [connection signal="pressed" from="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" to="Control/MarginContainer/VideoOptions/GridContainer/VSyncCheckButton" method="_on_pressed"]
 [connection signal="mouse_entered" from="Control/MarginContainer/VideoOptions/GridContainer/MSAAMenuButton" to="Control/MarginContainer/VideoOptions/GridContainer/MSAAMenuButton" method="_on_mouse_entered"]
 [connection signal="value_changed" from="Control/MarginContainer/VideoOptions/GridContainer/BrightnessHSlider" to="Control/MarginContainer/VideoOptions/GridContainer/BrightnessHSlider" method="_on_value_changed"]
+[connection signal="value_changed" from="Control/MarginContainer/VideoOptions/GridContainer/ContrastHSlider2" to="Control/MarginContainer/VideoOptions/GridContainer/ContrastHSlider2" method="_on_value_changed"]
+[connection signal="pressed" from="Control/MarginContainer/VideoOptions/GridContainer/DefaultsButton" to="Control/MarginContainer/VideoOptions/GridContainer/DefaultsButton" method="_on_pressed"]
 [connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider" method="_on_value_changed"]
 [connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider2" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider2" method="_on_value_changed"]
 [connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]

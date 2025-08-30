@@ -11,7 +11,11 @@ var settings: Dictionary = {}: set = _settings_set
 ## A list of all players in the game
 var players: UniqueSet = UniqueSet.new()
 
-
 func _settings_set(new_settings: Dictionary):
 	settings = new_settings
 	settings_changed.emit(settings)
+
+func reset():
+	players.clear()
+	node = null
+	settings = {}
