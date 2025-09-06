@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="Nodot"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://bk00qxqmpmihk"
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -36,7 +37,7 @@ movie_writer/movie_file="C:/nodot.avi"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/nodot/plugin.cfg")
+enabled=PackedStringArray("res://addons/nodot/plugin.cfg", "res://addons/vest/plugin.cfg")
 
 [input]
 
