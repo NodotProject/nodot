@@ -1,8 +1,10 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=12 format=3 uid="uid://b3j5hsy3v5ucg"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=16 format=3 uid="uid://b3j5hsy3v5ucg"]
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_ig7tw"]
 
 [sub_resource type="AnimationNodeAdd3" id="AnimationNodeAdd3_0xm2m"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_n2ay0"]
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_h2yge"]
 
@@ -12,7 +14,20 @@
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_7mycd"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b6d5y"]
+animation = &"new_animation"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_au6hk"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wrel2"]
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_272bh"]
+states/SomeState/node = SubResource("AnimationNodeAnimation_b6d5y")
+states/SomeState/position = Vector2(598, 100)
+states/Start/position = Vector2(347, 100)
+transitions = ["Start", "SomeState", SubResource("AnimationNodeStateMachineTransition_au6hk"), "SomeState", "End", SubResource("AnimationNodeStateMachineTransition_wrel2")]
 
 [sub_resource type="AnimationNodeSub2" id="AnimationNodeSub2_5vw27"]
 
@@ -23,7 +38,7 @@
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_efxa6"]
 
 [resource]
-graph_offset = Vector2(-517.469, -75.31176)
+graph_offset = Vector2(-309.13617, -228.32089)
 nodes/output/position = Vector2(650, 200)
 nodes/OneShot/node = SubResource("AnimationNodeOneShot_7mycd")
 nodes/OneShot/position = Vector2(450, 40)
@@ -47,4 +62,6 @@ nodes/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_lquwl")
 nodes/BlendSpace2D/position = Vector2(950, -290)
 nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_272bh")
 nodes/StateMachine/position = Vector2(950, 160)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_n2ay0")
+nodes/Animation/position = Vector2(780, 300)
 node_connections = [&"Blend2", 0, &"OneShot"]
