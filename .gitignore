@@ -25,3 +25,4 @@ build
 .vscode/settings.json
 addons/vest
 addons/gut
+*.log

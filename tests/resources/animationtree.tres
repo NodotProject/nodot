@@ -1,0 +1,67 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=16 format=3 uid="uid://b3j5hsy3v5ucg"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_ig7tw"]
+
+[sub_resource type="AnimationNodeAdd3" id="AnimationNodeAdd3_0xm2m"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_n2ay0"]
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_h2yge"]
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_1bvp3"]
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_lquwl"]
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_7mycd"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b6d5y"]
+animation = &"new_animation"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_au6hk"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wrel2"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_272bh"]
+states/SomeState/node = SubResource("AnimationNodeAnimation_b6d5y")
+states/SomeState/position = Vector2(598, 100)
+states/Start/position = Vector2(347, 100)
+transitions = ["Start", "SomeState", SubResource("AnimationNodeStateMachineTransition_au6hk"), "SomeState", "End", SubResource("AnimationNodeStateMachineTransition_wrel2")]
+
+[sub_resource type="AnimationNodeSub2" id="AnimationNodeSub2_5vw27"]
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kek77"]
+
+[sub_resource type="AnimationNodeTimeSeek" id="AnimationNodeTimeSeek_4c57u"]
+
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_efxa6"]
+
+[resource]
+graph_offset = Vector2(-309.13617, -228.32089)
+nodes/output/position = Vector2(650, 200)
+nodes/OneShot/node = SubResource("AnimationNodeOneShot_7mycd")
+nodes/OneShot/position = Vector2(450, 40)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_h2yge")
+nodes/Blend2/position = Vector2(790, 40)
+nodes/Add2/node = SubResource("AnimationNodeAdd2_ig7tw")
+nodes/Add2/position = Vector2(273, 176.5)
+nodes/Add3/node = SubResource("AnimationNodeAdd3_0xm2m")
+nodes/Add3/position = Vector2(100, 110)
+nodes/Sub2/node = SubResource("AnimationNodeSub2_5vw27")
+nodes/Sub2/position = Vector2(270, -70)
+nodes/TimeSeek/node = SubResource("AnimationNodeTimeSeek_4c57u")
+nodes/TimeSeek/position = Vector2(430, -150)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kek77")
+nodes/TimeScale/position = Vector2(600, -150)
+nodes/Transition/node = SubResource("AnimationNodeTransition_efxa6")
+nodes/Transition/position = Vector2(780, -200)
+nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_1bvp3")
+nodes/BlendSpace1D/position = Vector2(930.51294, -52.661327)
+nodes/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_lquwl")
+nodes/BlendSpace2D/position = Vector2(950, -290)
+nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_272bh")
+nodes/StateMachine/position = Vector2(950, 160)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_n2ay0")
+nodes/Animation/position = Vector2(780, 300)
+node_connections = [&"Blend2", 0, &"OneShot"]

@@ -2,9 +2,9 @@
 class_name Magazine extends Node
 
 ## For weapons with charging
-@export var charge_weapon: bool = false;
+@export var charge_weapon: bool = false
 ## How fast a weapon charges
-@export var charge_speed: float = 50;
+@export var charge_speed: float = 50
 ## Total rounds per magazine
 @export var capacity: int = 10
 ## Rounds available other than the loaded rounds (-1 for infinite)
@@ -38,12 +38,12 @@ signal discharged
 
 var time_since_last_fired: float = fire_rate
 var time_since_last_reload: float = reload_time
-var charge_amount: float = 0.0;
-var is_charging: bool = false;
+var charge_amount: float = 0.0
+var is_charging: bool = false
 
 func _physics_process(delta: float) -> void:
 	if is_charging:
-		charge_amount += charge_speed * delta;
+		charge_amount += charge_speed * delta
 	
 	# Ensure time_since_last_fired and time_since_last_reload do not exceed their respective limits
 	if time_since_last_fired < fire_rate * 2:
@@ -57,12 +57,12 @@ func _physics_process(delta: float) -> void:
 ## If there are not enough rounds and auto_reload is enabled, it reloads the magazine.
 func action() -> void:
 	if charge_weapon:
-		if time_since_last_fired < fire_rate: return ;
+		if time_since_last_fired < fire_rate: return 
 		if not is_charging:
-			charge_started.emit(charge_speed);
-			is_charging = true;
+			charge_started.emit(charge_speed)
+			is_charging = true
 			time_since_last_fired = 0
-		return ;
+		return 
 	
 	# Return if reloading
 	if time_since_last_reload < reload_time:
@@ -84,10 +84,10 @@ func action() -> void:
 ## When charge is released
 func release_action() -> void:
 	if is_charging:
-		is_charging = false;
+		is_charging = false
 		charge_released.emit(charge_amount)
 		discharged.emit()
-		charge_amount = 0;
+		charge_amount = 0
 
 ## Initiates a reload of the magazine
 func reload() -> void:
