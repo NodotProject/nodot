@@ -33,10 +33,12 @@ var target_method: String = ""
 func _ready():
 	notify_property_list_changed()
 	
+	if Engine.is_editor_hint(): return
+	
 	if target_method == "" or !is_instance_valid(target_node): return
 	
 	if global_trigger_signal != "":
-		GlobalSignal.add_listener(global_trigger_signal, target_node, target_method)
+		GlobalSignal.connect_signal(global_trigger_signal, target_node[target_method])
 	
 	if trigger_signal == "" or !is_instance_valid(trigger_node): return
 	

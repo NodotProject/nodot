@@ -192,6 +192,10 @@ func move_ground(delta: float) -> void:
 	stair_step(delta)
 	
 func stair_step(delta: float):
+	if is_on_wall():
+		move_and_slide()
+		return
+		
 		# --- Stairs logic ---
 	var starting_position: Vector3 = global_position
 	var starting_velocity: Vector3 = velocity

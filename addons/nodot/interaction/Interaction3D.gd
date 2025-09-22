@@ -45,12 +45,6 @@ var carried_body_prev_layer: int = 1
 var carried_body_physics_material: PhysicsMaterial
 var is_action_pressed: bool = false
 var current_label_text: String = ""
-	
-func _ready():
-	if not is_multiplayer_authority(): return
-	
-	# TODO: Check it's not already registered
-	InputManager.register_action(interact_action, KEY_F)
 
 func _input(event: InputEvent):
 	if !enabled or !event.is_action_pressed(interact_action) or !is_multiplayer_authority(): return
@@ -65,7 +59,7 @@ func _input(event: InputEvent):
 	interacted.emit(collider, get_collision_point(), get_collision_normal())
 	if collider.has_method("interact"):
 		collider.interact()
-		GlobalSignal.trigger_signal("interacted", [collider, get_collision_point(), get_collision_normal()])
+		GlobalSignal.emit("interacted", collider, get_collision_point(), get_collision_normal())
 	else:
 		if is_instance_valid(carried_body):
 			carry_end()
@@ -163,7 +157,7 @@ func carry_begin(collider: Node):
 		carried_body.collision_mask = carry_collision_mask
 		
 		carry_started.emit(carried_body)
-		GlobalSignal.trigger_signal("carry_started", carried_body)
+		GlobalSignal.emit("carry_started", carried_body)
 		
 		await get_tree().create_timer(1.5).timeout
 		if is_instance_valid(carried_body):
@@ -177,12 +171,12 @@ func carry_end():
 		carried_body.collision_mask = carried_body_prev_mask
 		carried_body.physics_material_override = carried_body_physics_material
 		carry_ended.emit(carried_body)
-		GlobalSignal.trigger_signal("carry_ended", carried_body)
+		GlobalSignal.emit("carry_ended", carried_body)
 		carried_body = null
 	else:
 		var dummy: Node3D = Node3D.new()
 		carry_ended.emit(dummy)
-		GlobalSignal.trigger_signal("carry_ended", dummy)
+		GlobalSignal.emit("carry_ended", dummy)
 
 func throw():
 	if is_instance_valid(carried_body):

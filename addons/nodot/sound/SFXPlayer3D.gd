@@ -21,6 +21,8 @@ class_name SFXPlayer3D extends AudioStreamPlayer3D
 @export var fade_speed: float = 1.0
 ## Tweak the pitch a bit to add variety
 @export var tweak_pitch: float = 0.0
+## Add a delay before playing the sound
+@export var delay: float = 0.0
 
 ## The name of the signal
 var trigger_signal: String = ""
@@ -60,6 +62,10 @@ func action(index: int = -1) -> void:
 	set_stream(stream)
 	if tweak_pitch > 0.0:
 		_tweak_pitch()
+	
+	if delay > 0.0:
+		await get_tree().create_timer(delay).timeout
+		
 	play()
 
 ## Fade the sound effect in
