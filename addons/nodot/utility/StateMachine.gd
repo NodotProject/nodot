@@ -13,8 +13,8 @@ class_name StateMachine extends Node
 ## 
 ## Can be an empty string if no state is active. Only modify directly if you
 ## need to skip [method transition]'s callbacks.
-@export var state: StringName = "":
-	get: return _state_object.name if _state_object != null else ""
+@export var state: StringName = &"":
+	get: return _state_object.name if _state_object != null else &""
 	set(v): _set_state(v)
 
 ## Emitted during state transitions.

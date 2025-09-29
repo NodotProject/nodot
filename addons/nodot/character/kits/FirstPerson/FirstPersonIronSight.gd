@@ -41,7 +41,7 @@ func _ready() -> void:
 		
 	if scope_texture:
 		var sprite2d: Sprite2D = Sprite2D.new()
-		sprite2d.name = "ScopeTexture"
+		sprite2d.name = &"ScopeTexture"
 		sprite2d.set_texture(scope_texture)
 		sprite2d.visible = false
 		scope_sprite = sprite2d
