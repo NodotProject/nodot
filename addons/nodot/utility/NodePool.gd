@@ -49,7 +49,10 @@ func next() -> Node:
 ## Clears the pool and frees all nodes
 func clear():
 	for node in pool:
-		if node.is_instance_valid():
+		if is_instance_valid(node):
+			# Clear owner_pool reference to prevent double-return
+			if node is PooledNode:
+				node.owner_pool = null
 			node.queue_free()
 	pool = []
 
@@ -74,6 +77,9 @@ func return_to_pool(node: Node) -> void:
 	if pool.size() >= pool_limit:
 		var old_node = pool.pop_front()
 		if old_node != node and is_instance_valid(old_node):
+			# Clear the owner_pool reference to prevent double-return
+			if old_node is PooledNode:
+				old_node.owner_pool = null
 			old_node.queue_free()
 	
 	# Add to front of pool (most recently returned)

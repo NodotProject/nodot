@@ -7,11 +7,10 @@ var owner_pool: NodePool
 
 ## Override notification to catch NOTIFY_PREDELETE
 func _notification(what: int) -> void:
-	if what == NOTIFY_PREDELETE and is_queued_for_deletion() and owner_pool:
+	if what == NOTIFY_PREDELETE and is_queued_for_deletion() and owner_pool and is_instance_valid(owner_pool):
 		# Cancel the free operation and return to pool
 		cancel_free()
-		if owner_pool.has_method("return_to_pool"):
-			owner_pool.return_to_pool(self)
+		owner_pool.return_to_pool(self)
 
 ## Called when the node is returned to the pool
 ## Override this method to reset the node's state

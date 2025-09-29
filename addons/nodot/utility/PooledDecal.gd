@@ -32,8 +32,9 @@ func setup_decal(texture: Texture2D, position: Vector3, normal: Vector3, size: V
 	if normal != Vector3.ZERO:
 		global_basis = Basis(Quaternion(Vector3.UP, normal))
 	
-	# Start the lifetime timer
-	lifetime_timer.start()
+	# Start the lifetime timer if it exists
+	if lifetime_timer:
+		lifetime_timer.start()
 
 ## Reset the decal state when returned to pool
 func reset_for_pool() -> void:
