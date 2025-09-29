@@ -1,0 +1,4 @@
+[gd_resource type="Script" format=3 uid="uid://bg8n4rr2vl1lj"]
+
+[resource]
+script/source = "GDScript"
