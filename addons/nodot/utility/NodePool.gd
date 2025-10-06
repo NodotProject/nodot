@@ -36,7 +36,8 @@ func _add_node_to_tree(node: Node) -> void:
 ## If the pool is at its limit, reuses the oldest node
 ## Otherwise, creates a new node by duplicating the target
 func next() -> Node:
-	var node: Node = pool.pop_front() if pool.size() >= pool_limit else pool[0].duplicate(duplicate_flag)
+	var node = pool.pop_front() if pool.size() >= pool_limit else pool[0].duplicate(duplicate_flag)
+	if !is_instance_valid(node): return null
 	pool.append(node)
 	_add_node_to_tree(node)
 	return node

@@ -19,7 +19,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _enter_tree():
 	if !camera:
 		camera = Nodot.get_first_child_of_type(self, Camera3D)
-	_debouncer = Debouncer.new(self, _reset_camera, debounce_duration)
+	_debouncer = Debouncer.new(_reset_camera, debounce_duration)
 	connect("current_player_body_entered", _current_player_entered)
 	connect("current_player_body_exited", _current_player_exited)
 	
