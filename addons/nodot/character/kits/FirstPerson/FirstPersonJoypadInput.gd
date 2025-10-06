@@ -57,8 +57,8 @@ func _ready() -> void:
 		if child is FirstPersonItemsContainer:
 			fps_item_container = child
 
-	if character.has_node("Head"):
-		head = character.get_node("Head")
+	if character.has_node(&"Head"):
+		head = character.get_node(&"Head")
 		
 	setup_input()
 

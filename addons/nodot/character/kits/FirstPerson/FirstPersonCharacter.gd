@@ -45,10 +45,10 @@ var direction3d: Vector3 = Vector3.ZERO
 func _enter_tree() -> void:
 	super._enter_tree()
 	
-	if !has_node("Head"):
+	if !has_node(&"Head"):
 		head = Node3D.new()
-		head.name = "Head"
-		camera.name = "Camera3D"
+		head.name = &"Head"
+		camera.name = &"Camera3D"
 		head.add_child(camera)
 		add_child(head)
 
@@ -60,9 +60,9 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 
-	if has_node("Head"):
-		head = get_node("Head")
-		camera = get_node("Head/Camera3D")
+	if has_node(&"Head"):
+		head = get_node(&"Head")
+		camera = get_node(&"Head/Camera3D")
 	
 	if is_multiplayer_authority() and is_current_player:
 		set_current_player()

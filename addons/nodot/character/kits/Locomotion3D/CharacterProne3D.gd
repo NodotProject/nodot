@@ -33,7 +33,7 @@ func setup():
 		
 	initial_movement_speed = character.movement_speed
 	
-	head = character.get_node("Head")
+	head = character.get_node(&"Head")
 	initial_head_position = head.position
 	idle_state_handler = Nodot.get_first_sibling_of_type(self, CharacterIdle3D)
 	

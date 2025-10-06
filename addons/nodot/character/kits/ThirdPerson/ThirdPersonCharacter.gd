@@ -50,7 +50,7 @@ func _enter_tree() -> void:
 	for child in get_children():
 		if child is ThirdPersonCamera:
 			var node3d = Node3D.new()
-			node3d.name = "ThirdPersonCameraContainer"
+			node3d.name = &"ThirdPersonCameraContainer"
 			add_child(node3d)
 			remove_child(child)
 			node3d.add_child(child)
