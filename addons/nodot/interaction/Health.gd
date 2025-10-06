@@ -1,6 +1,8 @@
 ## A node to manage health
 class_name Health extends Node
 
+## Disable for god mode
+@export var enabled: bool = true
 ## The maximum health
 @export var max_health: float = 100.0
 ## The current health
@@ -19,6 +21,8 @@ signal health_changed(old_health: float, new_health: float)
 
 ## Offsets current_health by the modifier
 func add_health(modifier: float) -> void:
+	if !enabled: return
+	
 	if modifier == 0:
 		return
 	var old_health: float = current_health
@@ -41,5 +45,7 @@ func add_health(modifier: float) -> void:
 
 ## Sets the current_health to a specific value
 func set_health(new_value: float) -> void:
+	if !enabled: return
+	
 	var health_difference = new_value - current_health
 	add_health(health_difference)

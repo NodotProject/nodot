@@ -38,7 +38,7 @@ func _ready():
 		trigger_node.connect(trigger_signal, callback)
 
 func _callback(arg = null):
-	GlobalSignal.trigger_signal(global_signal, arg)
+	GlobalSignal.emit(global_signal, arg)
 
 func _get_property_list() -> Array[Dictionary]:
 	var property_list: Array[Dictionary] = [ {

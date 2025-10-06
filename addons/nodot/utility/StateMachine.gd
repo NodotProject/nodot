@@ -77,7 +77,6 @@ func _set_state(new_state: StringName) -> void:
 		return
 	
 	if not _available_states.has(new_state):
-		printerr("Attempted to jump to unknown state: %s" % [new_state])
 		return
 	
 	_state_object = _available_states[new_state]

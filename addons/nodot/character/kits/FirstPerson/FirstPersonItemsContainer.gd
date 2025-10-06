@@ -26,7 +26,7 @@ func _ready() -> void:
 	
 	InputManager.register_action(reload_action, KEY_R)
 	
-	GlobalSignal.add_listener("carry_ended", self, "on_carry_ended")
+	GlobalSignal.connect_signal("carry_ended", on_carry_ended)
 	
 func _input(event: InputEvent) -> void:
 	if not character.is_multiplayer_authority(): return
@@ -38,14 +38,14 @@ func _input(event: InputEvent) -> void:
 func next_item() -> void:
 	var next_valid_index := iterate_item(-1)
 	if next_valid_index >= 0:
-		GlobalSignal.trigger_signal("item_scroll", next_valid_index)
+		GlobalSignal.emit("item_scroll", next_valid_index)
 		change_item(next_valid_index)
 
 ## Select the previous item
 func previous_item() -> void:
 	var next_valid_index := iterate_item(1)
 	if next_valid_index >= 0:
-		GlobalSignal.trigger_signal("item_scroll", next_valid_index);
+		GlobalSignal.emit("item_scroll", next_valid_index);
 		change_item(next_valid_index)
 	
 ## Iterate the items list

@@ -33,15 +33,13 @@ signal spawns_left_updated(spawns_left: int)
 var is_editor: bool = Engine.is_editor_hint()
 var saved_children: Array = []
 
-
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if !Nodot.get_first_child_of_type(self, Node3D):
 		warnings.append("Should have a child of Node3D type")
 	return warnings
 
-
-func _enter_tree() -> void:
+func _ready() -> void:
 	if is_editor:
 		return
 
@@ -79,9 +77,10 @@ func action() -> void:
 		add_child(new_child)
 		new_child.global_position = global_position
 		new_child.global_rotation = global_rotation
-	spawns_left -= 1
+	if spawns_left > 0:
+		spawns_left -= 1
+		spawns_left_updated.emit(spawns_left)
 	spawned.emit()
-	spawns_left_updated.emit(spawns_left)
 
 
 ## Reset the spawn limit
