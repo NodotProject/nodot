@@ -21,10 +21,13 @@ signal activated
 ## Triggered when the item is deactivated
 signal deactivated
 signal discharged
+## Emitted when spray pattern offset is updated (offset: Vector2, shot_index: int)
+signal spray_offset_updated(offset: Vector2, shot_index: int)
 
 ## Not exported as FirstPersonIronSight must be a child node of the FirstPersonItem
 var ironsight_node: FirstPersonIronSight
 var crosshair_node: CrossHair
+var spray_pattern_node: SprayPattern
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -40,8 +43,10 @@ func _ready() -> void:
 	projectile_emitter_node = Nodot.get_first_child_of_type(self, ProjectileEmitter3D)
 	bullethole_node = Nodot.get_first_child_of_type(self, BulletHole)
 	crosshair_node = Nodot.get_first_child_of_type(self, CrossHair)
+	spray_pattern_node = Nodot.get_first_child_of_type(self, SprayPattern)
 
 	connect_magazine()
+	connect_spray_pattern()
 
 	if mesh:
 		var mesh_instance: MeshInstance3D = MeshInstance3D.new()
@@ -121,3 +126,15 @@ func connect_magazine() -> void:
 			magazine_node.connect("discharged", projectile_emitter_node.action)
 	if hitscan_node and bullethole_node:
 		hitscan_node.connect("target_hit", bullethole_node.action)
+
+## Connect the spray pattern events to synchronize recoil with weapon discharge
+func connect_spray_pattern() -> void:
+	if spray_pattern_node and magazine_node:
+		magazine_node.connect("discharged", func():
+			var offset = spray_pattern_node.get_next_offset()
+			spray_offset_updated.emit(offset, spray_pattern_node.get_current_shot_index())
+		)
+		# Forward spray pattern signals
+		spray_pattern_node.connect("spray_offset_updated", func(offset: Vector2, shot_index: int):
+			spray_offset_updated.emit(offset, shot_index)
+		)
