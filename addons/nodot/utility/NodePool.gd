@@ -40,11 +40,48 @@ func next() -> Node:
 	if !is_instance_valid(node): return null
 	pool.append(node)
 	_add_node_to_tree(node)
+	
+	# If this is a PooledNode, set the owner_pool reference for auto-recycling
+	if node is PooledNode:
+		node.owner_pool = self
+	
 	return node
 
 ## Clears the pool and frees all nodes
 func clear():
 	for node in pool:
-		if node.is_instance_valid():
+		if is_instance_valid(node):
+			# Clear owner_pool reference to prevent double-return
+			if node is PooledNode:
+				node.owner_pool = null
 			node.queue_free()
 	pool = []
+
+## Returns a node to the pool (called automatically by PooledNode)
+func return_to_pool(node: Node) -> void:
+	if !node or !is_instance_valid(node):
+		return
+	
+	# Don't add the node if it's already in the pool
+	if pool.has(node):
+		return
+		
+	# Reset the node's state if it's a PooledNode
+	if node.has_method("reset_for_pool"):
+		node.reset_for_pool()
+	
+	# Remove from current parent if it has one
+	if node.get_parent():
+		node.get_parent().remove_child(node)
+	
+	# If pool is at limit, replace the oldest node
+	if pool.size() >= pool_limit:
+		var old_node = pool.pop_front()
+		if old_node != node and is_instance_valid(old_node):
+			# Clear the owner_pool reference to prevent double-return
+			if old_node is PooledNode:
+				old_node.owner_pool = null
+			old_node.queue_free()
+	
+	# Add to front of pool (most recently returned)
+	pool.push_front(node)
