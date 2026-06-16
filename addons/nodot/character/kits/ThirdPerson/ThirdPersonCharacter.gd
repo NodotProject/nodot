@@ -128,7 +128,9 @@ func move(delta: float) -> void:
 		direction3d = (flat_forward * direction2d.y + flat_right * direction2d.x)
 
 		if direction3d != Vector3.ZERO:
-			direction3d = direction3d.normalized()
+			# limit_length (not normalized) preserves analog joypad
+			# magnitudes below 1.0 while still clamping keyboard diagonals.
+			direction3d = direction3d.limit_length(1.0)
 	else:
 		basis = transform.basis
 		direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
