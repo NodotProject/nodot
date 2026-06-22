@@ -3,16 +3,18 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled: bool = true
-## How fast the character can move
-@export var movement_speed := 1.0
-## Friction when stopping. The smaller the value, the more you slide (-1 to disable)
-@export var friction: float = 1.0
+## Target horizontal movement speed in metres/second
+@export var movement_speed := 5.0
+## Horizontal deceleration (m/s²) when no input; negative disables (slides forever)
+@export var friction: float = 50.0
 ## Minimum amount of fall damage before it is actually applied
 @export var minimum_fall_damage: float = 5.0
 ## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
 @export var fall_damage_multiplier: float = 0.5
 ## Can control the character while its in the air
 @export var air_control: bool = true
+## Horizontal acceleration in m/s² applied while airborne (requires air_control)
+@export var air_acceleration: float = 30.0
 ## Strafing enabled. Otherwise the character will turn to face the movement direction
 @export var strafing: bool = false
 ## Turn rate. If strafing is disabled, define how fast the character will turn.
@@ -21,9 +23,6 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 @export var stepping_enabled: bool = true
 ## Maximum height for a ledge to allow stepping up.
 @export var step_height: float = 0.5
-
-## Constructs the step up movement vector.
-@onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 
 ## Triggered when the character takes fall damage
 signal fall_damage(amount: float)
@@ -90,10 +89,11 @@ func _calculate_peak_recent_velocity(delta: float):
 			peak_recent_velocity = lerp(peak_recent_velocity, Vector3.ZERO, delta)
 
 func _process_fall_damage():
-	var on_floor = _is_on_floor() != null
+	var floor_node = _is_on_floor()
+	var on_floor = floor_node != null
 	if !health or fall_damage_multiplier <= 0.0:
 		was_on_floor = on_floor
-		floor_body = _is_on_floor();
+		floor_body = floor_node
 		return
 	
 	if !was_on_floor:
@@ -128,7 +128,9 @@ func move(delta: float) -> void:
 		direction3d = (flat_forward * direction2d.y + flat_right * direction2d.x)
 
 		if direction3d != Vector3.ZERO:
-			direction3d = direction3d.normalized()
+			# limit_length (not normalized) preserves analog joypad
+			# magnitudes below 1.0 while still clamping keyboard diagonals.
+			direction3d = direction3d.limit_length(1.0)
 	else:
 		basis = transform.basis
 		direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
@@ -159,31 +161,27 @@ func set_rigid_interaction():
 
 func move_air(delta: float) -> void:
 	air_time += delta
-	velocity.y = min(terminal_velocity, velocity.y - gravity * delta)
+	velocity.y = max(-terminal_velocity, velocity.y - gravity * delta)
 	
-	var final_speed: float = get_current_speed() * delta * 100
-	
-	if direction3d == Vector3.ZERO:
-		velocity.x = lerp(velocity.x, direction3d.x * final_speed, 0.025)
-		velocity.z = lerp(velocity.z, direction3d.z * final_speed, 0.025)
-	elif air_control:
-		velocity.x = lerp(velocity.x, direction3d.x * final_speed, friction / 10)
-		velocity.z = lerp(velocity.z, direction3d.z * final_speed, friction / 10)
-		move_camera(turn_rate / 10)
+	if air_control and direction3d != Vector3.ZERO:
+		var target_speed: float = get_current_speed()
+		velocity.x = move_toward(velocity.x, direction3d.x * target_speed, air_acceleration * delta)
+		velocity.z = move_toward(velocity.z, direction3d.z * target_speed, air_acceleration * delta)
+		move_camera()
 	
 	move_and_slide()
 
 func move_ground(delta: float) -> void:
 	air_time = 0.0
-	var final_speed: float = get_current_speed() * delta * 100
 	
 	if direction3d == Vector3.ZERO:
-		var final_friction = friction if friction >= 0 else final_speed
-		velocity.x = move_toward(velocity.x, 0, friction)
-		velocity.z = move_toward(velocity.z, 0, friction)
+		if friction >= 0.0:
+			velocity.x = move_toward(velocity.x, 0.0, friction * delta)
+			velocity.z = move_toward(velocity.z, 0.0, friction * delta)
 	else:
-		velocity.x = direction3d.x * final_speed
-		velocity.z = direction3d.z * final_speed
+		var target_speed: float = get_current_speed()
+		velocity.x = direction3d.x * target_speed
+		velocity.z = direction3d.z * target_speed
 		
 		move_camera()
 			
@@ -205,46 +203,46 @@ func move_camera(final_turn_rate: float = turn_rate):
 			current_camera.global_transform.basis = cached_basis
 
 func stair_step(delta: float):
-	if is_on_wall():
-		move_and_slide()
-		return
-		
-		# --- Stairs logic ---
-	var starting_position: Vector3 = global_position
-	var starting_velocity: Vector3 = velocity
-	
-	# Start by moving our character body by its normal velocity.
+	var start_position: Vector3 = global_position
+	var start_velocity: Vector3 = velocity
+
+	# Move by the current velocity first.
 	move_and_slide()
-	if !stepping_enabled or !was_on_floor:
+
+	# Only attempt a manual step when grounded and this move bumped a wall-like
+	# obstacle. Low steps the capsule can already roll over report as floor, so
+	# they skip this branch and are resolved by the slide above (no fighting).
+	if !stepping_enabled or !was_on_floor or !is_on_wall():
+		velocity.y = lerp(velocity.y, 0.0, delta * 2.0)
 		return
-	
-	# Next, we store the resulting position for later, and reset our character's
-	#    position and velocity values.
+
+	# Remember the plain-slide result to fall back to.
 	var slide_position: Vector3 = global_position
-	global_position = starting_position
-	velocity = starting_velocity
-	
-	# After that, we move_and_collide() them up by step_height, move_and_slide()
-	#    and move_and_collide() back down
+	var slide_velocity: Vector3 = velocity
+
+	# Retry the move: lift up, slide forward, then drop back down onto the step.
+	global_position = start_position
+	velocity = start_velocity
+
+	var step_vector: Vector3 = Vector3(0, step_height, 0)
 	move_and_collide(step_vector)
 	move_and_slide()
-	move_and_collide(-step_vector)
-	
-	# Finally, we test move down to see if they'll touch the floor once we move
-	#    them back down to their starting Y-position, if not, they fall,
-	#    otherwise, they step down by -step_height.
-	if !test_move(global_transform, -step_vector):
-		move_and_collide(-step_vector)
-		
-	# Now that we've done all that, we get the distance moved for both movements
-	#    and go with whichever one moves us further, as overhangs could impede 
-	#    movement if we were to only step.
-	var slide_distance: float = starting_position.distance_to(slide_position)
-	var step_distance: float = starting_position.distance_to(global_position)
-	if slide_distance > step_distance or !was_on_floor:
+	var landing: KinematicCollision3D = move_and_collide(-step_vector)
+
+	# Commit the step only if we landed on walkable floor, ended higher and
+	# actually advanced. Otherwise restore the plain slide so the body never bobs
+	# in place against an obstacle it cannot climb.
+	var climbed: bool = global_position.y - start_position.y > 0.001
+	var advanced: bool = (
+		Vector2(global_position.x - start_position.x, global_position.z - start_position.z).length()
+		> 0.001
+	)
+	var landed_flat: bool = landing != null and landing.get_angle() <= floor_max_angle
+
+	if not (climbed and advanced and landed_flat):
 		global_position = slide_position
-	# --- Step up logic ---
-	
+		velocity = slide_velocity
+
 	velocity.y = lerp(velocity.y, 0.0, delta * 2.0)
 
 func get_current_speed() -> float:

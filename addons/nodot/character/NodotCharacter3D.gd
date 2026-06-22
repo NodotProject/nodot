@@ -25,7 +25,9 @@ func _is_on_floor() -> Node:
 	if !collision_info: return null
 	if collision_info.get_collision_count() == 0: return null
 	if collision_info.get_angle() > floor_max_angle: return null
-	if global_position.y - collision_info.get_position().y < 0: return null
+	# Tolerance so bodies whose origin sits at the feet are not rejected by float
+	# noise when the contact point coincides with the origin's Y position.
+	if global_position.y - collision_info.get_position().y < -0.05: return null
 	return collision_info.get_collider(0)
 	
 func _is_current_player_changed(new_value: bool):

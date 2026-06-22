@@ -11,8 +11,10 @@ class_name CharacterJump3D extends CharacterExtensionBase3D
 var idle_state_node: CharacterIdle3D
 var left_the_ground: bool = false
 
-func _input(_event):
-	if character.was_on_floor and Input.is_action_pressed(jump_action):
+func _input(event):
+	# Use the event (echo excluded) instead of the Input singleton so OS key
+	# auto-repeat can't re-trigger a jump the instant the character lands.
+	if character.was_on_floor and event.is_action_pressed(jump_action):
 		state_machine.transition(name)
 
 func setup():
