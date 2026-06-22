@@ -108,7 +108,7 @@ func _input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if enabled and !is_editor and character.input_enabled:
-		if character.is_on_floor():
+		if character._is_on_floor() != null:
 			var jump_pressed: bool = Input.is_action_just_pressed(jump_action)
 			var sprint_pressed: bool = Input.is_action_pressed(sprint_action)
 
