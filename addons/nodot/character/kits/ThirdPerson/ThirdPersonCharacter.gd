@@ -3,16 +3,18 @@ class_name ThirdPersonCharacter extends NodotCharacter3D
 
 ## Allow player input
 @export var input_enabled: bool = true
-## How fast the character can move
-@export var movement_speed := 1.0
-## Friction when stopping. The smaller the value, the more you slide (-1 to disable)
-@export var friction: float = 1.0
+## Target horizontal movement speed in metres/second
+@export var movement_speed := 5.0
+## Horizontal deceleration (m/s²) when no input; negative disables (slides forever)
+@export var friction: float = 50.0
 ## Minimum amount of fall damage before it is actually applied
 @export var minimum_fall_damage: float = 5.0
 ## The amount of fall damage to inflict when hitting the ground at velocity (0 for disabled)
 @export var fall_damage_multiplier: float = 0.5
 ## Can control the character while its in the air
 @export var air_control: bool = true
+## Horizontal acceleration in m/s² applied while airborne (requires air_control)
+@export var air_acceleration: float = 30.0
 ## Strafing enabled. Otherwise the character will turn to face the movement direction
 @export var strafing: bool = false
 ## Turn rate. If strafing is disabled, define how fast the character will turn.
@@ -128,7 +130,9 @@ func move(delta: float) -> void:
 		direction3d = (flat_forward * direction2d.y + flat_right * direction2d.x)
 
 		if direction3d != Vector3.ZERO:
-			direction3d = direction3d.normalized()
+			# limit_length (not normalized) preserves analog joypad
+			# magnitudes below 1.0 while still clamping keyboard diagonals.
+			direction3d = direction3d.limit_length(1.0)
 	else:
 		basis = transform.basis
 		direction3d = (basis * Vector3(direction2d.x, 0, direction2d.y))
@@ -159,31 +163,27 @@ func set_rigid_interaction():
 
 func move_air(delta: float) -> void:
 	air_time += delta
-	velocity.y = min(terminal_velocity, velocity.y - gravity * delta)
+	velocity.y = max(-terminal_velocity, velocity.y - gravity * delta)
 	
-	var final_speed: float = get_current_speed() * delta * 100
-	
-	if direction3d == Vector3.ZERO:
-		velocity.x = lerp(velocity.x, direction3d.x * final_speed, 0.025)
-		velocity.z = lerp(velocity.z, direction3d.z * final_speed, 0.025)
-	elif air_control:
-		velocity.x = lerp(velocity.x, direction3d.x * final_speed, friction / 10)
-		velocity.z = lerp(velocity.z, direction3d.z * final_speed, friction / 10)
-		move_camera(turn_rate / 10)
+	if air_control and direction3d != Vector3.ZERO:
+		var target_speed: float = get_current_speed()
+		velocity.x = move_toward(velocity.x, direction3d.x * target_speed, air_acceleration * delta)
+		velocity.z = move_toward(velocity.z, direction3d.z * target_speed, air_acceleration * delta)
+		move_camera()
 	
 	move_and_slide()
 
 func move_ground(delta: float) -> void:
 	air_time = 0.0
-	var final_speed: float = get_current_speed() * delta * 100
 	
 	if direction3d == Vector3.ZERO:
-		var final_friction = friction if friction >= 0 else final_speed
-		velocity.x = move_toward(velocity.x, 0, friction)
-		velocity.z = move_toward(velocity.z, 0, friction)
+		if friction >= 0.0:
+			velocity.x = move_toward(velocity.x, 0.0, friction * delta)
+			velocity.z = move_toward(velocity.z, 0.0, friction * delta)
 	else:
-		velocity.x = direction3d.x * final_speed
-		velocity.z = direction3d.z * final_speed
+		var target_speed: float = get_current_speed()
+		velocity.x = direction3d.x * target_speed
+		velocity.z = direction3d.z * target_speed
 		
 		move_camera()
 			
