@@ -274,9 +274,20 @@ script/source = "extends GridContainer
 
 @export var ignored_actions: Array[String] = [\"escape\"]
 
+## Sticks and analog triggers rest slightly off centre and jitter constantly, so
+## a rebind prompt that accepted any InputEventJoypadMotion consumed that drift
+## the instant it opened. Only a deliberate, near-full deflection counts as a
+## bind. Deliberately higher than InputManager.stick_deadzone (0.5), which only
+## has to notice that a controller is in use at all.
+const JOYPAD_AXIS_BIND_THRESHOLD := 0.7
+
 var target_action_name: String = \"\"
-var target_key_name: String = \"\"
 var target_button: Button
+## Which of the two columns is being rebound. The keyboard column ignores joypad
+## input and the joypad column ignores keyboard/mouse, so a drifting stick can
+## never reach a keyboard binding, and neither column can be cleared by an event
+## it would not have accepted in the first place.
+var target_is_joypad: bool = false
 
 func _ready():
 	%InputEntryPanel.visible = false
@@ -308,8 +319,8 @@ func populate_controls():
 			input_button.flat = true
 			input_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			input_button.focus_mode = Control.FOCUS_NONE
-			input_button.text = InputManager.get_action_key(action)
-			input_button.connect(\"pressed\", _input_button_clicked.bind(action, input_button))
+			input_button.text = _clean_key_name_text(InputManager.get_action_key(action))
+			input_button.connect(\"pressed\", _input_button_clicked.bind(action, input_button, false))
 			add_child(input_button)
 
 			var joy_input_button: Button = Button.new()
@@ -317,34 +328,96 @@ func populate_controls():
 			joy_input_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			joy_input_button.focus_mode = Control.FOCUS_NONE
 			joy_input_button.text = _clean_key_name_text(InputManager.get_action_joy(action))
-			joy_input_button.connect(\"pressed\", _input_button_clicked.bind(action, joy_input_button))
+			joy_input_button.connect(\"pressed\", _input_button_clicked.bind(action, joy_input_button, true))
 			add_child(joy_input_button)
 			
 func _input(event: InputEvent):
-	if target_action_name != \"\":
-		if event is InputEventMouseMotion:
-			return
+	if target_action_name == \"\":
+		return
+
+	# Escape cancels. Stray events no longer end the prompt, so there has to be
+	# a way out that doesn't bind anything. Safe to leave unhandled: the menu's
+	# own escape handler ignores it while %InputEntryPanel is still visible,
+	# which it is until _finish_rebind's await resolves.
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		_finish_rebind()
+		return
+
+	# Resolve what this event would bind to BEFORE clearing anything. The old
+	# version erased the existing binding first and only then checked the event
+	# type, so an event it had no branch for - stick drift, most obviously -
+	# closed the prompt having left the action bound to nothing at all.
+	var binding := resolve_binding(event, target_is_joypad)
+	if binding.is_empty():
+		return
+
+	_erase_column_bindings(target_action_name)
+	InputManager.register_action(target_action_name, binding.code, binding.source, binding.value)
+	target_button.text = _clean_key_name_text(
+		InputManager.get_action_joy(target_action_name) if target_is_joypad
+		else InputManager.get_action_key(target_action_name)
+	)
+	_finish_rebind()
+
+## The binding an event should create - {source, code, value} - or an empty
+## dictionary if the prompt should keep waiting. Kept public and free of any
+## node/tree access so the drift rejection and column filtering can be tested
+## without a live options menu (see tests/test_options_menu_rebinding.gd).
+func resolve_binding(event: InputEvent, is_joypad: bool) -> Dictionary:
+	if is_joypad:
+		if event is InputEventJoypadButton and event.pressed:
+			return {
+				\"source\": InputManager.INPUT_KEY_SOURCE.JOYPAD,
+				\"code\": event.button_index,
+				\"value\": 0.0,
+			}
+		if event is InputEventJoypadMotion and absf(event.axis_value) >= JOYPAD_AXIS_BIND_THRESHOLD:
+			return {
+				\"source\": InputManager.INPUT_KEY_SOURCE.JOYPAD_MOTION,
+				\"code\": event.axis,
+				# Direction comes from the sign and magnitude from the action's
+				# own deadzone, matching the +/-1.0 defaults in project.godot.
+				\"value\": signf(event.axis_value),
+			}
+		return {}
+
+	if event is InputEventKey and event.pressed and not event.echo:
+		return {
+			\"source\": InputManager.INPUT_KEY_SOURCE.KEYBOARD,
+			\"code\": event.keycode if event.keycode > 0 else event.physical_keycode,
+			\"value\": 0.0,
+		}
+	if event is InputEventMouseButton and event.pressed:
+		return {
+			\"source\": InputManager.INPUT_KEY_SOURCE.MOUSE,
+			\"code\": event.button_index,
+			\"value\": 0.0,
+		}
+	return {}
+
+## Drops only the bindings the column being edited owns. The old code asked
+## InputManager.remove_action to match on the button's displayed text, which
+## _clean_key_name_text has already truncated for joypad entries - so it usually
+## matched nothing and left the previous event attached alongside the new one.
+func _erase_column_bindings(action_name: String) -> void:
+	if !InputMap.has_action(action_name):
+		return
+	for event in InputMap.action_get_events(action_name):
+		var is_joypad: bool = event is InputEventJoypadButton or event is InputEventJoypadMotion
+		if is_joypad == target_is_joypad:
+			InputMap.action_erase_event(action_name, event)
+
+func _finish_rebind() -> void:
+	target_action_name = \"\"
+	target_button = null
+	# Wait for all other input methods to propegate before hiding this panel
+	await get_tree().process_frame
+	%InputEntryPanel.visible = false
 		
-		InputManager.remove_action(target_action_name, target_key_name)
-		if event is InputEventKey:
-			InputManager.register_action(target_action_name, event.keycode, 0)
-		if event is InputEventMouseButton:
-			InputManager.register_action(target_action_name, event.button_index, 1)
-		if event is InputEventJoypadButton:
-			InputManager.register_action(target_action_name, event.button_index, 2)
-			
-		target_button.text = _clean_key_name_text(InputManager.get_action_key(target_action_name))
-		
-		target_action_name = \"\"
-		target_key_name = \"\"
-		# Wait for all other input methods to propegate before hiding this panel
-		await get_tree().process_frame
-		%InputEntryPanel.visible = false
-		
-func _input_button_clicked(action_name: String, button: Button):
+func _input_button_clicked(action_name: String, button: Button, is_joypad: bool):
 	target_action_name = action_name
-	target_key_name = button.text
 	target_button = button
+	target_is_joypad = is_joypad
 	%InputEntryPanel.visible = true
 
 func _clean_key_name_text(key_name: String):
