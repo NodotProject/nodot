@@ -113,6 +113,83 @@ func test_frees_its_templates_with_itself():
 	expect_false(is_instance_id_valid(template_id), "Should not leave the template orphaned")
 
 
+func test_any_save_system_can_restore_deleted_spawns():
+	var original := _make_spawner(4)
+	original.spawn_all_on_start = true
+	await _start(original)
+	var deleted := original.get_children().filter(func(node): return node is Node3D).back() as Node
+	deleted.queue_free()
+
+	var state: Dictionary = original.get_spawn_state()
+	var restored := _make_spawner(4)
+	restored.spawn_all_on_start = true
+	await _start(restored)
+	restored.restore_spawn_state(state)
+
+	expect_equal(state["spawned_count"], 3, "Should capture only living batches")
+	expect_equal(_live_spawns(restored), 3, "Should restore the saved live count")
+	expect_equal(restored.spawns_left, 1, "Should restore the matching budget")
+
+
+func test_can_restore_state_before_ready():
+	var spawner := _make_spawner(4)
+	spawner.spawn_all_on_start = true
+	spawner.restore_spawn_state({"spawned_count": 2})
+	await _start(spawner)
+
+	expect_equal(_live_spawns(spawner), 2, "Should prefer restored state to startup spawning")
+	expect_equal(spawner.spawns_left, 2, "Should restore the matching budget")
+
+
+func test_restore_cancels_delayed_startup_spawns():
+	var spawner := _make_spawner(4)
+	spawner.spawn_all_on_start = true
+	spawner.spawn_delay = 0.3
+	await _start(spawner)
+	spawner.restore_spawn_state({"spawned_count": 2})
+	await _wait(0.5)
+
+	expect_equal(_live_spawns(spawner), 2, "Should not append stale delayed spawns")
+	expect_equal(spawner.spawns_left, 2, "Should keep the restored budget")
+
+
+func test_persistent_deletions_override_auto_respawn():
+	var spawner := _make_spawner(2)
+	spawner.spawn_all_on_start = true
+	spawner.auto_spawn_all = true
+	spawner.persist_deletions = true
+	spawner.deletion_check_interval = 0.1
+	await _start(spawner)
+	var deleted := spawner.get_children().filter(func(node): return node is Node3D).back() as Node
+	deleted.queue_free()
+	await _wait(0.3)
+
+	expect_equal(_live_spawns(spawner), 1, "Should leave a persistent deletion empty")
+	expect_equal(spawner.spawns_left, 1, "Should refund the deleted spawn")
+
+
+func test_saver_is_an_optional_adapter():
+	var original := _make_spawner(2)
+	original.spawn_all_on_start = true
+	original.persist_deletions = true
+	var original_saver := Saver.new()
+	original.add_child(original_saver)
+	await _start(original)
+	var deleted := original.get_children().filter(func(node): return node is Node3D).back() as Node
+	deleted.queue_free()
+	var saved_data: Dictionary = original_saver.save()
+
+	var restored := _make_spawner(2)
+	restored.spawn_all_on_start = true
+	restored.persist_deletions = true
+	var restored_saver := Saver.new()
+	restored.add_child(restored_saver)
+	await _start(restored)
+	restored_saver.load(saved_data)
+
+	expect_equal(_live_spawns(restored), 1, "Should restore through Nodot's Saver")
+
+
 func _tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
 

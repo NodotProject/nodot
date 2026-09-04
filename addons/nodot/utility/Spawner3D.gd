@@ -18,8 +18,11 @@ class_name Spawner3D extends Node3D
 @export var monitor_deletions: bool = false
 ## The interval at which to check for deletions
 @export var deletion_check_interval: float = 1.0
-## Keep the number of spawned items in the tree equal to the spawn limit (overrides monitor_deletions to true)
+## Keep the number of spawned items in the tree equal to the spawn limit
+## (overrides monitor_deletions to true)
 @export var auto_spawn_all: bool = false
+## Keep deleted spawns deleted when restoring persisted spawn state
+@export var persist_deletions: bool = false
 
 ## Triggered when an item is spawned
 signal spawned
@@ -38,6 +41,10 @@ var saved_children: Array = []
 var _spawned_batches: Array = []
 ## Spawns that have taken their budget but are still waiting on [member spawn_delay]
 var _pending_spawns: int = 0
+## Invalidates delayed actions when a persistence system restores a different state
+var _spawn_epoch: int = 0
+## State supplied before this node is ready
+var _pending_restore_state: Dictionary = {}
 
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -77,7 +84,11 @@ func _ready() -> void:
 		timer.timeout.connect(check)
 		add_child(timer)
 
-	if spawn_all_on_start or auto_spawn_all:
+	if !_pending_restore_state.is_empty():
+		var state := _pending_restore_state
+		_pending_restore_state = {}
+		_restore_spawn_state_now(state)
+	elif spawn_all_on_start or auto_spawn_all:
 		for i in maxi(spawn_limit, 0):
 			action()
 	elif spawn_one_on_start:
@@ -105,29 +116,19 @@ func action() -> void:
 	# Take the budget before waiting out the delay, so a pending spawn cannot be
 	# double booked by another action() call or by check() while it waits
 	_take_spawn_budget(1)
+	var spawn_epoch := _spawn_epoch
 
 	if spawn_delay > 0:
 		_pending_spawns += 1
 		await get_tree().create_timer(spawn_delay, false).timeout
+		if spawn_epoch != _spawn_epoch:
+			return
 		_pending_spawns -= 1
 		if !is_inside_tree() or !enabled:
 			_refund_spawn_budget(1)
 			return
 
-	var batch: Array = []
-	for child: Node3D in saved_children:
-		if !is_instance_valid(child):
-			continue
-		var new_child: Node3D = child.duplicate(
-			DUPLICATE_SIGNALS | DUPLICATE_GROUPS | DUPLICATE_SCRIPTS | DUPLICATE_USE_INSTANTIATION
-		)
-		# Place it before it enters the tree so it never renders a frame at the
-		# spawner's origin. A zeroed local transform is the spawner's global one.
-		new_child.position = Vector3.ZERO
-		new_child.rotation = Vector3.ZERO
-		add_child(new_child)
-		batch.append(new_child)
-
+	var batch := _spawn_batch()
 	if batch.is_empty():
 		_refund_spawn_budget(1)
 		return
@@ -147,6 +148,41 @@ func reset() -> void:
 	spawns_left_updated.emit(spawns_left)
 
 
+## Return the number of complete spawn batches which are still alive
+func get_current_spawn_count() -> int:
+	var count: int = 0
+	for batch in _spawned_batches:
+		if _is_batch_alive(batch):
+			count += 1
+	return count
+
+
+## Capture portable state for any persistence system
+func get_spawn_state() -> Dictionary:
+	return {"spawned_count": get_current_spawn_count()}
+
+
+## Restore portable state captured by [method get_spawn_state]
+func restore_spawn_state(state: Dictionary) -> void:
+	if !is_node_ready():
+		_pending_restore_state = state.duplicate(true)
+		return
+	_restore_spawn_state_now(state)
+
+
+## Optional Saver adapter; other persistence systems can use the public state methods
+func _saver_serialize() -> Variant:
+	if !persist_deletions:
+		return null
+	return get_spawn_state()
+
+
+## Optional Saver adapter
+func _saver_deserialize(state: Dictionary) -> void:
+	if persist_deletions:
+		restore_spawn_state(state)
+
+
 ## Check the current number of spawned objects
 func check() -> void:
 	var alive: Array = []
@@ -164,7 +200,7 @@ func check() -> void:
 		if _is_monitoring():
 			_refund_spawn_budget(lost)
 
-	if !auto_spawn_all:
+	if !auto_spawn_all or persist_deletions:
 		return
 
 	# Spawns still waiting on their delay are already paid for and on their way,
@@ -176,6 +212,59 @@ func check() -> void:
 
 func _is_monitoring() -> bool:
 	return monitor_deletions or auto_spawn_all
+
+
+func _spawn_batch() -> Array:
+	var batch: Array = []
+	for child: Node3D in saved_children:
+		if !is_instance_valid(child):
+			continue
+		var new_child: Node3D = child.duplicate(
+			DUPLICATE_SIGNALS | DUPLICATE_GROUPS | DUPLICATE_SCRIPTS | DUPLICATE_USE_INSTANTIATION
+		)
+		# Place it before it enters the tree so it never renders a frame at the
+		# spawner's origin. A zeroed local transform is the spawner's global one.
+		new_child.position = Vector3.ZERO
+		new_child.rotation = Vector3.ZERO
+		add_child(new_child)
+		batch.append(new_child)
+	return batch
+
+
+func _restore_spawn_state_now(state: Dictionary) -> void:
+	if !state.has("spawned_count"):
+		return
+
+	# Any delayed actions belong to the state being replaced and must not arrive
+	# after the restored batches have been reconciled.
+	_spawn_epoch += 1
+	_pending_spawns = 0
+
+	var alive: Array = []
+	for batch in _spawned_batches:
+		if _is_batch_alive(batch):
+			alive.append(batch)
+	_spawned_batches = alive
+
+	var target_count := maxi(int(state["spawned_count"]), 0)
+	if spawn_limit > 0:
+		target_count = mini(target_count, spawn_limit)
+
+	while _spawned_batches.size() > target_count:
+		var batch: Array = _spawned_batches.pop_back()
+		for node in batch:
+			if is_instance_valid(node) and node.get_parent() == self:
+				node.queue_free()
+
+	while _spawned_batches.size() < target_count:
+		var batch := _spawn_batch()
+		if batch.is_empty():
+			break
+		_spawned_batches.append(batch)
+
+	if spawn_limit > 0:
+		spawns_left = maxi(spawn_limit - _spawned_batches.size(), 0)
+	spawns_left_updated.emit(spawns_left)
 
 
 ## A batch counts as spawned for as long as any of its nodes is still a child
