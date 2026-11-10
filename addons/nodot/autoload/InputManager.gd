@@ -3,7 +3,42 @@ extends Node
 
 signal input_actions_update
 
-var mouse_sensitivity: float = 0.1
+## Mouse-look tuning, shared by EVERY mouse-driven camera (single-player, the networked
+## controller, spectator/free cameras). Persisted via SaveManager.config (load_config /
+## save_config).
+##
+## [member mouse_sensitivity] is on the Source-engine scale: one mouse COUNT turns the view
+## [constant YAW_DEG_PER_COUNT] x sensitivity degrees, so a value copied from CS/Apex/TF2
+## feels identical here. Callers must feed [method look_radians] the event's
+## [code]screen_relative[/code] (raw counts while the mouse is captured) — NEVER
+## [code]relative[/code], which Godot divides by the canvas_items stretch scale, so look
+## speed would change with the window size (with a 1152x648 base and canvas_items stretch,
+## 1080p turns 1.67x slower than the base and 4K 3.33x). And never multiply a mouse delta by a frame/physics delta: a delta is
+## already a distance, not a rate.
+const YAW_DEG_PER_COUNT := 0.022
+const DEFAULT_MOUSE_SENSITIVITY := 1.5
+const MIN_MOUSE_SENSITIVITY := 0.05
+const MAX_MOUSE_SENSITIVITY := 10.0
+const DEFAULT_MOUSE_DPI := 800
+## Zoom must narrow the FOV by more than this before the ADS multiplier fully applies —
+## a short ramp so a mid-raise FOV ease never steps the sensitivity.
+const _ADS_RAMP := 0.1
+## The pre-v2 sensitivity default; a legacy save still holding it is "never touched" and
+## takes the new default instead of being converted.
+const _LEGACY_DEFAULT_SENSITIVITY := 0.1
+
+## Source-scale look sensitivity (see above). 1.5 = ~35 cm per 360 deg at 800 DPI.
+var mouse_sensitivity: float = DEFAULT_MOUSE_SENSITIVITY
+## Vertical multiplier on top of [member mouse_sensitivity] (1.0 = same as horizontal).
+var mouse_y_scale: float = 1.0
+## Invert vertical mouse look.
+var invert_mouse_y: bool = false
+## Multiplier on the zoom-matched aim-down-sights / scope sensitivity. 1.0 = 0% monitor
+## distance match (things under the crosshair move at the same on-screen speed at every
+## zoom level); higher feels faster when zoomed.
+var ads_sensitivity_scale: float = 1.0
+## The player's mouse DPI. Display-only: drives the cm/360 readout in the options menu.
+var mouse_dpi: int = DEFAULT_MOUSE_DPI
 var default_input_actions: Dictionary
 var INPUT_KEY_SOURCE = {
 	KEYBOARD = 0,
@@ -195,9 +230,59 @@ func get_action_name_from_event(event: InputEvent) -> String:
 			return event.as_text()
 	return event.as_text()
 
+## View rotation (radians: x = yaw, y = pitch) for one mouse event's raw [param screen_relative]
+## motion, with invert-Y and the vertical multiplier folded in. Positive x = mouse moved
+## right, positive y = mouse moved down (or up when inverted) — callers SUBTRACT it from yaw
+## and pitch. [param zoom] is the FOV sensitivity factor from [method zoom_factor].
+func look_radians(screen_relative: Vector2, zoom: float = 1.0) -> Vector2:
+	var k := deg_to_rad(YAW_DEG_PER_COUNT) * mouse_sensitivity * zoom
+	var y_sign := -1.0 if invert_mouse_y else 1.0
+	return Vector2(screen_relative.x * k, screen_relative.y * k * mouse_y_scale * y_sign)
+
+## Sensitivity factor for a camera zoomed from [param fov_rest] to [param fov_now] (degrees,
+## either both vertical or both horizontal — the ratio is aspect-independent). The base is
+## the zoom ratio tan(now/2)/tan(rest/2) (0% monitor-distance match), so a 15 deg scope no
+## longer sweeps the screen ~6x faster than the hip view; [member ads_sensitivity_scale]
+## then scales it, ramped in over the first [constant _ADS_RAMP] of zoom so the FOV easing
+## in/out of ADS never steps the sensitivity. 1.0 when not zoomed.
+func zoom_factor(fov_now: float, fov_rest: float) -> float:
+	if fov_now <= 0.0 or fov_rest <= 0.0 or fov_now >= fov_rest:
+		return 1.0
+	var k := tan(deg_to_rad(fov_now) * 0.5) / tan(deg_to_rad(fov_rest) * 0.5)
+	var blend := clampf((1.0 - k) / _ADS_RAMP, 0.0, 1.0)
+	return k * lerpf(1.0, ads_sensitivity_scale, blend)
+
+## Centimetres of mouse travel for a full 360 deg turn at [param dpi] (hip, not zoomed).
+func cm_per_360(dpi: int = mouse_dpi) -> float:
+	if dpi <= 0 or mouse_sensitivity <= 0.0:
+		return INF
+	return 2.54 * 360.0 / (float(dpi) * mouse_sensitivity * YAW_DEG_PER_COUNT)
+
+## Restore every mouse-look setting to its default (keybindings untouched).
+func reset_mouse_settings() -> void:
+	mouse_sensitivity = DEFAULT_MOUSE_SENSITIVITY
+	mouse_y_scale = 1.0
+	invert_mouse_y = false
+	ads_sensitivity_scale = 1.0
+	mouse_dpi = DEFAULT_MOUSE_DPI
+
+## Convert a pre-v2 [code]mouse_sensitivity[/code] save. The old value was radians per
+## STRETCHED pixel per physics tick (FirstPersonMouseInput multiplied event.relative by it and
+## by the physics delta), so its real feel depended on the window. Convert at the most common
+## resolution, 1080p: relative = screen counts / stretch scale there.
+static func legacy_to_source_scale(legacy: float) -> float:
+	var base := Vector2(
+		float(ProjectSettings.get_setting("display/window/size/viewport_width", 1152)),
+		float(ProjectSettings.get_setting("display/window/size/viewport_height", 648)))
+	var stretch := 1.0
+	if String(ProjectSettings.get_setting("display/window/stretch/mode", "disabled")) != "disabled" \
+			and base.x > 0.0 and base.y > 0.0:
+		stretch = minf(1920.0 / base.x, 1080.0 / base.y)
+	var rad_per_count := legacy / float(Engine.physics_ticks_per_second) / stretch
+	return rad_to_deg(rad_per_count) / YAW_DEG_PER_COUNT
+
 func load_config():
-	if SaveManager.config.has_item("mouse_sensitivity"):
-		mouse_sensitivity = SaveManager.config.get_item("mouse_sensitivity")
+	_load_mouse_config()
 	if SaveManager.config.has_item("input_actions"):
 		var input_actions_exported = SaveManager.config.get_item("input_actions")
 		var input_actions = {}
@@ -214,7 +299,7 @@ func load_config():
 		reset_to_defaults()
 
 func save_config():
-	SaveManager.config.set_item("mouse_sensitivity", mouse_sensitivity)
+	_save_mouse_config()
 	var input_actions = get_all_input_actions()
 	var input_actions_exported = {}
 	for action_name in input_actions:
@@ -226,6 +311,34 @@ func save_config():
 	SaveManager.config.set_item("input_actions", input_actions_exported)
 	SaveManager.save_config()
 	input_actions_update.emit()
+
+func _load_mouse_config() -> void:
+	var cfg = SaveManager.config
+	if cfg.has_item("mouse_sens"):
+		mouse_sensitivity = float(cfg.get_item("mouse_sens"))
+	elif cfg.has_item("mouse_sensitivity"):
+		# Pre-v2 save (different units, see legacy_to_source_scale). An untouched default
+		# takes the new default; a hand-tuned value keeps its 1080p feel.
+		var legacy := float(cfg.get_item("mouse_sensitivity"))
+		if legacy > 0.0 and not is_equal_approx(legacy, _LEGACY_DEFAULT_SENSITIVITY):
+			mouse_sensitivity = legacy_to_source_scale(legacy)
+	mouse_sensitivity = clampf(mouse_sensitivity, MIN_MOUSE_SENSITIVITY, MAX_MOUSE_SENSITIVITY)
+	if cfg.has_item("mouse_y_scale"):
+		mouse_y_scale = clampf(float(cfg.get_item("mouse_y_scale")), 0.1, 3.0)
+	if cfg.has_item("invert_mouse_y"):
+		invert_mouse_y = bool(cfg.get_item("invert_mouse_y"))
+	if cfg.has_item("ads_sensitivity_scale"):
+		ads_sensitivity_scale = clampf(float(cfg.get_item("ads_sensitivity_scale")), 0.1, 3.0)
+	if cfg.has_item("mouse_dpi"):
+		mouse_dpi = clampi(int(cfg.get_item("mouse_dpi")), 50, 32000)
+
+func _save_mouse_config() -> void:
+	var cfg = SaveManager.config
+	cfg.set_item("mouse_sens", mouse_sensitivity)
+	cfg.set_item("mouse_y_scale", mouse_y_scale)
+	cfg.set_item("invert_mouse_y", invert_mouse_y)
+	cfg.set_item("ads_sensitivity_scale", ads_sensitivity_scale)
+	cfg.set_item("mouse_dpi", mouse_dpi)
 
 func reset_to_defaults():
 	set_all_input_actions(default_input_actions)

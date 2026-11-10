@@ -96,8 +96,11 @@ func _physics_process(delta: float) -> void:
 	if is_editor or character and character.is_multiplayer_authority() == false: return
 	
 	if !head or !enabled or is_editor or !character.input_enabled: return
-	var look_angle: Vector2 = Vector2(look_rotation.x * delta, look_rotation.y * delta)
-	character.look_angle = Vector2(-look_angle.x, -look_angle.y)
+	# A stick deflection is a turn RATE, so (unlike a mouse delta) it is scaled by delta.
+	# Applied directly rather than via character.look_angle: the character consumes that in
+	# ITS _physics_process, which runs before this child's, so it always lagged a tick.
+	if look_rotation != Vector2.ZERO:
+		character.rotate_look(-look_rotation.x * delta, -look_rotation.y * delta)
 
 func setup_input():
 	var action_names = [
