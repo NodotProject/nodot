@@ -20,6 +20,11 @@ class_name FirstPersonCharacter extends NodotCharacter3D
 ## The strength that the character will push rigidbodies
 @export var push_strength: float = 0.5
 
+## Head pitch limit (radians, = 89 deg) shared by every look path (mouse, pad, and any game
+## code that turns the view, e.g. recoil — route those through [method rotate_look]). Short of 90 so the head's Euler pitch never reaches the pole,
+## where reading `rotation` back off the basis flips it.
+const PITCH_LIMIT := 1.5533430342749532
+
 ## Constructs the step up movement vector.
 @onready var step_vector: Vector3 = Vector3(0, step_height, 0)
 
@@ -95,18 +100,23 @@ func _calculate_peak_recent_velocity(delta: float):
 		else:
 			peak_recent_velocity = lerp(peak_recent_velocity, Vector3.ZERO, delta)
 
+## Rate-based look (gamepad stick) — FirstPersonJoypadInput writes [member look_angle] as
+## this tick's rotation. Mouse look does NOT come through here: it is applied per event via
+## [method rotate_look] so the view turns every rendered frame instead of every physics tick.
 func _process_look_angle():
-	if !input_enabled: return
-	
-	# Handle look left and right
-	rotate_object_local(Vector3(0, 1, 0), look_angle.x)
-	
-	# Handle look up and down
-	head.rotate_object_local(Vector3(1, 0, 0), look_angle.y)
-	
-	head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
-	head.rotation.z = 0
-	head.rotation.y = 0
+	if !input_enabled or look_angle == Vector2.ZERO: return
+	rotate_look(look_angle.x, look_angle.y)
+
+## Turn the view by [param yaw] (radians, + = left, applied to the body) and [param pitch]
+## (radians, + = up, applied to the head), pitch clamped to ±[constant PITCH_LIMIT]. The one
+## entry point for every view rotation (mouse, pad, recoil, sway): the head is written as a pure pitch
+## (never rotate_object_local + read-back, which bounced the view off the pole when a flick
+## crossed 90 deg), and yaw stays wrapped to ±PI.
+func rotate_look(yaw: float, pitch: float) -> void:
+	if yaw != 0.0:
+		rotation.y = wrapf(rotation.y + yaw, -PI, PI)
+	if pitch != 0.0 and head != null:
+		head.rotation = Vector3(clampf(head.rotation.x + pitch, -PITCH_LIMIT, PITCH_LIMIT), 0.0, 0.0)
 
 func _process_fall_damage():
 	var on_floor = _is_on_floor() != null

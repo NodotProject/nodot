@@ -55,8 +55,12 @@ func _input(event: InputEvent) -> void:
 	
 	if !enabled or !character.input_enabled: return
 	if event is InputEventMouseMotion:
-		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
-		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
+		# ACCUMULATE (+=): several motion events can land between physics ticks, and an `=`
+		# kept only the last one. screen_relative + look_radians: raw counts, resolution-
+		# independent, shared sensitivity (see InputManager).
+		var look: Vector2 = InputManager.look_radians(event.screen_relative)
+		mouse_rotation.y += look.x
+		mouse_rotation.x += look.y
 		character.camera.time_since_last_move = 0.0
 	
 	if Input.is_action_pressed("zoom_camera_mode"):
@@ -69,7 +73,8 @@ func _physics_process(delta: float) -> void:
 	if is_editor or character and character.is_multiplayer_authority() == false: return
 	if !enabled or is_editor or !character.input_enabled or !camera_container: return
 	
-	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
+	# Already radians of rotation — a mouse delta is a distance, never scale it by delta.
+	var look_angle: Vector2 = Vector2(-mouse_rotation.x, -mouse_rotation.y)
 	character.look_angle = Vector2(look_angle.y, look_angle.x)
 	
 	if !lock_camera_rotation:

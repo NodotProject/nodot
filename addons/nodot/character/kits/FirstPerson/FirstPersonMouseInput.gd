@@ -22,7 +22,6 @@ class_name FirstPersonMouseInput extends Node
 @onready var character: FirstPersonCharacter = get_parent()
 
 var is_editor: bool = Engine.is_editor_hint()
-var mouse_rotation: Vector2 = Vector2.ZERO
 var cursor_show_state = Input.MOUSE_MODE_VISIBLE
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -50,8 +49,7 @@ func _input(event: InputEvent) -> void:
 	if !enabled or !character.input_enabled: return
 	
 	if event is InputEventMouseMotion:
-		mouse_rotation.y = event.relative.x * InputManager.mouse_sensitivity
-		mouse_rotation.x = event.relative.y * InputManager.mouse_sensitivity
+		_apply_mouse_look(event as InputEventMouseMotion)
 
 	if fps_item_container:
 		if event.is_action_pressed(item_next_action):
@@ -59,12 +57,8 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed(item_previous_action):
 			fps_item_container.previous_item()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if !enabled or is_editor or !character.input_enabled: return
-	
-	var look_angle: Vector2 = Vector2(-mouse_rotation.x * delta, -mouse_rotation.y * delta)
-	character.look_angle = Vector2(look_angle.y, look_angle.x)
-	mouse_rotation = Vector2.ZERO
 	
 	if fps_item_container:
 		if Input.is_action_pressed(action_action):
@@ -75,6 +69,25 @@ func _physics_process(delta: float) -> void:
 			fps_item_container.zoom()
 		elif Input.is_action_just_released(zoom_action):
 			fps_item_container.zoomout()
+
+## Turn the view by one mouse event, IMMEDIATELY (not buffered to the physics tick).
+## - Per event: Godot already coalesces a frame's motion into one event, so the view turns
+##   every rendered frame with no added latency. The old path stored the motion with `=`
+##   and consumed it once per physics tick, so above 60 fps every frame but the last in a
+##   tick was DROPPED (at 144 fps ~58% of hand motion, varying with frame timing), the
+##   view stepped at 60 Hz on high-refresh screens and lagged a tick behind the hand.
+## - screen_relative, not relative: relative is divided by the canvas_items stretch scale,
+##   so sensitivity changed with the window size.
+## - Zoom-matched: the camera's live FOV vs the character's resting FOV scales the turn so
+##   ADS/scopes keep the hip view's on-screen speed (InputManager.zoom_factor).
+func _apply_mouse_look(event: InputEventMouseMotion) -> void:
+	if is_editor or not character.is_multiplayer_authority():
+		return
+	var zoom := 1.0
+	if character.camera != null:
+		zoom = InputManager.zoom_factor(character.camera.fov, character.fov)
+	var look: Vector2 = InputManager.look_radians(event.screen_relative, zoom)
+	character.rotate_look(-look.x, -look.y)
 
 ## Disable input and release mouse
 func disable() -> void:

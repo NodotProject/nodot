@@ -256,16 +256,72 @@ func _on_pressed():
 	revert()
 "
 
-[sub_resource type="GDScript" id="GDScript_iaxat"]
-resource_name = "mouse_sensitivity"
-script/source = "extends HSlider
+[sub_resource type="GDScript" id="GDScript_mouseopts"]
+resource_name = "mouse_options"
+script/source = "extends GridContainer
+## Options > Controls mouse-look block: sensitivity (slider + typeable value, Source-engine
+## scale so a value copied from CS/Apex/TF2 feels identical) with a live cm/360 readout for
+## the player's DPI, a vertical multiplier, the zoom-matched aim/scope multiplier, invert Y
+## and a restore button. Every value lives on InputManager (the one source of truth all
+## mouse-driven cameras read) and is persisted by InputManager.save_config, which the options
+## menu calls on exit. Changes apply instantly.
 
-func _ready():
-	value = InputManager.mouse_sensitivity
-	
-func _on_value_changed(new_value):
-	%OptionsMenuControl.get_node(\"SFX/ClickTick\").play();
-	InputManager.mouse_sensitivity = new_value
+@onready var _sens_slider: HSlider = %MouseSensSlider
+@onready var _sens_spin: SpinBox = %MouseSensSpin
+@onready var _cm360: Label = %MouseCm360Label
+@onready var _dpi_spin: SpinBox = %MouseDpiSpin
+@onready var _y_spin: SpinBox = %MouseYScaleSpin
+@onready var _ads_spin: SpinBox = %MouseAdsSpin
+@onready var _invert: CheckButton = %MouseInvertCheck
+
+## Guards the write-back loop: _sync() sets control values, which fire value_changed.
+var _syncing := false
+
+func _ready() -> void:
+	for range_ctl: Range in [_sens_slider, _sens_spin]:
+		range_ctl.min_value = InputManager.MIN_MOUSE_SENSITIVITY
+		range_ctl.max_value = InputManager.MAX_MOUSE_SENSITIVITY
+	_sync()
+	_sens_slider.value_changed.connect(_on_sensitivity)
+	_sens_spin.value_changed.connect(_on_sensitivity)
+	_dpi_spin.value_changed.connect(func(v: float) -> void: _apply(&\"mouse_dpi\", int(v)))
+	_y_spin.value_changed.connect(func(v: float) -> void: _apply(&\"mouse_y_scale\", v))
+	_ads_spin.value_changed.connect(func(v: float) -> void: _apply(&\"ads_sensitivity_scale\", v))
+	_invert.toggled.connect(func(on: bool) -> void: _apply(&\"invert_mouse_y\", on))
+	var restore := get_node_or_null(\"%RestoreMouseButton\") as Button
+	if restore != null:
+		restore.pressed.connect(_on_restore)
+
+func _on_sensitivity(v: float) -> void:
+	_apply(&\"mouse_sensitivity\", v)
+
+func _apply(prop: StringName, value: Variant) -> void:
+	if _syncing:
+		return
+	InputManager.set(prop, value)
+	_click()
+	_sync()
+
+func _on_restore() -> void:
+	InputManager.reset_mouse_settings()
+	_click()
+	_sync()
+
+func _sync() -> void:
+	_syncing = true
+	_sens_slider.set_value_no_signal(InputManager.mouse_sensitivity)
+	_sens_spin.set_value_no_signal(InputManager.mouse_sensitivity)
+	_dpi_spin.set_value_no_signal(InputManager.mouse_dpi)
+	_y_spin.set_value_no_signal(InputManager.mouse_y_scale)
+	_ads_spin.set_value_no_signal(InputManager.ads_sensitivity_scale)
+	_invert.set_pressed_no_signal(InputManager.invert_mouse_y)
+	_cm360.text = \"%.1f cm / 360°\" % InputManager.cm_per_360()
+	_syncing = false
+
+func _click() -> void:
+	var tick := get_node_or_null(\"%OptionsMenuControl/SFX/ClickTick\") as AudioStreamPlayer
+	if tick != null:
+		tick.play()
 "
 
 [sub_resource type="GDScript" id="GDScript_ljq8r"]
@@ -692,28 +748,116 @@ theme_override_constants/separation = 15
 alignment = 1
 vertical = true
 
+[node name="MouseOptions" type="GridContainer" parent="Control/MarginContainer/InputOptions"]
+layout_mode = 2
+theme_override_constants/h_separation = 22
+columns = 2
+script = SubResource("GDScript_mouseopts")
+
+[node name="SensLabel" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+text = "Mouse Sensitivity"
+
+[node name="SensRow" type="HBoxContainer" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="MouseSensSlider" type="HSlider" parent="Control/MarginContainer/InputOptions/MouseOptions/SensRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Same scale as Source-engine games (CS, Apex, TF2): paste your sensitivity from those and it feels identical at the same DPI."
+min_value = 0.05
+max_value = 10.0
+step = 0.01
+value = 1.5
+exp_edit = true
+
+[node name="MouseSensSpin" type="SpinBox" parent="Control/MarginContainer/InputOptions/MouseOptions/SensRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 0.05
+max_value = 10.0
+step = 0.01
+value = 1.5
+custom_arrow_step = 0.1
+
+[node name="MouseCm360Label" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions/SensRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Mouse travel for a full turn at your DPI (hip, not aiming)."
+text = "34.6 cm / 360°"
+
+[node name="DpiLabel" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+text = "Mouse DPI"
+
+[node name="MouseDpiSpin" type="SpinBox" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Your mouse's DPI/CPI. Only used for the cm / 360° readout; it does not change sensitivity."
+min_value = 50.0
+max_value = 32000.0
+step = 50.0
+value = 800.0
+
+[node name="YScaleLabel" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+text = "Vertical Sensitivity"
+
+[node name="MouseYScaleSpin" type="SpinBox" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Vertical look speed relative to horizontal (1.00 = the same)."
+min_value = 0.1
+max_value = 3.0
+step = 0.05
+value = 1.0
+suffix = "x"
+
+[node name="AdsLabel" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+text = "Aim / Scope Sensitivity"
+
+[node name="MouseAdsSpin" type="SpinBox" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Sensitivity while aiming down sights or scoped. 1.00 keeps the crosshair moving across the screen at the same speed as hip-fire at every zoom level; higher is faster."
+min_value = 0.1
+max_value = 3.0
+step = 0.05
+value = 1.0
+suffix = "x"
+
+[node name="InvertLabel" type="Label" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+layout_mode = 2
+text = "Invert Mouse Y"
+
+[node name="MouseInvertCheck" type="CheckButton" parent="Control/MarginContainer/InputOptions/MouseOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/InputOptions" unique_id=78197354]
 layout_mode = 2
 theme_override_constants/separation = 22
 alignment = 1
 
-[node name="Label" type="Label" parent="Control/MarginContainer/InputOptions/HBoxContainer" unique_id=1950047886]
+[node name="RestoreMouseButton" type="Button" parent="Control/MarginContainer/InputOptions/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Mouse Sensitivity"
-
-[node name="MouseHSlider" type="HSlider" parent="Control/MarginContainer/InputOptions/HBoxContainer" unique_id=482778863]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-max_value = 0.5
-step = 0.025
-value = 0.1
-script = SubResource("GDScript_iaxat")
+text = "Restore Mouse Defaults"
 
 [node name="ResetSettingsButton" type="Button" parent="Control/MarginContainer/InputOptions/HBoxContainer" unique_id=585882237]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Reset to default"
+text = "Reset Key Bindings"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/InputOptions" unique_id=1188215239]
 layout_mode = 2
@@ -860,7 +1004,6 @@ text = "Press Any Key..."
 [connection signal="value_changed" from="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" to="Control/MarginContainer/AudioOptions/GridContainer/HSlider3" method="_on_value_changed"]
 [connection signal="mouse_entered" from="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" to="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" to="Control/MarginContainer/AudioOptions/GridContainer/HBoxContainer/RevertButton" method="_on_pressed"]
-[connection signal="value_changed" from="Control/MarginContainer/InputOptions/HBoxContainer/MouseHSlider" to="Control/MarginContainer/InputOptions/HBoxContainer/MouseHSlider" method="_on_value_changed"]
 [connection signal="mouse_entered" from="Control/TabsContainer/Video" to="Control/TabsContainer" method="_on_mouse_entered"]
 [connection signal="pressed" from="Control/TabsContainer/Video" to="Control/TabsContainer" method="_on_video_pressed"]
 [connection signal="mouse_entered" from="Control/TabsContainer/Audio" to="Control/TabsContainer" method="_on_mouse_entered"]
